@@ -502,10 +502,11 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .peccy-dealer { overflow: visible; }
   .peccy-dealer .pd-body { transform-box: fill-box; transform-origin: 50% 100%; animation: peccyBreathe 3.8s ease-in-out infinite; }
   @keyframes peccyBreathe { 50% { transform: scale(1.008, 1.016); } }
-  .peccy-dealer .pd-lid { transform-box: fill-box; transform-origin: center; transform: scaleY(0); animation: peccyBlink 5.6s infinite; }
-  @keyframes peccyBlink { 0%, 92%, 100% { transform: scaleY(0); } 94.5% { transform: scaleY(1); } }
-  .peccy-dealer .pd-lash { opacity: 0; animation: peccyLash 5.6s infinite; }
-  @keyframes peccyLash { 0%, 93.5%, 96%, 100% { opacity: 0; } 94.5% { opacity: 1; } }
+  /* Peccy blinks about once every two and a half minutes, and fast: blink and you miss it */
+  .peccy-dealer .pd-lid { transform-box: fill-box; transform-origin: center; transform: scaleY(0); animation: peccyBlink 150s infinite; }
+  @keyframes peccyBlink { 0%, 99.85%, 100% { transform: scaleY(0); } 99.91% { transform: scaleY(1); } }
+  .peccy-dealer .pd-lash { opacity: 0; animation: peccyLash 150s infinite; }
+  @keyframes peccyLash { 0%, 99.88%, 99.96%, 100% { opacity: 0; } 99.91% { opacity: 1; } }
   /* Outfit effects: twinkles, glowing trim, a visor's scanning line */
   .peccy-dealer .pd-spark { transform-box: fill-box; transform-origin: center; animation: pdSpark 2.4s ease-in-out infinite; }
   @keyframes pdSpark { 0%, 100% { opacity: 0; transform: scale(0.2) rotate(0deg); } 45% { opacity: 1; transform: scale(1) rotate(45deg); } 65% { opacity: 0.15; } }
@@ -737,6 +738,17 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     background: linear-gradient(115deg, transparent 40%, rgba(255,255,255,0.75) 50%, transparent 60%) no-repeat; background-size: 250% 100%;
   }
   @keyframes deckGlint { from { background-position: 130% 0; } to { background-position: -130% 0; } }
+  /* Halloween: a spiderweb in the corner, a bat, and a candle glow behind Peccy; pumpkin-orange red suits */
+  .deck-spooky .card.face-down { background: #1a0d24; }
+  .deck-spooky .card-back {
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 84'%3E%3Cg fill='none' stroke='rgba(255,170,80,0.6)' stroke-width='0.6'%3E%3Cpath d='M0 0 L60 18 M0 0 L56 46 M0 0 L30 84 M0 0 L8 84'/%3E%3Cpath d='M9 3 Q8 7 6 12 Q4 17 2 22 M20 6 Q17 15 13 25 Q8 38 5 46 M32 10 Q26 25 20 39 Q14 56 11 64 M44 13 Q37 31 29 49'/%3E%3C/g%3E%3Cpath d='M41 70 q3 -5 6 -1 q2 -3 3 0 q1 -3 3 0 q3 -4 6 1 q-3 0 -5 2 q-2 -1 -3 1 q-1 -2 -3 -1 q-2 -2 -7 -2 z' fill='rgba(0,0,0,0.75)'/%3E%3C/svg%3E") no-repeat 0 0 / 100% 100%,
+      radial-gradient(circle at 50% 55%, rgba(255,138,0,0.4), transparent 58%), linear-gradient(160deg, #3b1658, #12071c);
+    box-shadow: inset 0 0 0 1.5px #ff8a00;
+  }
+  .deck-spooky .card.face-up { background: linear-gradient(160deg, #fffaf0, #f6e7d2); box-shadow: inset 0 0 0 2px #ff8a00, 0 1px 0 rgba(0,0,0,0.2), -2px 4px 12px rgba(0,0,0,0.45); }
+  .deck-spooky .card.face-up.red { color: #e05a00; }
+  .deck-spooky .c-face { border-color: #6b2fa0; background: linear-gradient(160deg, rgba(107,47,160,0.25), rgba(255,138,0,0.14)); }
   /* Controls under the table */
   .bj-console {
     display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 10px; padding: 10px 16px;
@@ -1226,6 +1238,14 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   /* Design detail: five pips, more of them lit the more elaborate the item */
   .shop-tier { margin-left: auto; flex: none; font-size: 9px; letter-spacing: 2px; color: var(--gold); }
   .shop-tier em { font-style: normal; color: rgba(255,255,255,0.18); }
+  /* Halloween: an orange tab, a pumpkin tag on each seasonal item, and purple-dusk cards */
+  .shop-cat.halloween { color: #ffb366; border-color: rgba(255,138,0,0.5); background: rgba(255,122,0,0.1); }
+  .shop-cat.halloween.on { color: #1a0800; border-color: transparent; background: linear-gradient(180deg, #ffb347, #ff7a00); box-shadow: 0 4px 16px rgba(255,122,0,0.4); }
+  .shop-season { margin-left: auto; flex: none; padding: 2px 8px; border-radius: 999px; font: 800 10px 'Inter', sans-serif; color: #1a0800; background: linear-gradient(180deg, #ffb347, #ff7a00); }
+  .shop-kind { margin-top: -3px; font: 700 10px 'Inter', sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: #c9a3ff; }
+  .shop-item.season { border-color: rgba(255,138,0,0.35); background: linear-gradient(180deg, #23142e, #0f0a16); }
+  .shop-item.season .shop-prev { background: radial-gradient(90% 90% at 50% 20%, rgba(255,138,0,0.16), transparent 70%), linear-gradient(180deg, #2a1640, #120a1c); }
+  .shop-item.season.equipped { border-color: #ff8a00; box-shadow: 0 0 0 1px #ff8a00, 0 10px 28px rgba(255,138,0,0.2); }
   .shop-desc { font-size: 12px; line-height: 1.42; color: rgba(255,255,255,0.72); }
   .shop-foot { margin-top: auto; padding-top: 6px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .shop-price { display: inline-flex; align-items: center; gap: 6px; font: 800 15px var(--display); color: var(--gold-2); white-space: nowrap; }
@@ -1325,6 +1345,15 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     --felt-pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60' viewBox='0 0 60 60'%3E%3Cpath d='M30 6 C40 6 44 16 38 22 C34 26 28 22 30 18 M30 6 C20 6 16 16 22 22 C26 26 32 22 30 18 M6 30 C6 40 16 44 22 38 M54 30 C54 40 44 44 38 38 M30 54 C40 54 44 44 38 38 M30 54 C20 54 16 44 22 38' stroke='rgba(242,199,92,0.16)' stroke-width='1.4' fill='none'/%3E%3Ccircle cx='30' cy='30' r='2' fill='rgba(242,199,92,0.2)'/%3E%3C/svg%3E");
   }
   .bjt-palace .bj-arc, .rlt-palace .rl-zero-cell { filter: drop-shadow(0 0 6px rgba(242,199,92,0.55)); }
+
+  /* Halloween: midnight-purple felt with cobwebs and bats, a black iron rail, and print that glows like a candle */
+  .bjt-haunted, .rlt-haunted {
+    --felt-hi: #3d1f5c; --felt: #2a1240; --felt-lo: #170a26; --felt-edge: #0b0512; --rf-a: #0f0619; --rf-b: #1e0e30; --rf-c: #2a1240; --rf-d: #34184f;
+    --rail: linear-gradient(180deg, #3a3a40 0%, #141417 50%, #050506 100%); --print: #ff9a2e; --print2: rgba(200,160,255,0.75);
+    --felt-pat: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140' viewBox='0 0 140 140'%3E%3Cg fill='none' stroke='rgba(220,200,255,0.1)' stroke-width='0.8'%3E%3Cpath d='M0 0 L60 14 M0 0 L48 40 M0 0 L16 58 M0 0 L58 28'/%3E%3Cpath d='M12 3 Q10 9 4 14 M24 6 Q20 18 8 26 M38 9 Q31 27 12 40'/%3E%3C/g%3E%3Cpath d='M92 96 q4 -6 8 -1 q2 -4 4 0 q1 -4 4 0 q4 -5 8 1 q-4 0 -6 3 q-3 -1 -4 1 q-1 -2 -4 -1 q-3 -3 -10 -3 z M40 110 q3 -4 6 -1 q1 -3 3 0 q1 -3 3 0 q3 -4 6 1 q-3 0 -5 2 q-2 -1 -3 1 q-1 -2 -3 -1 q-2 -2 -7 -2 z' fill='rgba(0,0,0,0.35)'/%3E%3C/svg%3E");
+  }
+  .bjt-haunted .bj-arc { filter: drop-shadow(0 0 5px rgba(255,138,0,0.75)); }
+  .rlt-haunted .rl-zero-cell { filter: drop-shadow(0 0 6px rgba(255,138,0,0.55)); }
 
   /* ═══ CONFETTI ═══ */
   /* One quiet line under the games */
@@ -1746,7 +1775,7 @@ function peccyHop(svgSel){
 // feeds peccyDealerSVG; decks and tables are CSS (.deck-<id>, .bjt-<id>, .rlt-<id>); wheels and balls
 // are RL_WHEELS / RL_BALLS styles.
 var SHOP={
-  outfit:{label:'Peccy outfits',icon:'fa-user-tie',items:[
+  outfit:{label:'Peccy outfits',kind:'Peccy outfit',icon:'fa-user-tie',items:[
     {id:'house',name:'House Colours',price:0,desc:'Peccy\'s own dealer uniforms: a different colourway at every table.'},
     {id:'midnight',name:'Midnight Satin',price:750,desc:'An all-black satin vest with a silver bow tie.',
       look:{vest:['#141418','#2c2c34','#050507'],tie:['#c9ced6','#7d838c'],square:'#c9ced6'}},
@@ -1768,9 +1797,17 @@ var SHOP={
         pattern:'circuit',trim:'#3df2ff',trim2:'#ff3df0',hat:'visor',extras:['neon']}},
     {id:'emperor',name:'The High Roller',price:1000000,desc:'A royal robe with ermine trim, a velvet cape, a jewelled chain of office and a crown.',
       look:{vest:['#8e1530','#c0284a','#4a0716'],tie:['#f2c75c','#a87b1f'],tieStyle:'none',square:'#f2c75c',jacket:['#8e1530','#b8203e','#4a0716'],hat:'crown',extras:['cape','fur','chain'],
-        sparkle:[[20,118,5],[184,118,5],[102,230,4],[28,200,4],[176,200,4]]}}
+        sparkle:[[20,118,5],[184,118,5],[102,230,4],[28,200,4],[176,200,4]]}},
+    // Halloween specials: cheap and festive (season puts them in the shop's Halloween section too)
+    {id:'pumpkin',name:'Jack-o\'-Lantern',price:300,season:'halloween',desc:'Orange and black stripes, a black bow, and a pumpkin pin on the lapel.',
+      look:{vest:['#ff8a00','#ffb347','#b34d00'],tie:['#1f1f25','#050506'],square:'#1f1f25',pattern:'stripes',extras:['pumpkin']}},
+    {id:'witch',name:'Witching Hour',price:500,season:'halloween',desc:'A starry purple vest, a green bow and a tall, crooked witch\'s hat.',
+      look:{vest:['#4b1d7a','#7a3fb8','#230b3d'],tie:['#39b54a','#1d6b28'],square:'#ff8a00',pattern:'stars',hat:'witch',hatColor:['#24123a','#43275e','#0a0510'],band:'#ff8a00'}},
+    {id:'vampire',name:'Count Peccula',price:666,season:'halloween',desc:'A black tailcoat with blood-red lapels, a high vampire collar and a sweeping cape.',
+      look:{vest:['#1a0a0e','#3a1820','#070304'],tie:['#d61f2c','#7a0a12'],square:'#d61f2c',jacket:['#0e0e12','#2a2a32','#030304'],lapel:['#8e0b16','#d61f2c'],
+        cape:['#050507','#1c1c24'],capeEdge:'#b3121f',extras:['cape','collar']}}
   ]},
-  cards:{label:'Card decks',icon:'fa-clone',items:[
+  cards:{label:'Card decks',kind:'Card deck',icon:'fa-clone',items:[
     {id:'classic',name:'Peccy Classic',price:0,desc:'Navy backs with an orange lattice and Peccy in the middle.'},
     {id:'crimson',name:'Crimson Lattice',price:500,desc:'The casino-red back with a fine white lattice.'},
     {id:'emerald',name:'Emerald Club',price:1500,desc:'Green backs with a gold double frame and a rippled centre.'},
@@ -1778,9 +1815,10 @@ var SHOP={
     {id:'neon',name:'Neon Arcade',price:10000,desc:'Black faces with glowing indices, and backs whose neon pulses.'},
     {id:'royal',name:'Royal Gilded',price:25000,desc:'Ivory faces edged in gold, and burgundy backs with a shimmer sweeping across.'},
     {id:'cosmic',name:'Cosmic',price:60000,desc:'Backs that drift through a starfield, and faces with a holographic sheen.'},
-    {id:'diamond',name:'Black Diamond',price:150000,desc:'Faceted crystal backs that throw rainbows, and gilt faces that catch the light.'}
+    {id:'diamond',name:'Black Diamond',price:150000,desc:'Faceted crystal backs that throw rainbows, and gilt faces that catch the light.'},
+    {id:'spooky',name:'Spooky Deck',price:400,season:'halloween',desc:'Cobwebbed purple backs with a bat, and pumpkin-orange suits.'}
   ]},
-  bjtable:{label:'Blackjack tables',icon:'fa-diamond',items:[
+  bjtable:{label:'Blackjack tables',kind:'Blackjack table',icon:'fa-diamond',items:[
     {id:'classic',name:'Classic Green',price:0,desc:'Green baize and a mahogany rail.'},
     {id:'ocean',name:'Ocean Blue',price:1000,desc:'A deep blue felt.'},
     {id:'crimson',name:'Crimson',price:2500,desc:'Rich red felt for high stakes.'},
@@ -1788,9 +1826,10 @@ var SHOP={
     {id:'velvet',name:'Purple Velvet',price:20000,desc:'Purple velvet with a soft sheen and a polished gold rail.'},
     {id:'marble',name:'Marble Lounge',price:50000,desc:'Teal felt with a damask print and a white marble rail.'},
     {id:'neon',name:'Neon Strip',price:120000,desc:'A midnight felt with glowing neon edges and a chrome rail.'},
-    {id:'palace',name:'Golden Palace',price:350000,desc:'Burgundy felt with gold filigree, glowing gold print and a gold-leaf rail.'}
+    {id:'palace',name:'Golden Palace',price:350000,desc:'Burgundy felt with gold filigree, glowing gold print and a gold-leaf rail.'},
+    {id:'haunted',name:'Haunted Felt',price:500,season:'halloween',desc:'Midnight purple with cobwebs and bats, and print that glows like candlelight.'}
   ]},
-  rltable:{label:'Roulette tables',icon:'fa-table-cells',items:[
+  rltable:{label:'Roulette tables',kind:'Roulette table',icon:'fa-table-cells',items:[
     {id:'classic',name:'Classic Green',price:0,desc:'Green baize and a mahogany rail.'},
     {id:'ocean',name:'Ocean Blue',price:1000,desc:'A deep blue felt.'},
     {id:'crimson',name:'Crimson',price:2500,desc:'Rich red felt for high stakes.'},
@@ -1798,28 +1837,34 @@ var SHOP={
     {id:'velvet',name:'Purple Velvet',price:20000,desc:'Purple velvet with a soft sheen and a polished gold rail.'},
     {id:'marble',name:'Marble Lounge',price:50000,desc:'Teal felt with a damask print and a white marble rail.'},
     {id:'neon',name:'Neon Strip',price:120000,desc:'A midnight felt and a betting layout outlined in pulsing neon.'},
-    {id:'palace',name:'Golden Palace',price:350000,desc:'Burgundy felt with gold filigree and a gold-leaf rail.'}
+    {id:'palace',name:'Golden Palace',price:350000,desc:'Burgundy felt with gold filigree and a gold-leaf rail.'},
+    {id:'haunted',name:'Haunted Felt',price:500,season:'halloween',desc:'Midnight purple with cobwebs and bats, and a zero that glows pumpkin orange.'}
   ]},
-  wheel:{label:'Roulette wheels',icon:'fa-dharmachakra',items:[
+  wheel:{label:'Roulette wheels',kind:'Roulette wheel',icon:'fa-dharmachakra',items:[
     {id:'classic',name:'Mahogany Classic',price:0,desc:'A mahogany bowl with brass fittings.'},
     {id:'walnut',name:'Walnut & Chrome',price:1500,desc:'Light walnut with a chrome turret and silver frets.'},
     {id:'ebony',name:'Ebony & Gold',price:6000,desc:'Black ebony with gold frets, gold numbers and a gold turret.'},
     {id:'marble',name:'White Marble',price:20000,desc:'A veined white marble bowl trimmed in gold.'},
     {id:'neon',name:'Neon Ring',price:75000,desc:'A black bowl whose frets, numbers and rings glow neon.'},
-    {id:'jewel',name:'Crown Jewel',price:250000,desc:'A solid gold bowl set with rubies, sapphires and emeralds, with ruby and onyx pockets.'}
+    {id:'jewel',name:'Crown Jewel',price:250000,desc:'A solid gold bowl set with rubies, sapphires and emeralds, with ruby and onyx pockets.'},
+    {id:'pumpkin',name:'Pumpkin Wheel',price:800,season:'halloween',desc:'A ribbed pumpkin bowl with iron fittings and frets that glow like candlelight.'}
   ]},
-  ball:{label:'Roulette balls',icon:'fa-circle',items:[
+  ball:{label:'Roulette balls',kind:'Roulette ball',icon:'fa-circle',items:[
     {id:'ivory',name:'Ivory',price:0,desc:'The classic white ball.'},
     {id:'steel',name:'Polished Steel',price:300,desc:'Mirror-bright steel.'},
     {id:'gold',name:'Solid Gold',price:1200,desc:'Heavy, gleaming gold.'},
     {id:'ruby',name:'Ruby',price:4000,desc:'A cut ruby with light burning inside it.'},
     {id:'plasma',name:'Plasma',price:15000,desc:'A glowing ball that leaves a trail of light as it rolls.'},
     {id:'diamond',name:'Diamond',price:50000,desc:'A diamond that throws turning glints, with a trail of light.'},
-    {id:'peccy',name:'Peccy Ball',price:150000,desc:'Peccy himself, glowing orange and leaving a trail round the wheel.'}
+    {id:'peccy',name:'Peccy Ball',price:150000,desc:'Peccy himself, glowing orange and leaving a trail round the wheel.'},
+    {id:'pumpkin',name:'Jack-o\'-Lantern Ball',price:250,season:'halloween',desc:'A tiny pumpkin with a glowing carved face.'},
+    {id:'eyeball',name:'Eyeball',price:350,season:'halloween',desc:'It rolls round the wheel, looking right back at you.'}
   ]}
 };
 var SHOP_FREE={outfit:'house',cards:'classic',bjtable:'classic',rltable:'classic',wheel:'classic',ball:'ivory'};
-var shopState={owned:{},eq:JSON.parse(JSON.stringify(SHOP_FREE)),cat:'outfit',pending:null};
+// Through October and the first week of November the shop opens on its Halloween section
+var shopSpooky=(function(){var d=new Date();return d.getMonth()===9||(d.getMonth()===10&&d.getDate()<=7);})();
+var shopState={owned:{},eq:JSON.parse(JSON.stringify(SHOP_FREE)),cat:shopSpooky?'halloween':'outfit',pending:null};
 function shopItem(cat,id){var c=SHOP[cat];if(!c)return null;for(var i=0;i<c.items.length;i++)if(c.items[i].id===id)return c.items[i];return null;}
 function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!shopState.owned[cat+':'+id]);}
 
@@ -1876,22 +1921,31 @@ function shopPreview(cat,it){
   return '';
 }
 function shopRender(){
-  var cat=shopState.cat,C=SHOP[cat],n=C.items.length,h='';
-  document.getElementById('shop-cats').innerHTML=Object.keys(SHOP).map(function(k){
-    return '<button class="shop-cat'+(k===cat?' on':'')+'" onclick="shopShowCat(\''+k+'\')"><i class="fa-solid '+SHOP[k].icon+'"></i> '+SHOP[k].label+'</button>';
-  }).join('');
-  C.items.forEach(function(it,i){
-    var own=shopOwns(cat,it.id),on=shopState.eq[cat]===it.id,key=cat+':'+it.id,btn,
-        pips=Math.round(i/(n-1)*5),tier='<span class="shop-tier" title="Design detail">'+'●●●●●'.slice(0,pips)+'<em>'+'●●●●●'.slice(pips)+'</em></span>';
+  var cat=shopState.cat,list=[],h='';
+  // The Halloween section gathers every seasonal item from all the categories
+  if(cat==='halloween')Object.keys(SHOP).forEach(function(k){SHOP[k].items.forEach(function(it){if(it.season)list.push([k,it]);});});
+  else SHOP[cat].items.forEach(function(it){list.push([cat,it]);});
+  document.getElementById('shop-cats').innerHTML='<button class="shop-cat halloween'+(cat==='halloween'?' on':'')+'" onclick="shopShowCat(\'halloween\')">🎃 Halloween</button>'+
+    Object.keys(SHOP).map(function(k){
+      return '<button class="shop-cat'+(k===cat?' on':'')+'" onclick="shopShowCat(\''+k+'\')"><i class="fa-solid '+SHOP[k].icon+'"></i> '+SHOP[k].label+'</button>';
+    }).join('');
+  list.forEach(function(e){
+    var c=e[0],it=e[1],own=shopOwns(c,it.id),on=shopState.eq[c]===it.id,key=c+':'+it.id,btn,badge='';
+    // Detail pips count up the regular items; seasonal ones wear a Halloween tag instead
+    if(it.season)badge='<span class="shop-season">🎃 Halloween</span>';
+    else{var reg=SHOP[c].items.filter(function(x){return !x.season;}),ri=reg.indexOf(it),pips=Math.round(ri/(reg.length-1)*5);
+      if(ri>0)badge='<span class="shop-tier" title="Design detail">'+'●●●●●'.slice(0,pips)+'<em>'+'●●●●●'.slice(pips)+'</em></span>';}
     if(on)btn='<button class="shop-btn on" disabled><i class="fa-solid fa-check"></i> Equipped</button>';
-    else if(own)btn='<button class="shop-btn" onclick="shopEquip(\''+cat+'\',\''+it.id+'\')">Equip</button>';
+    else if(own)btn='<button class="shop-btn" onclick="shopEquip(\''+c+'\',\''+it.id+'\')">Equip</button>';
     else if(it.price>balance)btn='<button class="shop-btn" disabled>Need '+fmtChips(it.price-balance)+' more</button>';
-    else btn='<button class="shop-btn buy'+(shopState.pending===key?' sure':'')+'" onclick="shopBuy(\''+cat+'\',\''+it.id+'\')">'+(shopState.pending===key?'Tap again to buy':'Buy')+'</button>';
-    h+='<div class="shop-item'+(on?' equipped':'')+'"><div class="shop-prev">'+shopPreview(cat,it)+'</div><div class="shop-info">'+
-      '<div class="shop-name-row"><span class="shop-name">'+it.name+'</span>'+(i?tier:'')+'</div><div class="shop-desc">'+it.desc+'</div>'+
+    else btn='<button class="shop-btn buy'+(shopState.pending===key?' sure':'')+'" onclick="shopBuy(\''+c+'\',\''+it.id+'\')">'+(shopState.pending===key?'Tap again to buy':'Buy')+'</button>';
+    h+='<div class="shop-item'+(on?' equipped':'')+(it.season?' season':'')+'"><div class="shop-prev">'+shopPreview(c,it)+'</div><div class="shop-info">'+
+      '<div class="shop-name-row"><span class="shop-name">'+it.name+'</span>'+badge+'</div>'+(cat==='halloween'?'<div class="shop-kind">'+SHOP[c].kind+'</div>':'')+
+      '<div class="shop-desc">'+it.desc+'</div>'+
       '<div class="shop-foot"><span class="shop-price">'+(it.price?'<span class="chip-dot"></span>'+fmtChips(it.price):'Free')+(own&&it.price?' <small>owned</small>':'')+'</span>'+btn+'</div></div></div>';
   });
   document.getElementById('shop-grid').innerHTML=h;
+  document.querySelectorAll('#shop-grid svg.shop-peccy').forEach(peccyBlinkPhase);
   document.getElementById('shop-balance').textContent=fmtChips(balance);
   // Canvas previews: each wheel with the ball you have on, and each ball rolling on a strip of track
   document.querySelectorAll('#shop-grid canvas[data-wheel]').forEach(function(cv){
@@ -1930,6 +1984,8 @@ function peccyPattern(kind,id,o){
   if(kind==='paisley')return p+'width="16" height="15"><path d="M5 3 C10 3 11 9 6 11 C3 12 2 8 5 7 C7 6 7 5 5 3 Z" fill="rgba(255,196,120,0.32)"/><circle cx="12.5" cy="11.5" r="1.4" fill="rgba(255,230,170,0.35)"/><circle cx="12" cy="3" r="0.9" fill="rgba(255,230,170,0.3)"/></pattern>';
   if(kind==='sequin')return p+'width="5" height="4.4"><circle cx="2.5" cy="2.2" r="2" fill="rgba(255,246,200,0.35)"/><circle cx="1.9" cy="1.6" r="0.6" fill="#fff" opacity="0.7"/><circle cx="0" cy="0" r="2" fill="rgba(160,110,20,0.35)"/><circle cx="5" cy="0" r="2" fill="rgba(160,110,20,0.35)"/></pattern>';
   if(kind==='circuit')return p+'width="18" height="18"><path d="M0 9 H6 V4 H13 M9 18 V13 H18 M13 4 V0" stroke="'+(o.trim||'#3df2ff')+'" stroke-width="0.8" fill="none" opacity="0.7"/><circle cx="6" cy="9" r="1.2" fill="'+(o.trim||'#3df2ff')+'"/><circle cx="9" cy="13" r="1.2" fill="'+(o.trim2||'#ff3df0')+'"/></pattern>';
+  if(kind==='stripes')return p+'width="8" height="10"><rect width="8" height="5" fill="rgba(0,0,0,0.6)"/></pattern>';
+  if(kind==='stars')return p+'width="16" height="16"><path d="M5 2 L6 5 L9 5 L6.6 6.8 L7.5 10 L5 8 L2.5 10 L3.4 6.8 L1 5 L4 5 Z" fill="rgba(255,214,120,0.5)"/><circle cx="13" cy="12" r="0.9" fill="rgba(255,255,255,0.55)"/></pattern>';
   return '';
 }
 // Four-point twinkles that pulse in turn (pd-spark animation)
@@ -1954,12 +2010,16 @@ function peccyHat(o,u,id){
     [[65,-27],[101.5,-36],[138,-27]].map(function(p){return '<circle cx="'+p[0]+'" cy="'+p[1]+'" r="3.6" fill="#fffaf0" stroke="#c9b68a" stroke-width="0.6"/>';}).join('')+
     [[72,'#d6283a'],[87,'#1f6fd1'],[101.5,'#1f8a52'],[116,'#1f6fd1'],[131,'#d6283a']].map(function(g){return '<circle cx="'+g[0]+'" cy="7" r="3.8" fill="'+g[1]+'" stroke="#fff3bd" stroke-width="0.8"/><circle cx="'+(g[0]-1.2)+'" cy="5.8" r="1" fill="#fff" opacity="0.8"/>';}).join('')+
     peccySparkles([[101.5,-44,4],[60,-30,3],[145,-30,3]],'#fff6cf');
+  // A witch's hat: a wide brim and a tall crooked cone with a buckled band
+  if(o.hat==='witch')return '<ellipse cx="101.5" cy="11" rx="80" ry="10.5" fill="'+H[2]+'"/><ellipse cx="101.5" cy="9" rx="78" ry="9" fill="'+u('hat')+'"/>'+
+    '<path d="M62 8 C72 -8 84 -26 94 -38 C100 -45 112 -48 124 -44 C114 -42 108 -37 105 -31 C114 -16 128 -3 141 8 Z" fill="'+u('hat')+'"/>'+
+    '<path d="M64 0 C88 4 116 4 139 0 L141 8 C116 12 88 12 62 8 Z" fill="'+B+'"/><rect x="95" y="-0.5" width="13" height="10.5" rx="1.5" fill="none" stroke="#f2c75c" stroke-width="2"/>';
   if(o.hat==='visor')return '<path d="M26 30 Q101.5 12 178 30 L178 74 Q101.5 90 26 74 Z" fill="rgba(61,242,255,0.22)" stroke="'+(o.trim||'#3df2ff')+'" stroke-width="2.2" filter="url(#'+id+'-glow)" class="pd-neon"/>'+
     '<path class="pd-scan" d="M30 52 Q101.5 44 174 52" stroke="#fff" stroke-width="1.2" opacity="0.6" fill="none"/>';
   return '';
 }
 function peccyDealerSVG(o,id){
-  var V=o.vest,T=o.tie,J=o.jacket,X={},S=o.shirt||['#d8d3c8','#fdfcf8'],H=o.hatColor||['#2b2b33','#4a4a55','#121216'],
+  var V=o.vest,T=o.tie,J=o.jacket,X={},C=o.cape||['#3d0612','#8e1530'],L=o.lapel||J,S=o.shirt||['#d8d3c8','#fdfcf8'],H=o.hatColor||['#2b2b33','#4a4a55','#121216'],
       tie=o.tieStyle||'bow',trim=o.trim||'#3df2ff',u=function(n){return 'url(#'+id+'-'+n+')';};
   (o.extras||[]).forEach(function(e){X[e]=1;});
   function grad(n,horiz,stops){
@@ -1975,17 +2035,19 @@ function peccyDealerSVG(o,id){
       grad('tie',false,[[0,T[0]],[1,T[1]]])+
       grad('gold',false,[[0,'#fff3bd'],[0.5,'#e3b23c'],[1,'#94680f']])+
       grad('pants',true,[[0,'#101116'],[0.5,'#2a2c37'],[1,'#101116']])+
-      (J?grad('jacket',true,[[0,J[2]],[0.5,J[0]],[1,J[2]]])+grad('jlapel',false,[[0,J[1]],[1,J[0]]]):'')+
+      (J?grad('jacket',true,[[0,J[2]],[0.5,J[0]],[1,J[2]]])+grad('jlapel',false,[[0,L[1]],[1,L[0]]]):'')+
       (o.hat?grad('hat',true,[[0,H[2]],[0.45,H[0]],[0.7,H[1]],[1,H[2]]]):'')+
       (o.pattern?peccyPattern(o.pattern,id,o):'')+
-      (X.cape?grad('cape',true,[[0,'#3d0612'],[0.5,'#8e1530'],[1,'#3d0612']]):'')+
+      (X.cape?grad('cape',true,[[0,C[0]],[0.5,C[1]],[1,C[0]]]):'')+
       (X.shades?grad('lens',false,[[0,'#3a1d52'],[0.55,'#0d0612'],[1,'#24123a']]):'')+
       '<filter id="'+id+'-glow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="1.8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>'+
     '</defs>'+
     '<ellipse cx="102" cy="238" rx="80" ry="5" fill="#000" opacity="0.35"/>'+
     '<g class="pd-body">'+
       // A royal cape hangs behind Peccy, showing past the arms and legs
-      (X.cape?'<path d="M30 126 C8 160 0 202 -4 238 L208 238 C204 202 196 160 174 126 Z" fill="'+u('cape')+'" stroke="'+u('gold')+'" stroke-width="2.5"/>':'')+
+      (X.cape?'<path d="M30 126 C8 160 0 202 -4 238 L208 238 C204 202 196 160 174 126 Z" fill="'+u('cape')+'" stroke="'+(o.capeEdge||u('gold'))+'" stroke-width="2.5"/>':'')+
+      // A vampire's high collar, standing up behind the head on both sides
+      (X.collar?'<path d="M30 132 L6 94 L22 102 L16 80 L46 118 Z M174 132 L198 94 L182 102 L188 80 L158 118 Z" fill="'+C[0]+'"/><path d="M28 126 L12 100 L24 105 L22 92 L40 118 Z M176 126 L192 100 L180 105 L182 92 L164 118 Z" fill="'+(o.capeEdge||'#b3121f')+'"/>':'')+
       '<use href="#peccy-art"/>'+
       // Eyelids for blinking (eye centres measured from the artwork)
       '<ellipse class="pd-lid" cx="58" cy="55" rx="28.5" ry="28.5" fill="#FE9900"/>'+
@@ -2037,6 +2099,9 @@ function peccyDealerSVG(o,id){
         // Gold pocket watch on a chain from the vest buttons
         (X.watch?'<path d="M104 199 Q126 216 147 201" stroke="'+u('gold')+'" stroke-width="1.6" stroke-dasharray="1.8 1.2" fill="none"/>'+
           '<circle cx="150" cy="199" r="4.6" fill="'+u('gold')+'" stroke="#7a5410" stroke-width="0.6"/><circle cx="150" cy="199" r="3" fill="#fffaf0"/><path d="M150 199 V196.8 M150 199 H151.8" stroke="#333" stroke-width="0.6"/>':'')+
+        // A little jack-o'-lantern pin on the lapel
+        (X.pumpkin?'<circle cx="76" cy="150.5" r="5.2" fill="#ff8a00" stroke="#b34d00" stroke-width="0.8"/><path d="M73.4 146.6 Q71.8 150.5 73.4 154.4 M78.6 146.6 Q80.2 150.5 78.6 154.4" stroke="#b34d00" stroke-width="0.7" fill="none"/>'+
+          '<rect x="75.2" y="143.6" width="1.6" height="3" rx="0.6" fill="#2f7d32"/><path d="M73.6 150 l1.2 -1.7 l1.2 1.7 Z M76.8 150 l1.2 -1.7 l1.2 1.7 Z M73.6 152.2 Q76 154.2 78.6 152.2" fill="#2a1200" stroke="#2a1200" stroke-width="0.4"/>':'')+
         // Red rose in the buttonhole
         (X.rose?'<ellipse cx="70" cy="156" rx="5" ry="2.2" fill="#2f7d32" transform="rotate(-35 70 156)"/><circle cx="76" cy="150" r="5" fill="#c8102e"/>'+
           '<path d="M73.4 149 Q76 145.8 78.6 149 Q76 153 73.4 149 Z" fill="#8e0b22"/><circle cx="76" cy="150" r="1.4" fill="#5a0716"/>':'')+
@@ -2079,10 +2144,13 @@ function peccyDressAll(){
     // A hat needs headroom, so the drawing box grows upward (.has-hat makes the element taller to match)
     svg.setAttribute('viewBox',o.hat?'0 '+PECCY_HAT_TOP+' 204 '+(240-PECCY_HAT_TOP):'0 0 204 240');
     svg.classList.toggle('has-hat',!!o.hat);
-    // Each Peccy blinks on its own rhythm
-    var d=-(Math.random()*5).toFixed(2)+'s';
-    svg.querySelectorAll('.pd-lid,.pd-lash').forEach(function(e){e.style.animationDelay=d;});
+    peccyBlinkPhase(svg);
   });
+}
+// Each Peccy blinks at its own moment somewhere in the 150-second cycle
+function peccyBlinkPhase(svg){
+  var d=-(Math.random()*150).toFixed(2)+'s';
+  svg.querySelectorAll('.pd-lid,.pd-lash').forEach(function(e){e.style.animationDelay=d;});
 }
 
 // ═══ BLACKJACK ═══
@@ -3615,6 +3683,7 @@ function rlSurfaceZ(r){
 // marble (veining), gems (a jewelled rim). A ball style sets its shading and extras: glow, trail, sparkle, face.
 var RL_BRASS={dk:'#7a5410',hi:'#fff1b8',mid:'#d9a84a',lo:'#6b4808',top:'#fff6cf',gold:'#e2b23c',arm:'#c99a35',hub:'#8a6420'};
 var RL_CHROME={dk:'#4f5660',hi:'#f6f8fb',mid:'#b5bcc6',lo:'#3e444c',top:'#ffffff',gold:'#d3d9e1',arm:'#9aa2ac',hub:'#6b737e'};
+var RL_IRON={dk:'#2b2b30',hi:'#8a8f99',mid:'#4a4e57',lo:'#18181b',top:'#b9bec7',gold:'#5c616b',arm:'#3a3d44',hub:'#2b2d33'};
 var RL_WHEELS={
   classic:{rim:['#8a4523','#5e2b12','#3a1808'],inlay:'#d9a54a',track:['#2a1208','#4f2612','#25100a'],apron:['#120804','#2a1409'],red:'#c62828',black:'#151515',green:'#1f8a4c',
     fret:'#cfd3d8',num:'#fff',band:'#b08a3e',cone:['#a0582c','#5a2a12'],spoke:'rgba(217,165,74,0.7)',wall:['#1f0d05','#5a2c12','#80462a','#4a230d','#140803'],step:['#140904','#2a1308'],diam:['#6b4808','#e9c66a'],metal:RL_BRASS},
@@ -3626,6 +3695,9 @@ var RL_WHEELS={
     fret:'#d8a21c',num:'#fff',band:'#d8a21c',cone:['#ffffff','#cfccc4'],spoke:'rgba(216,162,28,0.8)',wall:['#9c9992','#dedbd4','#fbfaf7','#cfccc4','#8e8b85'],step:['#a9a6a0','#c9c6bf'],diam:['#8a6420','#ffe29a'],metal:RL_BRASS,marble:true},
   neon:{rim:['#1b1d33','#0e0f1c','#06060c'],inlay:'#ff3df0',track:['#0a0b14','#161829','#08080f'],apron:['#05050a','#0f1020'],red:'#ff2e63',black:'#0d0e1a',green:'#00d68f',
     fret:'#3df2ff',num:'#ffffff',band:'#ff3df0',cone:['#1d2040','#0a0b16'],spoke:'rgba(61,242,255,0.85)',wall:['#05050a','#14162a','#252a4a','#101226','#030306'],step:['#05050a','#0e0f1e'],diam:['#3df2ff','#bdfaff'],metal:RL_CHROME,glow:'#3df2ff'},
+  // Halloween: a pumpkin-orange bowl ribbed like a pumpkin, iron fittings, frets that glow like candlelight
+  pumpkin:{rim:['#ffa53d','#e06c00','#7a3300'],inlay:'#1b1b1b',track:['#2a1405','#4a2508','#1f0f04'],apron:['#120802','#2a1405'],red:'#c62828',black:'#121212',green:'#39b54a',
+    fret:'#ff9a2e',num:'#fff',band:'#1b1b1b',cone:['#ffa53d','#a84300'],spoke:'rgba(90,35,0,0.75)',wall:['#4a1f00','#b34d00','#ff9a2e','#a84300','#3a1800'],step:['#1f0f04','#3a1c06'],diam:['#1b1b1b','#5a5e66'],metal:RL_IRON,glow:'#ff7a00'},
   jewel:{rim:['#fff1b8','#d9a84a','#8a6420'],inlay:'#ffffff',track:['#5a3d08','#a07a28','#4a3206'],apron:['#2a1c04','#4a3206'],red:'#9b1027',black:'#111827',green:'#0f7a4a',
     fret:'#fff3bd',num:'#fff6cf',band:'#fff1b8',cone:['#fff1b8','#a87b1f'],spoke:'rgba(255,255,255,0.7)',wall:['#5a3d08','#b8892a','#fff1b8','#a07a28','#3d2905'],step:['#3d2905','#6b4808'],diam:['#1f6fd1','#bde0ff'],metal:RL_BRASS,gems:true}
 };
@@ -3636,7 +3708,9 @@ var RL_BALLS={
   ruby:{stops:['#ffd6dc','#d6283a','#4a0410'],spec:true,inner:'rgba(255,150,170,0.55)'},
   plasma:{stops:['#ffffff','#7df9ff','#0a8fb0'],glow:'#38e8ff',trail:true},
   diamond:{stops:['#ffffff','#e9f4ff','#8fb0d4'],glow:'rgba(255,255,255,0.9)',trail:true,sparkle:true},
-  peccy:{stops:['#ffe3a8','#ff9900','#a85200'],glow:'#ffb347',trail:true,face:true}
+  peccy:{stops:['#ffe3a8','#ff9900','#a85200'],glow:'#ffb347',trail:true,face:true},
+  pumpkin:{stops:['#ffd29a','#ff8a00','#8a3600'],glow:'rgba(255,122,0,0.7)',jack:true},
+  eyeball:{stops:['#ffffff','#f1eee6','#b9b3a6'],eye:true}
 };
 // The styles on the table now (the shop's equipped picks)
 function rlWheel(){return RL_WHEELS[shopState.eq.wheel]||RL_WHEELS.classic;}
@@ -3738,6 +3812,21 @@ function rlDrawBall(ctx,b,B,trail){
   if(B.face){
     ctx.fillStyle='#1b1205';[-1,1].forEach(function(d){ctx.beginPath();ctx.arc(x+d*r*0.3,cy-r*0.12,r*0.15,0,Math.PI*2);ctx.fill();});
     ctx.beginPath();ctx.arc(x,cy+r*0.05,r*0.42,0.2*Math.PI,0.8*Math.PI);ctx.strokeStyle='#1b1205';ctx.lineWidth=r*0.12;ctx.stroke();
+  }
+  // Halloween: a jack-o'-lantern with a glowing carved face, or an eyeball looking back at you
+  if(B.jack){
+    ctx.strokeStyle='rgba(120,45,0,0.45)';ctx.lineWidth=r*0.07;[-0.45,0,0.45].forEach(function(o){ctx.beginPath();ctx.ellipse(x+o*r,cy,r*0.28,r*0.92,0,0,Math.PI*2);ctx.stroke();});
+    ctx.fillStyle='#ffe066';[-1,1].forEach(function(d){ctx.beginPath();ctx.moveTo(x+d*r*0.42,cy-r*0.02);ctx.lineTo(x+d*r*0.16,cy-r*0.02);ctx.lineTo(x+d*r*0.29,cy-r*0.36);ctx.closePath();ctx.fill();});
+    ctx.beginPath();ctx.moveTo(x-r*0.5,cy+r*0.2);[[-0.3,0.42],[-0.15,0.3],[0,0.46],[0.15,0.3],[0.3,0.42],[0.5,0.2],[0.3,0.56],[0,0.66],[-0.3,0.56]].forEach(function(p){ctx.lineTo(x+p[0]*r,cy+p[1]*r);});ctx.closePath();ctx.fill();
+    ctx.fillStyle='#2f7d32';ctx.fillRect(x-r*0.1,cy-r*1.12,r*0.2,r*0.3);
+  }
+  if(B.eye){
+    ctx.strokeStyle='rgba(200,30,40,0.55)';ctx.lineWidth=r*0.05;
+    [[-0.9,-0.2,-0.5,-0.05],[0.85,0.35,0.5,0.15],[-0.6,0.7,-0.35,0.4],[0.5,-0.75,0.3,-0.45]].forEach(function(v){ctx.beginPath();ctx.moveTo(x+v[0]*r,cy+v[1]*r);ctx.quadraticCurveTo(x+(v[0]+v[2])*0.55*r,cy+(v[1]+v[3])*0.45*r,x+v[2]*r,cy+v[3]*r);ctx.stroke();});
+    g=ctx.createRadialGradient(x+r*0.08,cy+r*0.08,r*0.05,x+r*0.08,cy+r*0.08,r*0.46);g.addColorStop(0,'#9be36a');g.addColorStop(0.7,'#2f8f3a');g.addColorStop(1,'#123d18');
+    ctx.beginPath();ctx.arc(x+r*0.08,cy+r*0.08,r*0.44,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();ctx.arc(x+r*0.08,cy+r*0.08,r*0.2,0,Math.PI*2);ctx.fillStyle='#050505';ctx.fill();
+    ctx.beginPath();ctx.arc(x-r*0.04,cy-r*0.06,r*0.08,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,0.9)';ctx.fill();
   }
   if(B.sparkle){
     var a=(performance.now()/600)%(Math.PI*2);ctx.save();ctx.translate(x-r*0.3,cy-r*0.35);ctx.rotate(a);ctx.fillStyle='#fff';
