@@ -1355,9 +1355,190 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .bjt-haunted .bj-arc { filter: drop-shadow(0 0 5px rgba(255,138,0,0.75)); }
   .rlt-haunted .rl-zero-cell { filter: drop-shadow(0 0 6px rgba(255,138,0,0.55)); }
 
+  /* ═══ MODES: Classic and Arcade ═══ */
+  .topbar { flex-wrap: wrap; }
+  .top-right { display: flex; align-items: center; gap: 10px; }
+  .mode-switch { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: rgba(255,255,255,0.04); border: 1px solid var(--line); }
+  .mode-opt {
+    padding: 7px 12px; border: none; border-radius: 999px; background: transparent; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+    color: var(--muted); font: 700 12px 'Inter', sans-serif;
+  }
+  .mode-opt:hover { color: #fff; }
+  .mode-opt.on { color: #1d1203; background: linear-gradient(180deg, #ffe29a, var(--gold)); }
+  body.arcade .mode-opt.on { color: #fff; background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 0 14px rgba(192,107,255,0.55); }
+  /* Arcade: neon purple chips and header, and the strip with the bar and the buzz meter */
+  body.arcade .topbar { border-bottom-color: rgba(192,107,255,0.45); box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 1px 18px rgba(192,107,255,0.25); }
+  body.arcade .chip-bank { border-color: rgba(192,107,255,0.55); box-shadow: 0 0 16px rgba(192,107,255,0.25); }
+  body.arcade .chip-icon { color: #2a0a40; background: radial-gradient(circle, #e9c8ff 0 44%, #9a4fe0 45% 47%, transparent 48%), repeating-conic-gradient(from 8deg, #f6e8ff 0 14deg, #a35cf0 14deg 45deg); box-shadow: 0 2px 6px rgba(0,0,0,0.45), 0 0 14px rgba(192,107,255,0.45); }
+  body.arcade .chip-bank .balance { color: #e6c8ff; }
+  .arcade-strip { display: none; flex: 1 1 100%; align-items: center; gap: 14px; padding: 6px 4px 0; margin-top: -4px; }
+  body.arcade .arcade-strip { display: flex; }
+  .bar-btn {
+    padding: 7px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: transform 0.2s, filter 0.2s;
+    border: none; color: #fff; font: 800 12.5px 'Inter', sans-serif; background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 4px 16px rgba(123,44,191,0.45);
+  }
+  .bar-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
+  .hud-buzz { display: flex; align-items: center; gap: 8px; }
+  .hud-buzz small { font: 700 9.5px 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); }
+  .hud-buzz b { min-width: 38px; font: 800 13px var(--display); color: var(--buzz-c, #7dffb2); }
+  .buzz-bar { position: relative; width: 140px; height: 9px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); }
+  .buzz-bar i { position: absolute; left: 0; top: 0; bottom: 0; width: 0; border-radius: inherit; transition: width 0.6s ease, background 0.6s;
+    background: linear-gradient(90deg, #3ddc84, #ffd23d 55%, #ff5a3d 85%, #ff2d6f); background-size: 140px 100%; }
+  .buzz-bar.big { width: 100%; height: 14px; }
+  .buzz-bar.big i { background-size: 100% 100%; }
+  .hud-drinks { display: flex; gap: 6px; flex-wrap: wrap; }
+  .hud-drink { display: inline-flex; align-items: center; gap: 5px; padding: 3px 9px; border-radius: 999px; font: 700 11.5px 'Inter', sans-serif; color: #f3e6ff; background: rgba(123,44,191,0.3); border: 1px solid rgba(192,107,255,0.45); }
+  .hud-drink.curse { background: rgba(255,61,90,0.18); border-color: rgba(255,90,110,0.5); color: #ffd0d8; }
+  .hud-tip { margin-left: auto; font-size: 11px; color: var(--faint); white-space: nowrap; }
+  @media (max-width: 1000px) { .hud-tip { display: none; } }
+  @media (max-width: 760px) {
+    .top-right { flex-wrap: wrap; }
+    .mode-opt { padding: 6px 9px; font-size: 11.5px; }
+    .arcade-strip { order: 4; flex-wrap: wrap; gap: 8px; padding-top: 2px; }
+    .buzz-bar { width: 90px; }
+  }
+
+  /* ═══ PECCY'S BAR ═══ */
+  .bar-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(6,3,12,0.72); backdrop-filter: blur(6px); }
+  .bar-overlay.show { display: flex; animation: areaIn 0.3s ease; }
+  .bar-panel {
+    position: relative; width: min(920px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 18px 20px 20px; border-radius: 24px;
+    background: radial-gradient(80% 60% at 20% 0%, rgba(192,107,255,0.22), transparent 70%), linear-gradient(180deg, #1c1228 0%, #0d0914 100%);
+    border: 1px solid rgba(192,107,255,0.45); box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 60px rgba(123,44,191,0.3);
+  }
+  .bar-close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255,255,255,0.06); color: #fff; font-size: 20px; cursor: pointer; }
+  .bar-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding-right: 40px; }
+  .bar-peccy { width: 74px; height: 87px; flex: none; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
+  .bar-peccy.has-hat { height: calc(87px * 286 / 240); }
+  .bar-head h2 { font: 900 26px var(--display); background: linear-gradient(180deg, #fff 10%, #e6c8ff 60%, #b06bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .bar-head p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--muted); }
+  .bar-buzz { padding: 12px 14px; border-radius: 16px; background: rgba(0,0,0,0.35); border: 1px solid var(--line); margin-bottom: 12px; }
+  .bar-buzz-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
+  .bar-buzz-top span { font: 700 10px 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); }
+  .bar-buzz-top b { font: 900 22px var(--display); color: var(--buzz-c, #7dffb2); }
+  .bar-buzz small { display: block; margin-top: 8px; font-size: 11.5px; line-height: 1.45; color: var(--faint); }
+  .bar-active { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+  .bar-active:empty { display: none; }
+  .bar-menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 10px; }
+  .drink {
+    display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; text-align: center;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border: 1px solid var(--line-2);
+  }
+  .drink-glass {
+    width: 64px; height: 64px; margin: 2px auto 2px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px;
+    background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--dc) 55%, #fff 10%), color-mix(in srgb, var(--dc) 25%, #000) 75%);
+    box-shadow: 0 0 22px color-mix(in srgb, var(--dc) 45%, transparent), inset 0 1px 0 rgba(255,255,255,0.3);
+  }
+  .drink-name { font: 800 14.5px var(--display); }
+  .drink-desc { font-size: 11.5px; line-height: 1.4; color: rgba(255,255,255,0.72); flex: 1; }
+  .drink-meta { display: flex; justify-content: center; gap: 8px; font: 700 11px 'Inter', sans-serif; color: var(--faint); }
+  .drink-meta .bz { color: #ffb36b; }
+  .drink-btn {
+    padding: 8px 10px; border-radius: 999px; border: none; cursor: pointer; font: 800 12.5px 'Inter', sans-serif; color: #fff;
+    background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 4px 14px rgba(123,44,191,0.4); transition: filter 0.2s, transform 0.2s;
+  }
+  .drink-btn:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
+  .drink-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .drink-btn.danger { background: linear-gradient(180deg, #ff6a6a, #c1121f); box-shadow: 0 4px 14px rgba(193,18,31,0.45); }
+
+  /* ═══ BEING BUZZED ═══ The table sways more the drunker you get, then blurs, then sees double */
+  body.buzz-1 .game-area.active { animation: drunk1 7s ease-in-out infinite; }
+  body.buzz-2 .game-area.active { animation: drunk2 5s ease-in-out infinite; filter: blur(0.35px) saturate(1.12); }
+  body.buzz-3 .game-area.active { animation: drunk3 3.6s ease-in-out infinite; filter: blur(0.7px) saturate(1.3) drop-shadow(7px 0 0 rgba(255,255,255,0.08)); }
+  @keyframes drunk1 { 0%, 100% { transform: none; } 25% { transform: translate(-3px, 1px) rotate(-0.3deg); } 75% { transform: translate(3px, -1px) rotate(0.3deg); } }
+  @keyframes drunk2 { 0%, 100% { transform: none; } 25% { transform: translate(-6px, 2px) rotate(-0.6deg); } 75% { transform: translate(6px, -2px) rotate(0.6deg); } }
+  @keyframes drunk3 { 0%, 100% { transform: none; } 20% { transform: translate(-10px, 3px) rotate(-1deg); } 50% { transform: translate(4px, -3px) rotate(0.5deg); } 80% { transform: translate(10px, 2px) rotate(1deg); } }
+  /* Dirty Martini: Peccy's hole card shows through; Double Vision: your own cards blur */
+  .card.peek { opacity: 0.55; outline: 2px dashed rgba(192,107,255,0.9); outline-offset: 2px; }
+  .card.peek::before { content: '👁'; position: absolute; right: 4px; top: 50%; transform: translateY(-50%); font-size: 13px; z-index: 3; }
+  #player-hands-container.blurry .card { filter: blur(2.2px); }
+
+  /* ═══ BLACKOUT ═══ */
+  .blackout { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center; padding: 24px; background: #000; opacity: 0; transition: opacity 1.4s ease; }
+  .blackout.show { display: flex; }
+  .blackout.dark { opacity: 1; }
+  .blackout-text { max-width: 520px; text-align: center; color: #fff; font: 600 16px 'Inter', sans-serif; line-height: 1.6; }
+  .blackout-text h3 { font: 900 30px var(--display); margin-bottom: 10px; color: #e6c8ff; }
+  .blackout-text button { margin-top: 18px; }
+
+  /* ═══ PLINKO ═══ Controls on the left, the peg board filling the rest of the screen */
+  #game-plinko.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  .pk-wrap { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 12px; height: 640px; }
+  .pk-panel {
+    display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 22px; overflow-y: auto;
+    background: linear-gradient(180deg, #1a2433, #111823); border: 1px solid rgba(255,255,255,0.08); box-shadow: 0 14px 34px rgba(0,0,0,0.4);
+  }
+  .pk-host { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+  .pk-host .peccy-speech { font-size: 12px; max-width: 190px; }
+  .pk-modes { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; padding: 3px; border-radius: 999px; background: #0c121a; margin-bottom: 4px; }
+  .pk-modes button { padding: 8px; border: none; border-radius: 999px; background: transparent; color: var(--muted); font: 700 13px 'Inter', sans-serif; cursor: pointer; }
+  .pk-modes button.on { color: #fff; background: #2a3747; }
+  .pk-label { margin-top: 4px; font: 700 11px 'Inter', sans-serif; letter-spacing: 0.5px; color: var(--muted); }
+  .pk-amount { display: flex; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #0c121a; }
+  .pk-amount input { flex: 1; min-width: 0; padding: 9px 10px; border: none; outline: none; background: transparent; color: #fff; font: 700 14px 'Inter', sans-serif; }
+  .pk-amount button { width: 44px; border: none; border-left: 1px solid rgba(255,255,255,0.08); background: #1e2938; color: #fff; font: 700 13px 'Inter', sans-serif; cursor: pointer; }
+  .pk-amount button:hover, .pk-modes button:hover:not(.on) { background: #2a3747; }
+  .pk-select { padding: 9px 10px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1); background: #0c121a; color: #fff; font: 700 14px 'Inter', sans-serif; }
+  .pk-select:disabled, .pk-amount input:disabled { opacity: 0.5; }
+  .pk-auto-opts { display: none; flex-direction: column; gap: 6px; }
+  .pk-wrap.auto .pk-auto-opts { display: flex; }
+  .pk-play {
+    margin-top: 10px; padding: 13px; border: none; border-radius: 12px; cursor: pointer; transition: filter 0.2s, transform 0.1s;
+    color: #04210c; font: 800 15px 'Inter', sans-serif; background: linear-gradient(180deg, #45f07a, #12c94a); box-shadow: 0 6px 20px rgba(18,201,74,0.35);
+  }
+  .pk-play:hover { filter: brightness(1.08); }
+  .pk-play:active { transform: scale(0.98); }
+  .pk-play.stop { color: #fff; background: linear-gradient(180deg, #ff6a6a, #c1121f); box-shadow: 0 6px 20px rgba(193,18,31,0.35); }
+  .pk-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: auto; padding-top: 10px; }
+  .pk-stats div { padding: 7px 6px; border-radius: 10px; text-align: center; background: rgba(0,0,0,0.3); }
+  .pk-stats small { display: block; font: 700 9px 'Inter', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: var(--faint); }
+  .pk-stats span { font: 800 15px var(--display); color: var(--gold-2); }
+  .pk-board { position: relative; border-radius: 22px; overflow: hidden; background: radial-gradient(70% 60% at 50% 30%, #1c2a3b, #0f1823 75%); border: 1px solid rgba(255,255,255,0.06); box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 14px 34px rgba(0,0,0,0.4); }
+  #pk-canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* The last few results, newest on top, like the ticker on Stake */
+  .pk-history { position: absolute; top: 14px; right: 14px; display: flex; flex-direction: column; gap: 4px; width: 58px; }
+  .pk-history span { padding: 6px 0; border-radius: 8px; text-align: center; font: 800 12px var(--display); color: #1a0c00; box-shadow: 0 3px 8px rgba(0,0,0,0.35); animation: pkHist 0.3s ease; }
+  @keyframes pkHist { from { transform: translateY(-8px); opacity: 0; } }
+  @media (max-width: 760px) {
+    .pk-wrap { grid-template-columns: 1fr; height: auto !important; }
+    .pk-board { height: 108vw; order: -1; }
+    .pk-history { width: 46px; top: 8px; right: 8px; }
+    .pk-history span { font-size: 10.5px; padding: 4px 0; }
+  }
+  @media (max-width: 640px) {
+    /* Five tabs across a phone: drop the tab icons */
+    .game-tab .tab-ico { display: none; }
+    .game-tab { padding: 8px 3px; font-size: 12px; }
+  }
+
   /* ═══ CONFETTI ═══ */
   /* One quiet line under the games */
   .site-foot { position: relative; z-index: 1; padding: 0 16px 10px; text-align: center; font-size: 10.5px; line-height: 1.4; color: var(--faint); }
+  .bug-btn {
+    margin-left: 8px; padding: 3px 10px; border-radius: 999px; border: 1px solid var(--line-2); background: rgba(255,255,255,0.06); cursor: pointer;
+    color: var(--muted); font: 700 10.5px 'Inter', sans-serif; vertical-align: 1px; transition: all 0.2s;
+  }
+  .bug-btn:hover { color: #fff; border-color: rgba(255,153,0,0.5); background: rgba(255,153,0,0.12); }
+  /* The bug report form, over everything */
+  .bug-overlay { position: fixed; inset: 0; z-index: 260; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(4,5,9,0.72); backdrop-filter: blur(6px); }
+  .bug-overlay.show { display: flex; animation: areaIn 0.3s ease; }
+  .bug-panel {
+    position: relative; width: min(560px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 20px 22px; border-radius: 22px;
+    background: linear-gradient(180deg, #1a1f2c, #0e1118); border: 1px solid var(--line-2); box-shadow: 0 30px 70px rgba(0,0,0,0.7);
+  }
+  .bug-panel h2 { margin-bottom: 6px; padding-right: 40px; font: 900 24px var(--display); }
+  .bug-panel p { font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .bug-label { display: block; margin: 14px 0 6px; font: 700 12px 'Inter', sans-serif; color: var(--text); }
+  #bug-what { width: 100%; resize: vertical; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line-2); background: #0b0e14; color: #fff; font: 500 14px/1.45 'Inter', sans-serif; outline: none; }
+  #bug-what:focus { border-color: rgba(255,153,0,0.6); box-shadow: 0 0 0 3px rgba(255,153,0,0.15); }
+  #bug-what.missing { border-color: #ff6a6a; box-shadow: 0 0 0 3px rgba(255,90,90,0.2); }
+  .bug-details { margin-top: 10px; font-size: 12px; color: var(--faint); }
+  .bug-details summary { cursor: pointer; }
+  .bug-details pre {
+    margin-top: 6px; padding: 10px; border-radius: 10px; background: rgba(0,0,0,0.35); white-space: pre-wrap; word-break: break-word;
+    font: 11px/1.5 ui-monospace, Consolas, monospace; color: var(--muted);
+  }
+  .bug-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 14px; }
   .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
   .confetti { position: absolute; width: 10px; height: 10px; opacity: 0; }
   @keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -1427,15 +1608,30 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     <button class="game-tab active" onclick="switchGame('blackjack')" id="tab-blackjack"><span class="tab-ico">♠</span> Blackjack</button>
     <button class="game-tab" onclick="switchGame('slots')" id="tab-slots"><span class="tab-ico">7</span> Slots</button>
     <button class="game-tab" onclick="switchGame('roulette')" id="tab-roulette"><i class="tab-ico fa-solid fa-dharmachakra"></i> Roulette</button>
+    <button class="game-tab" onclick="switchGame('plinko')" id="tab-plinko"><i class="tab-ico fa-solid fa-circle-dot"></i> Plinko</button>
     <button class="game-tab" onclick="switchGame('shop')" id="tab-shop"><i class="tab-ico fa-solid fa-bag-shopping"></i> Shop</button>
   </nav>
-  <div class="chip-bank">
-    <div class="chip-icon">R</div>
-    <div>
-      <div class="label">Resolve chips</div>
-      <div class="balance" id="balance">100</div>
+  <div class="top-right">
+    <!-- Classic is the real-odds floor; Arcade has the bar and its buffs, with its own chips and cosmetics -->
+    <div class="mode-switch" role="group" aria-label="Game mode">
+      <button class="mode-opt" id="mode-classic" onclick="setMode('classic')">Classic</button>
+      <button class="mode-opt" id="mode-arcade" onclick="setMode('arcade')">🕹️ Arcade</button>
     </div>
-    <button class="reset-btn" onclick="resetBank()" title="Reset to 100 chips"><i class="fa-solid fa-rotate-right"></i></button>
+    <div class="chip-bank">
+      <div class="chip-icon" id="chip-icon">R</div>
+      <div>
+        <div class="label" id="chip-label">Resolve chips</div>
+        <div class="balance" id="balance">100</div>
+      </div>
+      <button class="reset-btn" id="reset-btn" onclick="resetBank()" title="Reset to 100 chips"><i class="fa-solid fa-rotate-right"></i></button>
+    </div>
+  </div>
+  <!-- Arcade only: the bar, the buzz meter and the drinks you have going -->
+  <div class="arcade-strip" id="arcade-strip">
+    <button class="bar-btn" onclick="barOpen()">🍸 Peccy's Bar</button>
+    <div class="hud-buzz" title="Each drink adds buzz; every spin or hand wears a little off"><small>Buzz</small><div class="buzz-bar"><i id="hud-buzz-fill"></i></div><b id="hud-buzz-pct">0%</b></div>
+    <div class="hud-drinks" id="hud-drinks"></div>
+    <div class="hud-tip">Up to 3 drinks at once · hit 100% buzz and you black out</div>
   </div>
 </header>
 
@@ -1628,6 +1824,35 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   </div>
 </div>
 
+<!-- ═══ PLINKO ═══ -->
+<div class="game-area" id="game-plinko">
+  <div class="pk-wrap" id="pk-wrap">
+    <div class="pk-panel">
+      <div class="pk-host">
+        <svg class="peccy-small peccy-dealer pk-peccy" data-outfit="slots" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="peccy-speech" id="plinko-peccy-speech">Drop a ball and watch it bounce! 🔴</div>
+      </div>
+      <div class="pk-modes"><button class="on" id="pk-manual" onclick="pkSetAuto(false)">Manual</button><button id="pk-autotab" onclick="pkSetAuto(true)">Auto</button></div>
+      <label class="pk-label" for="pk-bet">Bet amount</label>
+      <div class="pk-amount"><input id="pk-bet" type="number" min="1" step="1" value="10" inputmode="numeric" oninput="pkBetInput()"><button onclick="pkBetScale(0.5)">½</button><button onclick="pkBetScale(2)">2×</button></div>
+      <label class="pk-label" for="pk-risk">Risk</label>
+      <select class="pk-select" id="pk-risk" onchange="pkSetRisk(this.value)"><option value="L">Low</option><option value="M" selected>Medium</option><option value="H">High</option></select>
+      <label class="pk-label" for="pk-rows">Rows</label>
+      <select class="pk-select" id="pk-rows" onchange="pkSetRows(+this.value)"></select>
+      <div class="pk-auto-opts" id="pk-auto-opts">
+        <label class="pk-label" for="pk-count">Number of balls</label>
+        <select class="pk-select" id="pk-count"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="0">Until I stop</option></select>
+      </div>
+      <button class="pk-play" id="pk-play" onclick="pkPlay()">Drop ball</button>
+      <div class="pk-stats"><div><small>Last win</small><span id="pk-last">0</span></div><div><small>Balls dropped</small><span id="pk-count-done">0</span></div><div><small>Payback</small><span>99%</span></div></div>
+    </div>
+    <div class="pk-board" id="pk-board">
+      <canvas id="pk-canvas"></canvas>
+      <div class="pk-history" id="pk-history"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ SHOP ═══ -->
 <div class="game-area" id="game-shop">
   <div class="shop-head">
@@ -1642,12 +1867,50 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   <div class="shop-grid" id="shop-grid"></div>
 </div>
 
-<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on.</footer>
+<!-- ═══ PECCY'S BAR (arcade) ═══ -->
+<div class="bar-overlay" id="bar-overlay" onclick="if(event.target===this)barClose()">
+  <div class="bar-panel" role="dialog" aria-label="Peccy's Bar">
+    <button class="bar-close" onclick="barClose()" aria-label="Close the bar">×</button>
+    <div class="bar-head">
+      <svg class="peccy-dealer bar-peccy" data-outfit="roulette" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div><h2>Peccy's Bar</h2><p id="bar-say">What'll it be? Every drink comes with a little something extra. 🍸</p></div>
+    </div>
+    <div class="bar-buzz">
+      <div class="bar-buzz-top"><span>Your buzz</span><b id="bar-buzz-pct">0%</b></div>
+      <div class="buzz-bar big"><i id="bar-buzz-fill"></i></div>
+      <small>Each drink adds buzz and every spin or hand you play wears a little off. Up to 3 drinks at once. Hit 100% and you black out: your drinks wear off and some of your chips go missing.</small>
+    </div>
+    <div class="bar-active" id="bar-active"></div>
+    <div class="bar-menu" id="bar-menu"></div>
+  </div>
+</div>
+<!-- Blacking out: the screen fades to black, then you come round on the casino floor -->
+<div class="blackout" id="blackout"><div class="blackout-text" id="blackout-text"></div></div>
+
+<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="bugOpen()">🐞 Report a bug</button></footer>
+
+<!-- ═══ BUG REPORTS ═══ Sending opens a pre-filled issue on the site's GitHub repo -->
+<div class="bug-overlay" id="bug-overlay" onclick="if(event.target===this)bugClose()">
+  <div class="bug-panel" role="dialog" aria-labelledby="bug-title">
+    <button class="bar-close" onclick="bugClose()" aria-label="Close">×</button>
+    <h2 id="bug-title">🐞 Report a bug</h2>
+    <p>Tell us what went wrong. <b>Send report</b> opens a ready-made report on GitHub (you'll need a free GitHub account to post it), with the details below attached so it's easier to track down.</p>
+    <label class="bug-label" for="bug-what">What happened, and what were you doing?</label>
+    <textarea id="bug-what" rows="5" placeholder="e.g. On Dragon's Hoard, Hold &amp; Spin filled the screen but I didn't get the Grand"></textarea>
+    <details class="bug-details"><summary>Details that get attached</summary><pre id="bug-info"></pre></details>
+    <div class="bug-actions"><button class="clear-bet" onclick="bugClose()">Cancel</button><button class="btn btn-primary" onclick="bugSend()"><i class="fa-solid fa-paper-plane"></i> Send report</button></div>
+  </div>
+</div>
 
 <div class="confetti-container" id="confetti-container"></div>
 
 <script>
 // ═══ GLOBAL ═══
+// The last few script errors, kept so a bug report can include them
+var bugErrors=[];
+function bugNote(t){bugErrors.push(t);if(bugErrors.length>5)bugErrors.shift();}
+window.addEventListener('error',function(e){bugNote((e.message||'Script error')+(e.lineno?' (line '+e.lineno+')':''));});
+window.addEventListener('unhandledrejection',function(e){bugNote('Unhandled promise: '+(e.reason&&e.reason.message||e.reason));});
 var balance = 100,balanceShown = 100;
 function fmtChips(n){return Math.round(n).toLocaleString('en-US');}
 // The top-bar balance counts to the new value and flashes green or red; the slot credit meter and the
@@ -1669,9 +1932,12 @@ function updateBalance() {
   })(t0);
 }
 function resetBank() {
-  // Now that chips are saved, a reset with a fortune on the line asks first
-  if (balance > 100 && !confirm('Reset your chips to 100? You have ' + fmtChips(balance) + ' right now. Anything you bought in the shop stays yours.')) return;
-  balance = 100; updateBalance();
+  // Now that chips are saved, a reset with a fortune on the line asks first. Each mode resets only its own stack.
+  var start = MODE_START[gameMode];
+  if (balance > start && !confirm('Reset your ' + (gameMode === 'arcade' ? 'arcade ' : '') + 'chips to ' + fmtChips(start) + '? You have ' + fmtChips(balance) + ' right now. Anything you bought in the shop stays yours.')) return;
+  balance = start;
+  if (gameMode === 'arcade') { bar.drinks = []; bar.buzz = 0; barHUD(); }
+  updateBalance();
   bjBetAmount = 0; slState.auto = 0; slUI();
   document.getElementById('bj-bet-display').textContent = '0';
   rlResetTable();
@@ -1679,6 +1945,7 @@ function resetBank() {
 }
 function switchGame(g) {
   if(g!=='slots'&&slState.auto){slState.auto=0;slUI();}  // leaving the slots stops auto spin
+  if(g!=='plinko'&&pk.running)pkStopAuto();  // and leaving Plinko stops its autobet
   document.querySelectorAll('.game-area').forEach(function(e){e.classList.remove('active');});
   document.querySelectorAll('.game-tab').forEach(function(e){e.classList.remove('active');});
   document.getElementById('game-'+g).classList.add('active');
@@ -1686,6 +1953,7 @@ function switchGame(g) {
   fitTables();setTimeout(fitTables,480);  // again once the tab's slide-in has finished
   if(g==='roulette')rlRender();
   if(g==='shop')shopRender();
+  if(g==='plinko')pkLayout();
   // The Slots tab opens on the machine picker, unless a spin is still playing out
   if(g==='slots'){if(slState.playing)slLayout();else slShowHub();}
 }
@@ -1868,17 +2136,38 @@ var shopState={owned:{},eq:JSON.parse(JSON.stringify(SHOP_FREE)),cat:shopSpooky?
 function shopItem(cat,id){var c=SHOP[cat];if(!c)return null;for(var i=0;i<c.items.length;i++)if(c.items[i].id===id)return c.items[i];return null;}
 function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!shopState.owned[cat+':'+id]);}
 
-// Saving: chips, what's been bought and what's on, kept in this browser
-var SAVE_KEY='peccys-casino-v1';
-function saveGame(){try{localStorage.setItem(SAVE_KEY,JSON.stringify({balance:balance,owned:shopState.owned,eq:shopState.eq}));}catch(e){}}
+// Saving, kept in this browser. Classic and Arcade are separate: each has its own chips, shop items and
+// equipped picks, and Arcade also keeps its buzz and the drinks you have going.
+var SAVE_KEY='peccys-casino-v2',OLD_SAVE_KEY='peccys-casino-v1';
+var MODE_START={classic:100,arcade:500};
+var gameMode='classic',modeSaves={classic:null,arcade:null};
+function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;}return s;}
+function saveGame(){
+  modeSaves[gameMode]=modeSnapshot();
+  try{localStorage.setItem(SAVE_KEY,JSON.stringify({mode:gameMode,classic:modeSaves.classic,arcade:modeSaves.arcade}));}catch(e){}
+}
+// Load a mode's saved state into the live game (a mode with no save starts fresh)
+function modeRestore(m){
+  var s=modeSaves[m]||{};
+  balance=balanceShown=typeof s.balance==='number'&&isFinite(s.balance)&&s.balance>=0?Math.floor(s.balance):MODE_START[m];
+  shopState.owned=s.owned&&typeof s.owned==='object'?s.owned:{};
+  shopState.eq=JSON.parse(JSON.stringify(SHOP_FREE));
+  if(s.eq)for(var k in SHOP_FREE)if(s.eq[k]&&shopOwns(k,s.eq[k]))shopState.eq[k]=s.eq[k];
+  bar.buzz=m==='arcade'&&typeof s.buzz==='number'?Math.max(0,Math.min(99,s.buzz)):0;
+  bar.drinks=m==='arcade'&&Array.isArray(s.drinks)?s.drinks.filter(function(d){return d&&barEffectDef(d.id)&&d.left>0;}):[];
+}
 function loadGame(){
   try{
-    var s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');if(!s)return;
-    if(typeof s.balance==='number'&&isFinite(s.balance)&&s.balance>=0)balance=balanceShown=Math.floor(s.balance);
-    if(s.owned&&typeof s.owned==='object')shopState.owned=s.owned;
-    if(s.eq)for(var k in SHOP_FREE)if(s.eq[k]&&shopOwns(k,s.eq[k]))shopState.eq[k]=s.eq[k];
+    var s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
+    // A save from before Arcade existed becomes the Classic save
+    if(!s){var old=JSON.parse(localStorage.getItem(OLD_SAVE_KEY)||'null');if(old)s={mode:'classic',classic:old};}
+    if(s){modeSaves.classic=s.classic||null;modeSaves.arcade=s.arcade||null;if(s.mode==='arcade')gameMode='arcade';}
   }catch(e){}
+  modeRestore(gameMode);
 }
+// Arcade chips come easier (the bar's buffs), so its shop charges double
+var ARCADE_PRICE_X=2;
+function shopPrice(it){return it.price*(gameMode==='arcade'?ARCADE_PRICE_X:1);}
 
 // Put the equipped items on the tables
 function shopApply(){
@@ -1891,13 +2180,13 @@ function shopApply(){
 // Buying takes two taps, so a stray click can't spend a fortune
 function shopBuy(cat,id){
   var it=shopItem(cat,id),key=cat+':'+id;if(!it||shopOwns(cat,id))return;
-  if(it.price>balance){shopRender();return;}
+  if(shopPrice(it)>balance){shopRender();return;}
   if(shopState.pending!==key){
     shopState.pending=key;shopRender();
     clearTimeout(shopBuy.t);shopBuy.t=setTimeout(function(){if(shopState.pending===key){shopState.pending=null;shopRender();}},3500);
     return;
   }
-  shopState.pending=null;balance-=it.price;shopState.owned[key]=1;updateBalance();
+  shopState.pending=null;balance-=shopPrice(it);shopState.owned[key]=1;updateBalance();
   shopEquip(cat,id);
   setPeccySpeech('shop-peccy-speech',slRand(["Ooh, excellent taste! ✨","Fresh from the stockroom! 📦","That's going straight on! 😎","Treat yourself, you've earned it! 💎"]));
 }
@@ -1922,6 +2211,9 @@ function shopPreview(cat,it){
 }
 function shopRender(){
   var cat=shopState.cat,list=[],h='';
+  document.querySelector('.shop-title p').textContent=gameMode==='arcade'
+    ?'Arcade has its own wardrobe, separate from Classic. Chips come easier on this floor, so everything costs double.'
+    :'Dress Peccy up and kit out the tables. The more detailed the design, the more it costs, and everything you buy stays yours.';
   // The Halloween section gathers every seasonal item from all the categories
   if(cat==='halloween')Object.keys(SHOP).forEach(function(k){SHOP[k].items.forEach(function(it){if(it.season)list.push([k,it]);});});
   else SHOP[cat].items.forEach(function(it){list.push([cat,it]);});
@@ -1937,12 +2229,12 @@ function shopRender(){
       if(ri>0)badge='<span class="shop-tier" title="Design detail">'+'●●●●●'.slice(0,pips)+'<em>'+'●●●●●'.slice(pips)+'</em></span>';}
     if(on)btn='<button class="shop-btn on" disabled><i class="fa-solid fa-check"></i> Equipped</button>';
     else if(own)btn='<button class="shop-btn" onclick="shopEquip(\''+c+'\',\''+it.id+'\')">Equip</button>';
-    else if(it.price>balance)btn='<button class="shop-btn" disabled>Need '+fmtChips(it.price-balance)+' more</button>';
+    else if(shopPrice(it)>balance)btn='<button class="shop-btn" disabled>Need '+fmtChips(shopPrice(it)-balance)+' more</button>';
     else btn='<button class="shop-btn buy'+(shopState.pending===key?' sure':'')+'" onclick="shopBuy(\''+c+'\',\''+it.id+'\')">'+(shopState.pending===key?'Tap again to buy':'Buy')+'</button>';
     h+='<div class="shop-item'+(on?' equipped':'')+(it.season?' season':'')+'"><div class="shop-prev">'+shopPreview(c,it)+'</div><div class="shop-info">'+
       '<div class="shop-name-row"><span class="shop-name">'+it.name+'</span>'+badge+'</div>'+(cat==='halloween'?'<div class="shop-kind">'+SHOP[c].kind+'</div>':'')+
       '<div class="shop-desc">'+it.desc+'</div>'+
-      '<div class="shop-foot"><span class="shop-price">'+(it.price?'<span class="chip-dot"></span>'+fmtChips(it.price):'Free')+(own&&it.price?' <small>owned</small>':'')+'</span>'+btn+'</div></div></div>';
+      '<div class="shop-foot"><span class="shop-price">'+(it.price?'<span class="chip-dot"></span>'+fmtChips(shopPrice(it)):'Free')+(own&&it.price?' <small>owned</small>':'')+'</span>'+btn+'</div></div></div>';
   });
   document.getElementById('shop-grid').innerHTML=h;
   document.querySelectorAll('#shop-grid svg.shop-peccy').forEach(peccyBlinkPhase);
@@ -1961,6 +2253,163 @@ function shopDrawBall(cv,B){
   var trail=[];if(B.trail)for(var i=0;i<7;i++)trail.push([84-(7-i)*9,64+(7-i)*1.6,20*(0.6+0.05*i)]);
   rlDrawBall(ctx,[84,64,20],B,trail);
 }
+// ═══ MODES ═══
+// Classic is the real-odds casino. Arcade adds Peccy's Bar, and keeps its own chips and cosmetics.
+var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech'};
+function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
+function setMode(m){
+  if(m===gameMode||!MODE_START[m])return;
+  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
+  // Chips on a table go back to the stack they came from before the floors swap
+  if(rlTotal())rouletteClearBet();
+  rlClearResolved();bjNewHand();
+  slState.auto=0;slState.change=0;
+  saveGame();
+  gameMode=m;modeRestore(m);
+  modeApply();updateBalance();shopApply();saveGame();
+  if(document.getElementById('game-shop').classList.contains('active'))shopRender();
+  modeSay(m==='arcade'?"Welcome to the Arcade floor! The bar's open. 🍸🕹️":"Back on the Classic floor: real odds, no funny business. 🎩");
+}
+// Everything on screen that shows which mode you're in
+function modeApply(){
+  var arc=gameMode==='arcade';
+  document.body.classList.toggle('arcade',arc);
+  document.getElementById('mode-classic').classList.toggle('on',!arc);
+  document.getElementById('mode-arcade').classList.toggle('on',arc);
+  document.getElementById('chip-label').textContent=arc?'Arcade chips':'Resolve chips';
+  document.getElementById('chip-icon').textContent=arc?'A':'R';
+  document.getElementById('reset-btn').title='Reset to '+fmtChips(MODE_START[gameMode])+' chips';
+  if(!arc)barClose();
+  barHUD();
+  // The arcade strip changes the header's height, so the games re-measure
+  fitTables();if(document.getElementById('game-slots').classList.contains('active'))slLayout();
+}
+
+// ═══ PECCY'S BAR (arcade) ═══
+// Drinks are short buffs. Each adds buzz; up to 3 can be going at once; 100% buzz is a blackout. Prices
+// climb with your stack (the bartender sizes you up), and the buffs that pay chips are capped at 8x
+// what you paid, so drinking stays a gamble instead of a chip printer.
+var bar={buzz:0,drinks:[]};
+var DRINKS={
+  lemon:{name:'Lucky Lemon Drop',short:'Lemon Drop',icon:'🍋',color:'#ffd23d',buzz:20,base:150,pct:0.015,left:10,unit:'spin',capX:8,
+    desc:'Slot wins pay 25% more for your next 10 spins.'},
+  martini:{name:'Dirty Martini',short:'Martini',icon:'🍸',color:'#9be36a',buzz:25,base:120,pct:0.015,left:3,unit:'hand',
+    desc:'See Peccy\'s face-down card for your next 3 blackjack hands.'},
+  mojito:{name:'Mojito',short:'Mojito',icon:'🌿',color:'#3ddc84',buzz:20,base:100,pct:0.02,left:1,unit:'spin',capX:8,
+    desc:'If your next roulette spin loses, your losing bets come back to you.'},
+  sunrise:{name:'Tequila Sunrise',short:'Sunrise',icon:'🌅',color:'#ff8a3d',buzz:30,base:200,pct:0.02,left:20,unit:'spin',
+    desc:'Slot bonus games are about twice as likely for your next 20 spins.'},
+  longisland:{name:'Long Island',short:'Long Island',icon:'🥃',color:'#c06bff',buzz:35,base:60,pct:0.01,
+    desc:'Strong and unpredictable: a free random buff, or a random curse.'}
+};
+// What a Long Island can do to you instead
+var CURSES={
+  hiccups:{name:'Hiccups',short:'Hiccups',icon:'🫨',left:10,unit:'spin',desc:'Slot wins pay 25% less for 10 spins.'},
+  blurry:{name:'Double Vision',short:'Double Vision',icon:'😵‍💫',left:3,unit:'hand',desc:'Your blackjack cards are a blur for 3 hands.'},
+  spill:{name:'Spilled it',short:'Spill',icon:'💦',desc:'You knocked it over and dropped 5% of your chips.'}
+};
+function barEffectDef(id){return DRINKS[id]||CURSES[id]||null;}
+function barPrice(d){return Math.round(d.base+balance*d.pct);}
+function barFind(id){for(var i=0;i<bar.drinks.length;i++)if(bar.drinks[i].id===id)return bar.drinks[i];return null;}
+// Use up one spin or hand of an effect; returns the effect if it was going
+function barTake(id){
+  if(gameMode!=='arcade')return null;
+  var e=barFind(id);if(!e)return null;
+  if(--e.left<=0)bar.drinks.splice(bar.drinks.indexOf(e),1);
+  barHUD();saveGame();return e;
+}
+// Ordering the same drink again tops up the one you have
+function barGrant(id,price){
+  var d=barEffectDef(id),e=barFind(id);
+  if(e){e.left+=d.left;if(d.capX)e.cap+=price*d.capX;}
+  else bar.drinks.push({id:id,left:d.left,cap:d.capX?price*d.capX:0,paid:0});
+}
+function barOrder(id){
+  if(gameMode!=='arcade')return;
+  var d=DRINKS[id],price=barPrice(d);
+  if(bar.drinks.length>=3&&!barFind(id)){barSay("Easy there! You've got three drinks going. Play a bit and let one wear off. 🥴");return;}
+  if(price>balance){barSay("That one's "+fmtChips(price)+" chips. Come back when you're flush! 💸");return;}
+  balance-=price;updateBalance();
+  bar.buzz+=d.buzz;
+  if(bar.buzz>=100){barBlackout();return;}
+  if(id==='longisland')barLongIsland();
+  else{barGrant(id,price);barSay(slRand(["One "+d.name+", coming right up! 🍹","Cheers! "+d.icon,"Bottoms up! That'll put a spring in your step. ✨"]));}
+  barRender();saveGame();
+}
+// 60% a free buff at full strength, 40% a curse
+function barLongIsland(){
+  var good=['lemon','martini','mojito','sunrise'],bad=['hiccups','blurry','spill'];
+  if(Math.random()<0.6){
+    var g=slRand(good);barGrant(g,barPrice(DRINKS[g]));
+    barSay("The Long Island kicks in... it's a free "+DRINKS[g].name+"! "+DRINKS[g].icon);
+  }else{
+    var c=slRand(bad);
+    if(c==='spill'){var lost=Math.floor(balance*0.05);balance-=lost;updateBalance();barSay("Whoops! You knocked it over and "+fmtChips(lost)+" chips went with it. 💦");}
+    else{barGrant(c,0);barSay("Uh oh... the Long Island gave you "+CURSES[c].name+". "+CURSES[c].icon);}
+  }
+}
+// Every spin or hand you play wears a little buzz off
+function barRound(n){if(gameMode!=='arcade'||!bar.buzz)return;bar.buzz=Math.max(0,bar.buzz-(n==null?4:n));barHUD();saveGame();}
+function barBadge(e){
+  var d=barEffectDef(e.id);
+  return '<span class="hud-drink'+(CURSES[e.id]?' curse':'')+'" title="'+d.desc.replace(/"/g,'&quot;')+'">'+d.icon+' '+d.short+' · '+e.left+' '+d.unit+(e.left===1?'':'s')+'</span>';
+}
+// The buzz meter in the header and the bar, and the sway that goes with it
+function barHUD(){
+  var b=Math.min(100,Math.round(bar.buzz)),col=b<30?'#7dffb2':b<60?'#ffd23d':b<85?'#ff8a3d':'#ff3d6f',arc=gameMode==='arcade',badges=bar.drinks.map(barBadge).join('');
+  ['hud','bar'].forEach(function(p){
+    var f=document.getElementById(p+'-buzz-fill'),t=document.getElementById(p+'-buzz-pct');
+    if(f)f.style.width=b+'%';if(t){t.textContent=b+'%';t.style.setProperty('--buzz-c',col);}
+  });
+  document.getElementById('hud-drinks').innerHTML=badges;
+  document.getElementById('bar-active').innerHTML=badges;
+  document.body.classList.toggle('buzz-1',arc&&b>=30&&b<60);
+  document.body.classList.toggle('buzz-2',arc&&b>=60&&b<85);
+  document.body.classList.toggle('buzz-3',arc&&b>=85);
+}
+function barOpen(){if(gameMode!=='arcade')return;barRender();document.getElementById('bar-overlay').classList.add('show');}
+function barClose(){document.getElementById('bar-overlay').classList.remove('show');}
+function barSay(t){document.getElementById('bar-say').textContent=t;}
+function barRender(){
+  var full=bar.drinks.length>=3;
+  document.getElementById('bar-menu').innerHTML=Object.keys(DRINKS).map(function(id){
+    var d=DRINKS[id],p=barPrice(d),again=!!barFind(id),out=bar.buzz+d.buzz>=100,btn;
+    if(full&&!again)btn='<button class="drink-btn" disabled>Three drinks max</button>';
+    else if(p>balance)btn='<button class="drink-btn" disabled>Need '+fmtChips(p-balance)+' more</button>';
+    else btn='<button class="drink-btn'+(out?' danger':'')+'" onclick="barOrder(\''+id+'\')">'+(out?'Order (you\'ll black out!)':again?'Another round':'Order')+'</button>';
+    return '<div class="drink" style="--dc:'+d.color+'"><div class="drink-glass">'+d.icon+'</div><div class="drink-name">'+d.name+'</div>'+
+      '<div class="drink-desc">'+d.desc+'</div><div class="drink-meta"><span class="bz">+'+d.buzz+'% buzz</span><span><span class="chip-dot"></span> '+fmtChips(p)+'</span></div>'+btn+'</div>';
+  }).join('');
+  barHUD();
+}
+// 100% buzz: the screen goes black, the drinks wear off, and 15% of your chips wander off
+function barBlackout(){
+  barClose();
+  var lost=Math.floor(balance*0.15);balance-=lost;updateBalance();
+  bar.drinks=[];bar.buzz=0;slState.auto=0;barHUD();saveGame();
+  var b=document.getElementById('blackout'),t=document.getElementById('blackout-text');
+  t.innerHTML='';b.classList.add('show');void b.offsetWidth;b.classList.add('dark');
+  setTimeout(function(){
+    t.innerHTML='<h3>You blacked out…</h3><p>You wake up on the casino floor with a sticky cheek and a fuzzy memory. Peccy hands back your chips, minus <b>'+
+      fmtChips(lost)+'</b> that seem to have wandered off. Your drinks have worn off.</p><button class="btn btn-primary" onclick="barWake()">Get up</button>';
+  },1600);
+}
+function barWake(){var b=document.getElementById('blackout');b.classList.remove('dark');setTimeout(function(){b.classList.remove('show');},1400);}
+
+// Bar buffs in the games. Tequila Sunrise: a spin with no bonus gets a second roll, kept if that one has a bonus.
+function barSpinSteps(m,bet){
+  var s=m.play(bet),feat=function(st){return st.some(function(x){return x.feature;});};
+  if(barTake('sunrise')&&!feat(s)){var s2=m.play(bet);if(feat(s2))s=s2;}
+  return s;
+}
+// Lemon Drop adds 25% to a slot win (up to its cap); Hiccups takes 25% off. Both count down every spin.
+function barSlotWin(run){
+  var out={amt:0,note:''},l=barTake('lemon'),h=barTake('hiccups');
+  if(l&&run>0){var add=Math.min(run*0.25,Math.max(0,l.cap-l.paid));l.paid+=add;out.amt+=add;if(add>0)out.note+=' · 🍋 +'+slFmt(add);}
+  if(h&&run>0){var cut=run*0.25;out.amt-=cut;out.note+=' · 🫨 −'+slFmt(cut);}
+  return out;
+}
+
 // The equipped outfit, deck and so on can change while a table is on screen, so they re-apply on load
 // and after every purchase (shopApply).
 
@@ -2154,7 +2603,7 @@ function peccyBlinkPhase(svg){
 }
 
 // ═══ BLACKJACK ═══
-var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false;
+var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false;
 var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1; // 1=main, 2=split
 var suits=['&spades;','&hearts;','&diams;','&clubs;'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 
@@ -2182,11 +2631,12 @@ function renderCard(c,fd){
 }
 // Redraw a hand, queueing the cards that are new since last time so they can be dealt from the shoe.
 // The dealer's hole card flips over instead when it's revealed.
-function bjDrawHand(el,cards,hideHole,queue,order){
+function bjDrawHand(el,cards,hideHole,queue,order,peek){
   var sig=cards.map(function(c,i){return i===1&&hideHole?'down':c.rank+c.suit;}),old=el._sig||[],keep=0;
   while(keep<old.length&&keep<sig.length&&old[keep]===sig[keep])keep++;
   var flip=keep===1&&old[1]==='down'&&sig.length>1&&sig[1]!=='down';
-  el.innerHTML=cards.map(function(c,i){return renderCard(c,i===1&&hideHole);}).join('');
+  // peek (Dirty Martini) shows the hole card see-through instead of face down
+  el.innerHTML=cards.map(function(c,i){var down=i===1&&hideHole;return down&&peek?renderCard(c).replace('class="card face-up','class="card face-up peek'):renderCard(c,down);}).join('');
   el._sig=sig;
   if(flip){el.children[1].classList.add('flip');keep=2;}
   for(var i=keep;i<cards.length;i++)queue.push({el:el.children[i],idx:i,order:order});
@@ -2233,7 +2683,7 @@ function renderBJHands(rv){
 
   var q=[];
   // Dealer
-  bjDrawHand(dh,bjDealerHand,!rv,q,2);
+  bjDrawHand(dh,bjDealerHand,!rv,q,2,bjPeek);
   ds.textContent=rv?handScoreDisplay(bjDealerHand):(bjDealerHand.length>0?cardValue(bjDealerHand[0]):'');
 
   // Player hand 1
@@ -2282,6 +2732,9 @@ function bjShowGameBtns(){
 function bjDeal(){
   if(bjBetAmount<=0||bjBetAmount>balance){setPeccySpeech('bj-peccy-speech','You need to place a bet first! 🃏');return;}
   balance-=bjBetAmount;updateBalance();createDeck();
+  // Arcade: a Dirty Martini lets you see the hole card this hand; Double Vision blurs your cards
+  barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');
+  document.getElementById('player-hands-container').classList.toggle('blurry',bjBlur);
   bjPlayerHand=[bjDeck.pop(),bjDeck.pop()];bjDealerHand=[bjDeck.pop(),bjDeck.pop()];
   bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;
   document.getElementById('bj-message').textContent='';
@@ -2450,6 +2903,7 @@ function bjEndGame(r,m){
 }
 
 function bjNewHand(){
+  bjPeek=bjBlur=false;document.getElementById('player-hands-container').classList.remove('blurry');
   bjGameActive=false;bjPlayerHand=[];bjDealerHand=[];bjSplitHand=[];bjBetAmount=0;bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;
   document.getElementById('bj-bet-display').textContent='0';
   document.getElementById('bj-deal-btn').style.display='';
@@ -3185,11 +3639,11 @@ async function slSpin(){
   if(slState.playing){if(!slPressed())slState.fast=true;return;}  // pressing again while spinning speeds things up
   var m=slM(),bet=slState.bet;
   if(bet>balance){slSay("Not enough chips for that bet! Lower it or hit Reset. 😬");slState.auto=0;slUI();return;}
-  balance-=bet;updateBalance();
+  balance-=bet;updateBalance();barRound();
   if(slState.auto)slState.autoN++;
   slState.playing=true;slState.fast=false;slUI();
   slSay(slRand(SL_SAY.spin));slWin(0,'');
-  var steps=m.play(bet),run=0,featStart=0;
+  var steps=barSpinSteps(m,bet),run=0,featStart=0;
   for(var i=0;i<steps.length;i++){
     var st=steps[i];
     if(st.t==='banner'){
@@ -3208,6 +3662,8 @@ async function slSpin(){
   }
   // Wins are paid in whole chips. Fractions (small bets on many-line games pay bits of a chip) are
   // kept as change and paid once they add up, so the payback holds at every bet size.
+  // Arcade bar buffs adjust the win before it's paid
+  var bx=barSlotWin(run);run=Math.max(0,run+bx.amt);
   slState.change+=run;var total=Math.floor(slState.change+1e-9),x=run/bet;slState.change-=total;
   balance+=total;updateBalance();
   if(x>=15){
@@ -3215,7 +3671,7 @@ async function slSpin(){
     await slWait(2400);slBannerHide();
   }
   slStatus(m.kind==='ways'&&m.colCells?slState.grid.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS':'');
-  if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
+  if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
   else{slWin(0,'<span style="color:#ff8a80">No win this time</span>');slSay(slRand(SL_SAY.lose));}
   slState.playing=false;slState.fast=false;
   slUI();
@@ -3944,7 +4400,7 @@ var curWheelRot=0,rlBallRel=rlPocketAngle(0),rlAnimToken=0;
 function spinRoulette(){
   if(rouletteSpinning)return;
   if(rlTotal()<=0){setPeccySpeech('roulette-peccy-speech',"Drag some chips onto the table first! 🎡");return;}
-  rouletteSpinning=true;
+  rouletteSpinning=true;barRound();
   document.getElementById('roulette-spin-btn').disabled=true;
   document.getElementById('roulette-result').textContent='';document.getElementById('roulette-message').textContent='';
   setPeccySpeech('roulette-peccy-speech',"No more bets! The ball is spinning... 🎡");
@@ -3986,26 +4442,229 @@ function evalRoulette(num){
     var b=rlBets[k];
     if(rlBetWins(b,num)){var ret=b.amount*(b.pay+1);wins[k]=ret;tw+=ret;msgs.push(b.label+' pays '+b.pay+' to 1: +'+ret);}
   });
-  balance+=tw;updateBalance();
+  // Arcade: a Mojito hands back the losing bets of a spin that loses (up to its cap)
+  var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k])lostStake+=rlBets[k].amount;});
+  if(lostStake>0&&barFind('mojito')){var mj=barTake('mojito');refund=Math.min(lostStake,Math.round(mj.cap));}
+  balance+=tw+refund;updateBalance();
   rlLastBets=JSON.parse(JSON.stringify(rlBets));
   rlResolved={bets:rlBets,wins:wins,t0:performance.now()};rlBets={};rlHistory=[];
   document.getElementById('rlc-'+num).classList.add('rl-win-num');
   rlRender();
   clearTimeout(rlResolvedTimer);rlResolvedTimer=setTimeout(function(){rlClearResolved();rlRender();},tw?6000:3500);  // winnings stay up long enough to watch them pile on
-  if(tw>0){showConfetti();peccyHop('.peccy-croupier-svg');document.getElementById('roulette-message').innerHTML='<span style="color:#7dffb2">Won '+tw+' on '+msgs.length+' bet'+(msgs.length>1?'s':'')+'!</span><div class="rl-result-detail">'+msgs.join(' · ')+'</div>';
+  if(tw>0){showConfetti();peccyHop('.peccy-croupier-svg');document.getElementById('roulette-message').innerHTML='<span style="color:#7dffb2">Won '+tw+' on '+msgs.length+' bet'+(msgs.length>1?'s':'')+'!</span><div class="rl-result-detail">'+msgs.join(' · ')+(refund?' · 🌿 Mojito refunded '+fmtChips(refund):'')+'</div>';
     var q=["The wheel favors the bold! 🎉","Magnifique! A winning spin! ✨","Resolves flow like Lambda invocations! 🚀","Lady Luck rides on a CloudFront edge! 🌟"];
     setPeccySpeech('roulette-peccy-speech',q[Math.floor(Math.random()*q.length)]);
   }else{document.getElementById('roulette-message').innerHTML='<span style="color:#e63946">No luck this time. -'+staked+'</span>';
+    if(refund)document.getElementById('roulette-message').innerHTML+='<div class="rl-result-detail">🌿 Mojito handed back '+fmtChips(refund)+' of it</div>';
     var lq=["The wheel is a fickle service... Try again! 🎡","Even S3 has occasional errors. Spin again! ☁️","Availability zones of luck shift! 🔄","A 503 from Lady Luck. Retry with exponential backoff! 😄"];
     setPeccySpeech('roulette-peccy-speech',lq[Math.floor(Math.random()*lq.length)]);
   }
 }
 
+// ═══ BUG REPORTS ═══
+// The site has no server, so a report becomes a pre-filled issue on its GitHub repo. It carries the player's
+// description plus what was on screen (game, mode, machine, settings), the browser and any recent script errors.
+var BUG_REPO='https://github.com/Hezekiah0822/Peccy-s-Casino/issues/new';
+function bugInfo(){
+  var a=document.querySelector('.game-area.active'),g=a?a.id.replace('game-',''):'?',lines=[];
+  var where=g;
+  if(g==='slots')where+=document.getElementById('game-slots').classList.contains('show-hub')?' (machine picker)':' ('+slM().name+', bet '+slState.bet+')';
+  if(g==='plinko')where+=' ('+{L:'Low',M:'Medium',H:'High'}[pk.risk]+' risk, '+pk.rows+' rows)';
+  lines.push('Game: '+where);
+  lines.push('Mode: '+(gameMode==='arcade'?'Arcade':'Classic')+' · chips: '+fmtChips(balance));
+  if(gameMode==='arcade')lines.push('Buzz: '+Math.round(bar.buzz)+'%'+(bar.drinks.length?' · drinks: '+bar.drinks.map(function(d){return d.id+' ('+d.left+' left)';}).join(', '):''));
+  lines.push('Equipped: '+Object.keys(shopState.eq).map(function(k){return k+'='+shopState.eq[k];}).join(', '));
+  lines.push('Screen: '+innerWidth+'×'+innerHeight+' at '+(window.devicePixelRatio||1)+'x');
+  lines.push('Browser: '+navigator.userAgent);
+  lines.push('Time: '+new Date().toISOString());
+  lines.push('Recent errors: '+(bugErrors.length?bugErrors.join(' | '):'none'));
+  return lines.join('\n');
+}
+function bugOpen(){
+  document.getElementById('bug-info').textContent=bugInfo();
+  document.getElementById('bug-what').classList.remove('missing');
+  document.getElementById('bug-overlay').classList.add('show');
+  setTimeout(function(){document.getElementById('bug-what').focus();},50);
+}
+function bugClose(){document.getElementById('bug-overlay').classList.remove('show');}
+function bugSend(){
+  var box=document.getElementById('bug-what'),what=box.value.trim();
+  if(!what){box.classList.add('missing');box.focus();return;}
+  var short=what.replace(/\s+/g,' '),title='Bug: '+short.slice(0,70)+(short.length>70?'…':'');
+  // GitHub caps how long a link can be, so very long descriptions are trimmed
+  var body='### What happened\n'+what.slice(0,4000)+'\n\n### Details\n```\n'+bugInfo()+'\n```\n';
+  window.open(BUG_REPO+'?labels=bug&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body),'_blank','noopener');
+  box.value='';bugClose();
+}
+// Esc closes whichever pop-up is open
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();barClose();}});
+
+// ═══ PLINKO ═══
+// Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
+// (50/50, decided the moment it's dropped) into a bucket. The multipliers are Stake's own tables, and
+// every one pays back about 99% (98.9-99.2%, from the bucket odds C(n,k)/2^n).
+var PK_PAYS={
+  8:{L:[5.6,2.1,1.1,1,0.5,1,1.1,2.1,5.6],M:[13,3,1.3,0.7,0.4,0.7,1.3,3,13],H:[29,4,1.5,0.3,0.2,0.3,1.5,4,29]},
+  9:{L:[5.6,2,1.6,1,0.7,0.7,1,1.6,2,5.6],M:[18,4,1.7,0.9,0.5,0.5,0.9,1.7,4,18],H:[43,7,2,0.6,0.2,0.2,0.6,2,7,43]},
+  10:{L:[8.9,3,1.4,1.1,1,0.5,1,1.1,1.4,3,8.9],M:[22,5,2,1.4,0.6,0.4,0.6,1.4,2,5,22],H:[76,10,3,0.9,0.3,0.2,0.3,0.9,3,10,76]},
+  11:{L:[8.4,3,1.9,1.3,1,0.7,0.7,1,1.3,1.9,3,8.4],M:[24,6,3,1.8,0.7,0.5,0.5,0.7,1.8,3,6,24],H:[120,14,5.2,1.4,0.4,0.2,0.2,0.4,1.4,5.2,14,120]},
+  12:{L:[10,3,1.6,1.4,1.1,1,0.5,1,1.1,1.4,1.6,3,10],M:[33,11,4,2,1.1,0.6,0.3,0.6,1.1,2,4,11,33],H:[170,24,8.1,2,0.7,0.2,0.2,0.2,0.7,2,8.1,24,170]},
+  13:{L:[8.1,4,3,1.9,1.2,0.9,0.7,0.7,0.9,1.2,1.9,3,4,8.1],M:[43,13,6,3,1.3,0.7,0.4,0.4,0.7,1.3,3,6,13,43],H:[260,37,11,4,1,0.2,0.2,0.2,0.2,1,4,11,37,260]},
+  14:{L:[7.1,4,1.9,1.4,1.3,1.1,1,0.5,1,1.1,1.3,1.4,1.9,4,7.1],M:[58,15,7,4,1.9,1,0.5,0.2,0.5,1,1.9,4,7,15,58],H:[420,56,18,5,1.9,0.3,0.2,0.2,0.2,0.3,1.9,5,18,56,420]},
+  15:{L:[15,8,3,2,1.5,1.1,1,0.7,0.7,1,1.1,1.5,2,3,8,15],M:[88,18,11,5,3,1.3,0.5,0.3,0.3,0.5,1.3,3,5,11,18,88],H:[620,83,27,8,3,0.5,0.2,0.2,0.2,0.2,0.5,3,8,27,83,620]},
+  16:{L:[16,9,2,1.4,1.4,1.2,1.1,1,0.5,1,1.1,1.2,1.4,1.4,2,9,16],M:[110,41,10,5,3,1.5,1,0.5,0.3,0.5,1,1.5,3,5,10,41,110],H:[1000,130,26,9,4,2,0.2,0.2,0.2,0.2,0.2,2,4,9,26,130,1000]}
+};
+// Ball timing: the drop onto the first peg, each bounce, and the fall into the bucket (ms)
+var PK_DROP=140,PK_SEG=85,PK_LAST=150;
+var pk={rows:16,risk:'M',auto:false,running:false,autoLeft:0,timer:0,balls:[],flash:{},land:{},hist:[],change:0,dropped:0,raf:0,W:0,H:0,dpr:1,lastFrame:0,lastKick:0};
+function pkPays(){return PK_PAYS[pk.rows][pk.risk];}
+function pkBusy(){return pk.balls.length>0||pk.running;}
+function pkSay(t){setPeccySpeech('plinko-peccy-speech',t);}
+function pkBet(){var el=document.getElementById('pk-bet'),v=Math.max(1,Math.floor(+el.value||1));return v;}
+function pkBetInput(){var el=document.getElementById('pk-bet');if(+el.value<0)el.value=1;}
+function pkBetScale(f){var el=document.getElementById('pk-bet');el.value=Math.max(1,Math.min(Math.max(1,balance),Math.floor(pkBet()*f)));}
+function pkSetRisk(r){if(pkBusy()){document.getElementById('pk-risk').value=pk.risk;return;}pk.risk=r;pkDraw();}
+function pkSetRows(n){if(pkBusy()){document.getElementById('pk-rows').value=pk.rows;return;}pk.rows=n;pkDraw();}
+function pkSetAuto(on){
+  if(pk.running)pkStopAuto();
+  pk.auto=on;document.getElementById('pk-wrap').classList.toggle('auto',on);
+  document.getElementById('pk-manual').classList.toggle('on',!on);document.getElementById('pk-autotab').classList.toggle('on',on);
+  pkUI();
+}
+function pkUI(){
+  var b=document.getElementById('pk-play'),busy=pkBusy();
+  b.textContent=pk.auto?(pk.running?'Stop autobet'+(pk.autoLeft>0?' ('+pk.autoLeft+' left)':''):'Start autobet'):'Drop ball';
+  b.classList.toggle('stop',pk.running);
+  // Risk and rows stay put while balls are in the air (the buckets would change under them)
+  document.getElementById('pk-risk').disabled=busy;document.getElementById('pk-rows').disabled=busy;
+  document.getElementById('pk-count-done').textContent=fmtChips(pk.dropped);
+}
+function pkPlay(){
+  if(!pk.auto){pkDrop();return;}
+  if(pk.running){pkStopAuto();return;}
+  pk.running=true;pk.autoLeft=+document.getElementById('pk-count').value||0;pkUI();pkAutoTick();
+}
+function pkAutoTick(){
+  if(!pk.running)return;
+  if(!pkDrop()){pkStopAuto();return;}
+  if(pk.autoLeft>0&&--pk.autoLeft===0){pkStopAuto();return;}
+  pkUI();pk.timer=setTimeout(pkAutoTick,260);
+}
+function pkStopAuto(){pk.running=false;pk.autoLeft=0;clearTimeout(pk.timer);pkUI();}
+// Drop one ball: take the bet, choose its whole path now, and start it falling
+function pkDrop(){
+  var bet=pkBet(),n=pk.rows,path=[],R=0;
+  if(bet>balance){pkSay("Not enough chips for that bet! Lower it or hit Reset. 😬");return false;}
+  balance-=bet;updateBalance();barRound(1);
+  for(var i=0;i<n;i++){var right=Math.random()<0.5?1:0;path.push(right);R+=right;}
+  pk.balls.push({path:path,k:R,bet:bet,mult:pkPays()[R],rows:n,t0:performance.now(),hit:-1,jit:(Math.random()-0.5)*0.12});
+  pk.dropped++;pkUI();pkKick();
+  return true;
+}
+// Board layout for the current rows, in CSS pixels
+function pkGeo(n){
+  var W=pk.W,H=pk.H,bucketH=Math.max(20,Math.min(34,H*0.052));
+  var gap=Math.min(W*0.9/(n+2),(H*0.86-bucketH)/(n-1+0.7));
+  var total=(n-1)*gap+0.7*gap+bucketH,top=Math.max(gap*1.2,(H-total)/2+gap*0.25);
+  return {n:n,gap:gap,top:top,cx:W/2,pegR:Math.max(1.8,gap*0.11),ballR:Math.max(3,gap*0.24),bucketY:top+(n-1)*gap+0.7*gap,bucketH:bucketH};
+}
+// Where a ball is at time t: drop onto the top peg, then a little hop between each row, then into its bucket
+function pkBallPos(b,g,now){
+  var e=now-b.t0,R=0,i,p0,p1,t,hop=0;
+  function pt(r,rights){return [g.cx+(rights-r/2)*g.gap,g.top+r*g.gap-g.pegR-g.ballR];}
+  if(e<PK_DROP){p0=[g.cx+b.jit*g.gap,g.top-g.gap*1.15];p1=pt(0,0);t=e/PK_DROP;return {x:p0[0]+(p1[0]-p0[0])*t,y:p0[1]+(p1[1]-p0[1])*t*t,seg:-1};}
+  e-=PK_DROP;i=Math.floor(e/PK_SEG);
+  if(i<b.rows-1){
+    for(var r=0;r<=i;r++)R+=b.path[r];
+    p0=pt(i,R-b.path[i]);p1=pt(i+1,R);t=(e-i*PK_SEG)/PK_SEG;hop=g.gap*0.42;
+    return {x:p0[0]+(p1[0]-p0[0])*t,y:p0[1]+(p1[1]-p0[1])*t-hop*4*t*(1-t),seg:i};
+  }
+  e-=(b.rows-1)*PK_SEG;t=Math.min(1,e/PK_LAST);
+  p0=pt(b.rows-1,b.k-b.path[b.rows-1]);p1=[g.cx+(b.k-b.rows/2)*g.gap,g.bucketY+g.bucketH*0.35];
+  return {x:p0[0]+(p1[0]-p0[0])*t,y:p0[1]+(p1[1]-p0[1])*t-g.gap*0.42*4*t*(1-t),seg:b.rows-1,done:e>=PK_LAST};
+}
+function pkTotalMs(rows){return PK_DROP+(rows-1)*PK_SEG+PK_LAST;}
+// Game logic, separate from drawing so balls still land and pay while the page is hidden
+function pkUpdate(now){
+  var g=null;
+  for(var i=pk.balls.length-1;i>=0;i--){
+    var b=pk.balls[i],e=now-b.t0;
+    // Light up each peg as the ball reaches it
+    var reached=e<PK_DROP?-1:Math.min(b.rows-1,Math.floor((e-PK_DROP)/PK_SEG));
+    while(b.hit<reached){b.hit++;var Rb=0;for(var r=0;r<b.hit;r++)Rb+=b.path[r];pk.flash[b.rows+':'+b.hit+':'+(Rb+1)]=now;}
+    if(e>=pkTotalMs(b.rows)){pk.balls.splice(i,1);pkLand(b,now);}
+  }
+}
+function pkLand(b,now){
+  var win=b.bet*b.mult;
+  pk.change+=win;var paid=Math.floor(pk.change+1e-9);pk.change-=paid;
+  balance+=paid;updateBalance();
+  pk.land[b.rows+':'+b.k]=now;
+  document.getElementById('pk-last').textContent=slFmt(win);
+  pk.hist.unshift({m:b.mult,c:pkColor(b.k,b.rows)});pk.hist=pk.hist.slice(0,7);
+  document.getElementById('pk-history').innerHTML=pk.hist.map(function(h){return '<span style="background:'+h.c+'">'+pkLabel(h.m)+'</span>';}).join('');
+  if(b.mult>=100){showConfetti();pkSay("A "+pkLabel(b.mult)+" bucket?! Peccy can't believe it! 🤯");}
+  else if(b.mult>=10)pkSay(slRand(["Ooh, a "+pkLabel(b.mult)+" bucket! 🎉","Right down the edge! "+pkLabel(b.mult)+"! 🔥","Bounce, bounce, BIG! 🎊"]));
+  pkUI();
+}
+// Buckets run from gold in the middle to hot pink at the edges, like Stake's
+function pkColor(k,n){var d=Math.abs(k-n/2)/(n/2),h=45-62*d;return 'hsl('+((h+360)%360).toFixed(0)+',100%,'+(54-6*d).toFixed(0)+'%)';}
+function pkLabel(m){return m+'×';}
+function pkDraw(){
+  var cv=document.getElementById('pk-canvas');if(!cv||!pk.W)return;
+  var ctx=cv.getContext('2d'),now=performance.now(),n=pk.rows,g=pkGeo(n),pays=pkPays(),r,j;
+  ctx.setTransform(pk.dpr,0,0,pk.dpr,0,0);ctx.clearRect(0,0,pk.W,pk.H);
+  // Pegs; one a ball just hit glows for a moment
+  for(r=0;r<n;r++)for(j=0;j<r+3;j++){
+    var x=g.cx+(j-(r+2)/2)*g.gap,y=g.top+r*g.gap,f=pk.flash[n+':'+r+':'+j],a=f?Math.max(0,1-(now-f)/350):0;
+    if(a>0){ctx.beginPath();ctx.arc(x,y,g.pegR*(1+2.2*a),0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,'+(0.25*a)+')';ctx.fill();}
+    ctx.beginPath();ctx.arc(x,y,g.pegR*(1+0.4*a),0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+  }
+  // Buckets, which dip when a ball lands
+  var bw=g.gap*0.9,fs=Math.max(8,Math.min(13,bw*0.3));
+  for(var k=0;k<=n;k++){
+    var bx=g.cx+(k-n/2)*g.gap,l=pk.land[n+':'+k],p=l?Math.max(0,1-(now-l)/260):0,dy=Math.sin(p*Math.PI)*5,col=pkColor(k,n);
+    ctx.beginPath();if(ctx.roundRect)ctx.roundRect(bx-bw/2,g.bucketY+dy,bw,g.bucketH,4);else ctx.rect(bx-bw/2,g.bucketY+dy,bw,g.bucketH);
+    ctx.fillStyle=col;ctx.shadowColor=col;ctx.shadowBlur=p*14;ctx.fill();ctx.shadowBlur=0;
+    ctx.fillStyle='rgba(0,0,0,0.22)';ctx.fillRect(bx-bw/2,g.bucketY+dy+g.bucketH-3,bw,3);
+    var label=pkLabel(pays[k]),size=fs;ctx.font='800 '+size+'px Outfit,Inter,sans-serif';
+    while(size>6&&ctx.measureText(label).width>bw-3){size-=0.5;ctx.font='800 '+size+'px Outfit,Inter,sans-serif';}
+    ctx.fillStyle='#1a0c00';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(label,bx,g.bucketY+dy+g.bucketH/2);
+  }
+  // Balls (only those dropped onto this board's row count)
+  pk.balls.forEach(function(b){
+    if(b.rows!==n)return;var q=pkBallPos(b,g,now),gr=ctx.createRadialGradient(q.x-g.ballR*0.35,q.y-g.ballR*0.4,g.ballR*0.1,q.x,q.y,g.ballR);
+    gr.addColorStop(0,'#ffd0d0');gr.addColorStop(0.45,'#ff3b4e');gr.addColorStop(1,'#a8001c');
+    ctx.beginPath();ctx.arc(q.x,q.y,g.ballR,0,Math.PI*2);ctx.fillStyle=gr;ctx.shadowColor='rgba(255,59,78,0.7)';ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+  });
+}
+function pkFrame(now){pk.raf=0;pk.lastFrame=now;pkUpdate(now);pkDraw();if(pk.balls.length||now-pk.lastKick<600)pk.raf=requestAnimationFrame(pkFrame);}
+function pkKick(){pk.lastKick=performance.now();if(!pk.raf)pk.raf=requestAnimationFrame(pkFrame);}
+// Without a visible window there are no animation frames, so a slow timer keeps balls landing and paying
+setInterval(function(){if(pk.balls.length&&performance.now()-pk.lastFrame>300)pkUpdate(performance.now());},200);
+// Size the panel and board to the window, and the canvas to the board (sharp on high-DPI screens)
+function pkLayout(){
+  var wrap=document.getElementById('pk-wrap'),board=document.getElementById('pk-board'),cv=document.getElementById('pk-canvas');
+  if(!wrap||!board.clientWidth)return;
+  wrap.style.height=innerWidth>760?Math.max(460,innerHeight-wrap.getBoundingClientRect().top-window.scrollY-16-footH())+'px':'';
+  pk.W=board.clientWidth;pk.H=board.clientHeight;pk.dpr=Math.min(2,window.devicePixelRatio||1);
+  cv.width=Math.round(pk.W*pk.dpr);cv.height=Math.round(pk.H*pk.dpr);
+  pkDraw();
+}
+function pkInit(){
+  var s=document.getElementById('pk-rows');
+  for(var n=8;n<=16;n++)s.innerHTML+='<option value="'+n+'"'+(n===pk.rows?' selected':'')+'>'+n+'</option>';
+  window.addEventListener('resize',function(){if(document.getElementById('game-plinko').classList.contains('active'))pkLayout();});
+  pkUI();
+}
+
+
 // ═══ INIT ═══
 // Chips and shop items saved from last time, then the equipped items go on the tables (shopApply dresses Peccy and draws the wheel)
-loadGame();updateBalance();
+loadGame();modeApply();updateBalance();
 buildRouletteGrid();
 rlInitTable();
+pkInit();
 slBuildHub();
 slSelect('classic');
 shopApply();
