@@ -1397,6 +1397,16 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     .arcade-strip { order: 4; flex-wrap: wrap; gap: 8px; padding-top: 2px; }
     .buzz-bar { width: 90px; }
   }
+  /* Arcade odds: the Plinko note, roulette's lucky number, and bets that 0 handed back */
+  .pk-note { display: none; margin-top: 8px; padding: 7px 10px; border-radius: 10px; font-size: 11.5px; line-height: 1.35; color: #d7f8e6; background: rgba(61,220,132,0.1); border: 1px solid rgba(61,220,132,0.3); }
+  body.arcade .pk-note { display: block; }
+  .rl-cell.rl-lucky, .rl-zero-cell.rl-lucky { z-index: 1; animation: rlLucky 0.9s ease-in-out infinite alternate; }
+  .rl-cell.rl-lucky::after, .rl-zero-cell.rl-lucky::after { content: '🍀'; position: absolute; top: 1px; right: 2px; font-size: 10px; line-height: 1; }
+  .rl-zero-cell.rl-lucky { position: relative; }
+  .rl-cell.rl-lucky.rl-win-num, .rl-zero-cell.rl-lucky.rl-win-num { animation: rlWinPulse 0.8s ease-in-out infinite alternate; }
+  @keyframes rlLucky { from { box-shadow: inset 0 0 0 2px #3ddc84; } to { box-shadow: inset 0 0 0 3px #b8ffd6, 0 0 16px #3ddc84; background-color: rgba(61,220,132,0.22); } }
+  .rl-lucky-msg { color: #9dffc8; }
+  .rl-win-tag.back { background: linear-gradient(180deg, #b8ffd6, #3ddc84); color: #06311a; }
 
   /* ═══ PECCY'S BAR ═══ */
   .bar-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(6,3,12,0.72); backdrop-filter: blur(6px); }
@@ -1614,8 +1624,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   <div class="top-right">
     <!-- Classic is the real-odds floor; Arcade has the bar and its buffs, with its own chips and cosmetics -->
     <div class="mode-switch" role="group" aria-label="Game mode">
-      <button class="mode-opt" id="mode-classic" onclick="setMode('classic')">Classic</button>
-      <button class="mode-opt" id="mode-arcade" onclick="setMode('arcade')">🕹️ Arcade</button>
+      <button class="mode-opt" id="mode-classic" onclick="setMode('classic')" title="Real casino odds">Classic</button>
+      <button class="mode-opt" id="mode-arcade" onclick="setMode('arcade')" title="Peccy's Bar, and odds that lean your way">🕹️ Arcade</button>
     </div>
     <div class="chip-bank">
       <div class="chip-icon" id="chip-icon">R</div>
@@ -1631,7 +1641,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     <button class="bar-btn" onclick="barOpen()">🍸 Peccy's Bar</button>
     <div class="hud-buzz" title="Each drink adds buzz; every spin or hand wears a little off"><small>Buzz</small><div class="buzz-bar"><i id="hud-buzz-fill"></i></div><b id="hud-buzz-pct">0%</b></div>
     <div class="hud-drinks" id="hud-drinks"></div>
-    <div class="hud-tip">Up to 3 drinks at once · hit 100% buzz and you black out</div>
+    <div class="hud-tip">🍀 Odds lean your way · 3 drinks max · 100% buzz = blackout</div>
   </div>
 </header>
 
@@ -1658,8 +1668,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
               <path id="bj-arc-1" d="M 95 22 Q 350 128 605 22"></path>
               <path id="bj-arc-2" d="M 150 52 Q 350 142 550 52"></path>
             </defs>
-            <text class="arc-main"><textPath href="#bj-arc-1" startOffset="50%" text-anchor="middle">BLACKJACK PAYS 3 TO 2</textPath></text>
-            <text class="arc-sub"><textPath href="#bj-arc-2" startOffset="50%" text-anchor="middle">DEALER STANDS ON ALL 17s</textPath></text>
+            <text class="arc-main"><textPath id="bj-arc-main" href="#bj-arc-1" startOffset="50%" text-anchor="middle">BLACKJACK PAYS 3 TO 2</textPath></text>
+            <text class="arc-sub"><textPath id="bj-arc-sub" href="#bj-arc-2" startOffset="50%" text-anchor="middle">DEALER STANDS ON ALL 17s</textPath></text>
           </svg>
           <div class="bj-message" id="bj-message"></div>
         </div>
@@ -1844,7 +1854,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
         <select class="pk-select" id="pk-count"><option value="10">10</option><option value="25">25</option><option value="50">50</option><option value="100">100</option><option value="0">Until I stop</option></select>
       </div>
       <button class="pk-play" id="pk-play" onclick="pkPlay()">Drop ball</button>
-      <div class="pk-stats"><div><small>Last win</small><span id="pk-last">0</span></div><div><small>Balls dropped</small><span id="pk-count-done">0</span></div><div><small>Payback</small><span>99%</span></div></div>
+      <div class="pk-note">🍀 Arcade board: the buckets under 1× pay a little more than Stake's.</div>
+      <div class="pk-stats"><div><small>Last win</small><span id="pk-last">0</span></div><div><small>Balls dropped</small><span id="pk-count-done">0</span></div><div><small>Payback</small><span id="pk-rtp">99%</span></div></div>
     </div>
     <div class="pk-board" id="pk-board">
       <canvas id="pk-canvas"></canvas>
@@ -1896,7 +1907,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     <h2 id="bug-title">🐞 Report a bug</h2>
     <p>Tell us what went wrong. <b>Send report</b> opens a ready-made report on GitHub (you'll need a free GitHub account to post it), with the details below attached so it's easier to track down.</p>
     <label class="bug-label" for="bug-what">What happened, and what were you doing?</label>
-    <textarea id="bug-what" rows="5" placeholder="e.g. On Dragon's Hoard, Hold &amp; Spin filled the screen but I didn't get the Grand"></textarea>
+    <textarea id="bug-what" rows="5" oninput="this.classList.remove('missing')" placeholder="e.g. On Dragon's Hoard, Hold &amp; Spin filled the screen but I didn't get the Grand"></textarea>
     <details class="bug-details"><summary>Details that get attached</summary><pre id="bug-info"></pre></details>
     <div class="bug-actions"><button class="clear-bet" onclick="bugClose()">Cancel</button><button class="btn btn-primary" onclick="bugSend()"><i class="fa-solid fa-paper-plane"></i> Send report</button></div>
   </div>
@@ -2255,6 +2266,12 @@ function shopDrawBall(cv,B){
 }
 // ═══ MODES ═══
 // Classic is the real-odds casino. Arcade adds Peccy's Bar, and keeps its own chips and cosmetics.
+// Arcade odds also lean the player's way, so every game pays back a little over 100% (about 103%):
+//   slots     some spins that win nothing are on the house (slCompChance), more often on machines that pay less
+//   Plinko    the buckets under 1x pay a bit more (PK_ARCADE); Low risk only up to about 100%
+//   blackjack blackjack pays 2 to 1, and five cards without busting win (about +3% with basic strategy)
+//   roulette  0 hands back the bets it beat, and one lucky number a spin pays double (101-103%)
+var ARCADE_RTP=103;
 var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech'};
 function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
 function setMode(m){
@@ -2268,7 +2285,7 @@ function setMode(m){
   gameMode=m;modeRestore(m);
   modeApply();updateBalance();shopApply();saveGame();
   if(document.getElementById('game-shop').classList.contains('active'))shopRender();
-  modeSay(m==='arcade'?"Welcome to the Arcade floor! The bar's open. 🍸🕹️":"Back on the Classic floor: real odds, no funny business. 🎩");
+  modeSay(m==='arcade'?"Welcome to the Arcade floor! The bar's open and the odds lean your way. 🍸🕹️":"Back on the Classic floor: real odds, no funny business. 🎩");
 }
 // Everything on screen that shows which mode you're in
 function modeApply(){
@@ -2281,6 +2298,11 @@ function modeApply(){
   document.getElementById('reset-btn').title='Reset to '+fmtChips(MODE_START[gameMode])+' chips';
   if(!arc)barClose();
   barHUD();
+  // The house rules and paybacks shown on each game
+  document.getElementById('bj-arc-main').textContent=arc?'BLACKJACK PAYS 2 TO 1':'BLACKJACK PAYS 3 TO 2';
+  document.getElementById('bj-arc-sub').textContent=arc?'FIVE CARDS WITHOUT BUSTING WIN':'DEALER STANDS ON ALL 17s';
+  if(slHubReady){slHubRtp();slRenderPaytable();}
+  pkUI();pkDraw();
   // The arcade strip changes the header's height, so the games re-measure
   fitTables();if(document.getElementById('game-slots').classList.contains('active'))slLayout();
 }
@@ -2763,6 +2785,10 @@ function bjSplit(){
 }
 
 function getActiveHand(){return bjActiveHand===1?bjPlayerHand:bjSplitHand;}
+// Arcade house rule (5-Card Charlie): five cards without busting win on the spot
+function bjCharlie(h){return gameMode==='arcade'&&h.length>=5&&handScore(h)<=21;}
+// The split hand is done (busted, or doubled into a bust): the dealer still plays if hand 1 is standing
+function bjSplitDone(){if(handScore(bjPlayerHand)>21)bjResolveAll();else bjStand();}
 
 function bjHit(){
   var hand=getActiveHand();
@@ -2772,7 +2798,14 @@ function bjHit(){
   document.getElementById('bj-split-btn').style.display='none';
   renderBJHands(false);
   var sc=handScore(hand);
-  if(sc>21){
+  if(bjCharlie(hand)){
+    if(bjIsSplit && bjActiveHand===1){
+      setPeccySpeech('bj-peccy-speech',"Five cards on Hand 1, that's a Charlie! Moving to Split Hand. 🃏");
+      bjActiveHand=2;renderBJHands(false);bjShowGameBtns();
+      if(handScore(bjSplitHand)===21) bjStand();
+    } else if(bjIsSplit) bjStand();  // settled with the other hand once Peccy plays
+    else bjEndGame('charlie','5-Card Charlie! Five cards without busting wins. 🃏');
+  } else if(sc>21){
     // Busted this hand
     if(bjIsSplit && bjActiveHand===1){
       setPeccySpeech('bj-peccy-speech',"Hand 1 busts! Moving to Split Hand. 💥");
@@ -2781,8 +2814,7 @@ function bjHit(){
       bjShowGameBtns();
       if(handScore(bjSplitHand)===21) bjStand();
     } else if(bjIsSplit && bjActiveHand===2){
-      // Both done — resolve
-      bjResolveAll();
+      bjSplitDone();
     } else {
       bjEndGame('dealer','Busted! 💥 Peccy wins this round.');
     }
@@ -2807,7 +2839,7 @@ function bjDouble(){
       bjActiveHand=2;renderBJHands(false);bjShowGameBtns();
       if(handScore(bjSplitHand)===21) bjStand();
     } else if(bjIsSplit && bjActiveHand===2){
-      bjResolveAll();
+      bjSplitDone();
     } else {
       bjEndGame('dealer','Busted on the double! 💥');
     }
@@ -2859,6 +2891,7 @@ function bjResolveAll(){
   // Resolve hand 1
   var ps1=handScore(bjPlayerHand);
   if(ps1>21){msgs.push('Hand 1: Bust');}
+  else if(bjCharlie(bjPlayerHand)){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Charlie +'+bjBetAmount*2);}
   else if(ds>21||ps1>ds){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Win +'+bjBetAmount*2);}
   else if(ps1===ds){totalWin+=bjBetAmount;msgs.push('Hand 1: Push');}
   else{msgs.push('Hand 1: Lose');}
@@ -2866,6 +2899,7 @@ function bjResolveAll(){
   // Resolve hand 2
   var ps2=handScore(bjSplitHand);
   if(ps2>21){msgs.push('Split: Bust');}
+  else if(bjCharlie(bjSplitHand)){totalWin+=bjSplitBet*2;msgs.push('Split: Charlie +'+bjSplitBet*2);}
   else if(ds>21||ps2>ds){totalWin+=bjSplitBet*2;msgs.push('Split: Win +'+bjSplitBet*2);}
   else if(ps2===ds){totalWin+=bjSplitBet;msgs.push('Split: Push');}
   else{msgs.push('Split: Lose');}
@@ -2891,7 +2925,9 @@ function bjEndGame(r,m){
   document.getElementById('bj-split-btn').style.display='none';
   document.getElementById('bj-newhand-btn').style.display='';
   var w=0;
-  if(r==='blackjack'){w=Math.floor(bjBetAmount*2.5);showConfetti();setPeccySpeech('bj-peccy-speech',"Natural 21! That's a beautiful hand! 🌟");}
+  // Arcade pays blackjack 2 to 1 instead of 3 to 2
+  if(r==='blackjack'){w=Math.floor(bjBetAmount*(gameMode==='arcade'?3:2.5));showConfetti();setPeccySpeech('bj-peccy-speech',"Natural 21! That's a beautiful hand! 🌟");}
+  else if(r==='charlie'){w=bjBetAmount*2;showConfetti();setPeccySpeech('bj-peccy-speech',"Five cards and still standing? That's a Charlie, you win! 🃏");}
   else if(r==='player'){w=bjBetAmount*2;showConfetti();setPeccySpeech('bj-peccy-speech',"Well played! You got me this time. 👏");}
   else if(r==='push'){w=bjBetAmount;setPeccySpeech('bj-peccy-speech',"A tie! Your bet is returned. 🤝");}
   else{setPeccySpeech('bj-peccy-speech',"House wins! Don't worry, try again! 😎");}
@@ -3087,13 +3123,14 @@ function slOrbValue(m,s,bet){var v=slVal(s);return (m.jackpots[v]||+v)*bet;}
 
 // ── The machines ──
 // rtp: the original's published return; measured: what this machine came out at in slotTune
-// (exact: worked out from the reel odds rather than simulated, for the 3-reel games).
+// (exact: worked out from the reel odds rather than simulated, for the 3-reel games); hit: the % of
+// spins that win anything (slotSimulate), which sets how often Arcade spins are on the house.
 var SL_CLASSIC_SYM={W:{wild:1,name:'Double Peccy'},S7:{seven:'#ff3b3b',name:'Seven'},B3:{bars:3,name:'Triple Bar'},B2:{bars:2,name:'Double Bar'},B1:{bars:1,name:'Single Bar'},CH:{e:'🍒',name:'Cherry'},_:{blank:1,name:'Blank'}};
 var SL_CLASSIC_PAY={W:{3:1000},S7:{3:80},B3:{3:40},B2:{3:25},B1:{3:10},AB:{3:5},CH:{1:2,2:5,3:10}};
 var SLOT_MACHINES={
   classic:{
     name:'Double Peccy',icon:'💎',type:'Classic',sub:'3 reels · 1 line · one Peccy doubles a win, two quadruple it',
-    based:'IGT Double Diamond',rtp:95,rtpNote:'IGT ships Double Diamond at several settings; 95% is a common one',measured:95,exact:1,
+    based:'IGT Double Diamond',rtp:95,rtpNote:'IGT ships Double Diamond at several settings; 95% is a common one',measured:95,hit:23.0,exact:1,
     theme:{acc:'#4fc3f7',bg1:'#13253d',bg2:'#060c16'},
     cols:3,rows:3,kind:'classic',lines:[[1,1,1]],wild:'W',maxCell:200,k:1,
     sym:SL_CLASSIC_SYM,pay:SL_CLASSIC_PAY,
@@ -3107,7 +3144,7 @@ var SLOT_MACHINES={
   },
   wheel:{
     name:'Wheel of Peccy',icon:'🎡',type:'Bonus wheel',sub:'3 reels · 1 line · SPIN on the third reel spins the big wheel',
-    based:'IGT Wheel of Fortune (Double Diamond reels)',rtp:93,rtpNote:'land-based Wheel of Fortune machines run roughly 88–95%; 93% is used here',measured:93,exact:1,
+    based:'IGT Wheel of Fortune (Double Diamond reels)',rtp:93,rtpNote:'land-based Wheel of Fortune machines run roughly 88–95%; 93% is used here',measured:93,hit:13.1,exact:1,
     theme:{acc:'#ffcc00',bg1:'#3a1060',bg2:'#10031c'},
     cols:3,rows:3,kind:'classic',lines:[[1,1,1]],wild:'W',maxCell:200,k:1,
     sym:Object.assign({SP:{spin:1,name:'SPIN'}},SL_CLASSIC_SYM),pay:SL_CLASSIC_PAY,
@@ -3127,7 +3164,7 @@ var SLOT_MACHINES={
   },
   pharaoh:{
     name:'Pharaoh Peccy',icon:'🏺',type:'Free spins',sub:'5 reels · 20 lines · 3 Sphinx = 15 free spins at ×3',
-    based:'IGT Cleopatra',rtp:95.02,rtpNote:'IGT\'s published 95.02%',measured:95.0,
+    based:'IGT Cleopatra',rtp:95.02,rtpNote:'IGT\'s published 95.02%',measured:95.0,hit:33.6,
     theme:{acc:'#d4af37',bg1:'#3b2a12',bg2:'#120a03'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',wildMult:'once',scatter:'SC',maxCell:170,k:1,
     sym:slWithRoyals({W:{wild:1,name:'Pharaoh Peccy'},SC:{e:'🦁',name:'Sphinx'},scb:{e:'🪲',name:'Scarab'},lot:{e:'🪷',name:'Lotus'},tab:{e:'📜',name:'Golden Tablet'},
@@ -3160,7 +3197,7 @@ var SLOT_MACHINES={
   },
   book:{
     name:'Book of Peccy',icon:'📖',type:'Expanding symbol',sub:'5 reels · 10 lines · 3 Books = 10 free spins with an expanding symbol',
-    based:'Play\'n GO Book of Dead',rtp:96.21,rtpNote:'Play\'n GO\'s published 96.21%',measured:96.2,
+    based:'Play\'n GO Book of Dead',rtp:96.21,rtpNote:'Play\'n GO\'s published 96.21%',measured:96.2,hit:26.7,
     theme:{acc:'#2ec4b6',bg1:'#0f3a3a',bg2:'#031414'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES10,wild:'BK',scatter:'BK',maxCell:170,k:1,
     sym:slWithRoyals({BK:{e:'📖',name:'Book',wild:0},exp:{e:'🤠',name:'Explorer Peccy'},osi:{e:'👑',name:'Osiris'},anu:{e:'🐺',name:'Anubis'},hor:{e:'🦅',name:'Horus'}},['A','K','Q','J','T']),
@@ -3202,7 +3239,7 @@ var SLOT_MACHINES={
   },
   starburst:{
     name:'Peccy Starburst',icon:'🌟',type:'Expanding wilds',sub:'5 reels · 10 lines that pay both ways · expanding Peccy wilds respin',
-    based:'NetEnt Starburst',rtp:96.09,rtpNote:'NetEnt\'s published 96.09%',measured:96.1,
+    based:'NetEnt Starburst',rtp:96.09,rtpNote:'NetEnt\'s published 96.09%',measured:96.1,hit:22.9,
     theme:{acc:'#b388ff',bg1:'#1f1147',bg2:'#070318'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES10,wild:'W',maxCell:170,k:1,
     sym:{W:{wild:1,name:'Star Peccy'},BAR:{bars:1,gold:1,name:'Bar'},S7:{seven:'#ff3b3b',name:'Seven'},yel:slGem('Yellow gem',-150),grn:slGem('Green gem',-80),
@@ -3229,7 +3266,7 @@ var SLOT_MACHINES={
   },
   stampede:{
     name:'Serverless Stampede',icon:'🦬',type:'1024 ways',sub:'5 reels · 4 rows · 1024 ways · multiplying wilds in free spins',
-    based:'Aristocrat Buffalo',rtp:94.85,rtpNote:'Aristocrat\'s commonly quoted 94.85%',measured:94.9,
+    based:'Aristocrat Buffalo',rtp:94.85,rtpNote:'Aristocrat\'s commonly quoted 94.85%',measured:94.9,hit:45.0,
     theme:{acc:'#ff7043',bg1:'#3e1f12',bg2:'#140703'},
     cols:5,rows:4,kind:'ways',wild:'W',scatter:'SC',maxCell:150,k:1/40,
     sym:slWithRoyals({W:{wild:1,name:'Sunset Peccy'},SC:{e:'🪙',name:'Gold coin'},bis:{e:'🦬',name:'Buffalo'},eag:{e:'🦅',name:'Eagle'},cou:{e:'🐆',name:'Cougar'},wol:{e:'🐺',name:'Wolf'},elk:{e:'🦌',name:'Elk'}}),
@@ -3266,7 +3303,7 @@ var SLOT_MACHINES={
   },
   megaways:{
     name:'Gold Rush Megaways',icon:'⛏️',type:'Megaways',sub:'6 reels of 2–7 symbols · up to 117,649 ways · cascades · unlimited multiplier',
-    based:'Big Time Gaming Bonanza Megaways',rtp:96,rtpNote:'Big Time Gaming\'s published 96.00%',measured:96.0,
+    based:'Big Time Gaming Bonanza Megaways',rtp:96,rtpNote:'Big Time Gaming\'s published 96.00%',measured:96.0,hit:43.1,
     theme:{acc:'#ffb300',bg1:'#2b1a07',bg2:'#0d0702'},
     cols:6,rows:7,colCells:5,kind:'ways',wild:'W',scatter:'SC',maxCell:150,k:1,
     sym:slWithRoyals({W:{e:'🧨',name:'Dynamite',wild:0},SC:{e:'🪙',name:'Gold'},pur:slGem('Purple gem',70),red:slGem('Ruby',160),grn:slGem('Emerald',-80),blu:slGem('Sapphire',0)}),
@@ -3310,7 +3347,7 @@ var SLOT_MACHINES={
   },
   candy:{
     name:'Candy Cloud Bonanza',icon:'🍭',type:'Tumble',sub:'6 × 5 · pays anywhere · tumbling wins · bomb multipliers',
-    based:'Pragmatic Play Sweet Bonanza',rtp:96.48,rtpNote:'Pragmatic Play\'s published 96.48%',measured:96.5,
+    based:'Pragmatic Play Sweet Bonanza',rtp:96.48,rtpNote:'Pragmatic Play\'s published 96.48%',measured:96.5,hit:48.0,
     theme:{acc:'#ff5fa2',bg1:'#4a1d4f',bg2:'#170717'},
     cols:6,rows:5,kind:'any',scatter:'SC',maxCell:130,k:1,
     sym:{SC:{e:'🍭',name:'Lollipop'},B:{e:'💣',name:'Bomb'},hrt:{e:'💖',name:'Heart candy'},sqr:{e:'🍬',name:'Wrapped candy'},cup:{e:'🧁',name:'Cupcake'},don:{e:'🍩',name:'Donut'},
@@ -3357,7 +3394,7 @@ var SLOT_MACHINES={
   },
   dragon:{
     name:"Dragon's Hoard",icon:'🐉',type:'Hold & Spin',sub:'5 reels · 20 lines · 6+ orbs start Hold & Spin · 4 jackpots',
-    based:'Aristocrat Lightning Link',rtp:95,rtpNote:'Lightning Link titles are quoted around 95%',measured:95.0,
+    based:'Aristocrat Lightning Link',rtp:95,rtpNote:'Lightning Link titles are quoted around 95%',measured:95.0,hit:16.8,
     theme:{acc:'#ff3d3d',bg1:'#3a0d0d',bg2:'#120202'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',maxCell:170,k:1,
     sym:slWithRoyals({W:{wild:1,name:'Golden Peccy'},O:{e:'🔮',name:'Orb'},drg:{e:'🐉',name:'Dragon'},tig:{e:'🐅',name:'Tiger'},lan:{e:'🏮',name:'Lantern'},env:{e:'🧧',name:'Red envelope'},bag:{e:'💰',name:'Gold bag'}}),
@@ -3664,6 +3701,9 @@ async function slSpin(){
   // kept as change and paid once they add up, so the payback holds at every bet size.
   // Arcade bar buffs adjust the win before it's paid
   var bx=barSlotWin(run);run=Math.max(0,run+bx.amt);
+  // Arcade: now and then a spin that wins nothing is on the house, and the bet comes back
+  var comp=run===0&&Math.random()<slCompChance(m);
+  if(comp)run=bet;
   slState.change+=run;var total=Math.floor(slState.change+1e-9),x=run/bet;slState.change-=total;
   balance+=total;updateBalance();
   if(x>=15){
@@ -3671,7 +3711,8 @@ async function slSpin(){
     await slWait(2400);slBannerHide();
   }
   slStatus(m.kind==='ways'&&m.colCells?slState.grid.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS':'');
-  if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
+  if(comp){slWin(run,'🍀 On the house! Peccy hands your bet back');slSay(slRand(["This spin's on the house! 🍀","Psst... have that one back. Don't tell the boss! 🤫","Peccy slides your chips back. Lucky you! 🍀"]));}
+  else if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
   else{slWin(0,'<span style="color:#ff8a80">No win this time</span>');slSay(slRand(SL_SAY.lose));}
   slState.playing=false;slState.fast=false;
   slUI();
@@ -3744,7 +3785,9 @@ function slRenderPaytable(){
     if(m.wild&&m.wild!==m.scatter&&!m.pay[m.wild])h+=row(m.wild,slName(m,m.wild)+' (wild)','Substitutes for every pay symbol');
   }
   h+='</div><div class="sl-pt-rules">'+m.rules+'</div>';
-  h+='<div class="sl-pt-rtp"><b>Payback:</b> this machine returns '+(m.exact?'exactly':'about')+' <b>'+(m.measured!=null?m.measured+'%':'—')+'</b> of what is bet'+(m.exact?' (worked out from the reel odds)':' over millions of spins')+', tuned to the original\'s <b>'+m.rtp+'%</b> ('+m.rtpNote+').</div>';
+  h+='<div class="sl-pt-rtp"><b>Payback:</b> this machine returns '+(m.exact?'exactly':'about')+' <b>'+(m.measured!=null?m.measured+'%':'—')+'</b> of what is bet'+(m.exact?' (worked out from the reel odds)':' over millions of spins')+', tuned to the original\'s <b>'+m.rtp+'%</b> ('+m.rtpNote+').';
+  if(slCompChance(m))h+='<br>🍀 <b>Arcade:</b> about 1 in '+Math.round(1/slCompChance(m))+' spins that win nothing are on the house (you get your bet back), so here it returns about <b>'+ARCADE_RTP+'%</b>.';
+  h+='</div>';
   document.getElementById('sl-paytable').innerHTML=h;
 }
 // The slot hub: a card per machine with a still of its reels, how it plays, and what it's based on
@@ -3766,12 +3809,25 @@ function slBuildHub(){
     h+='<div class="sl-card" role="button" tabindex="0" id="sl-card-'+id+'" style="--tile:'+m.theme.acc+';--card-bg:'+m.theme.bg2+'" onclick="slOpen(\''+id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();slOpen(\''+id+'\');}">'+
       '<div class="sl-card-preview">'+slMiniReels(m)+'</div><div class="sl-card-body">'+
       '<div class="sl-card-title"><span class="sl-tile-icon">'+m.icon+'</span><div><span class="sl-card-name">'+m.name+'</span><span class="sl-card-tag">'+m.type+'</span></div>'+
-        '<span class="sl-card-rtp" title="Pays back '+(m.exact?'exactly ':'about ')+m.measured+'% of what is bet">'+m.measured+'%</span></div>'+
+        '<span class="sl-card-rtp" data-id="'+id+'"></span></div>'+
       '<div class="sl-card-desc">'+(SL_BLURBS[id]||m.sub)+'</div>'+
       '<div class="sl-card-meta" title="Based on '+m.based+'">Based on '+m.based+'</div></div></div>';
   }
   document.getElementById('sl-hub').innerHTML=h+'</div>';
+  slHubReady=true;slHubRtp();
 }
+var slHubReady=false;
+// Each card's payback badge: the machine's own in Classic, the lifted one in Arcade
+function slHubRtp(){
+  document.querySelectorAll('.sl-card-rtp').forEach(function(el){
+    var m=SLOT_MACHINES[el.dataset.id],c=slCompChance(m);
+    el.textContent=(c?ARCADE_RTP:m.measured)+'%';
+    el.title=c?'Arcade: pays back about '+ARCADE_RTP+'%, since about 1 in '+Math.round(1/c)+' spins that win nothing are on the house':'Pays back '+(m.exact?'exactly ':'about ')+m.measured+'% of what is bet';
+  });
+}
+// Arcade: the chance a spin that wins nothing is on the house, set so the machine returns ARCADE_RTP.
+// The house adds (100 - hit)% x chance to the payback, so machines that pay less get more of them.
+function slCompChance(m){return gameMode==='arcade'?Math.max(0,(ARCADE_RTP-m.measured)/(100-m.hit)):0;}
 // A card's preview: a still of the reels, five rows at most. Megaways reels keep their changing heights.
 function slMiniReels(m){
   var g=slStartGrid(m),rows=Math.min(5,m.colCells||m.rows),mc=Math.floor(Math.min(40,(236-(m.cols-1)*3)/m.cols,112/rows)),h='';
@@ -3936,7 +3992,11 @@ var rlBets={},rlHistory=[],rlLastBets=null,rlResolved=null,rlResolvedTimer=0,rlS
 function rlTotal(){var t=0;for(var k in rlBets)t+=rlBets[k].amount;return t;}
 function rlFmt(a){return a>=1000?(Math.round(a/100)/10)+'k':String(a);}
 function rlNewBet(t){return {key:t.key,nums:t.nums,out:t.out,pay:t.pay,label:t.label,gx:t.gx,gy:t.gy,el:t.el,chips:[],amount:0};}
+// Arcade's lucky number for the spin (-1 when there isn't one); its glow stays up with the result
+var rlLucky=-1;
+function rlClearLucky(){document.querySelectorAll('.rl-lucky').forEach(function(e){e.classList.remove('rl-lucky');});}
 function rlClearResolved(){
+  rlClearLucky();
   if(!rlResolved)return;
   rlResolved=null;clearTimeout(rlResolvedTimer);
   document.querySelectorAll('.rl-win-num').forEach(function(e){e.classList.remove('rl-win-num');});
@@ -4020,11 +4080,14 @@ function rlRender(){
   if(!layer||!document.querySelector('.rl-number-grid').getBoundingClientRect().width)return;
   var src=rlResolved?rlResolved.bets:rlBets,s=rlChipSize(),html='',counts=[];
   Object.keys(src).forEach(function(k){
-    var b=src[k],p=rlAnchorXY(b),cls='rl-stack',tag='',chips=b.chips,w=rlResolved&&rlResolved.wins[k];
-    if(rlResolved)cls+=w?' win':' lose';
+    var b=src[k],p=rlAnchorXY(b),cls='rl-stack',tag='',chips=b.chips,w=rlResolved&&rlResolved.wins[k],back=rlResolved&&rlResolved.back&&rlResolved.back[k];
+    if(rlResolved)cls+=w||back?' win':' lose';
+    // A bet that 0 handed back (Arcade) stays put with a tag saying so
+    if(back)tag='<span class="rl-win-tag back" style="bottom:'+((Math.min(chips.length,RL_PER)-1)*RL_GAP+s+8)+'px">↩ back</span>';
     // A winning stack gets its payout dropped on, in the same chips as the bet, and grows with it
+    // (the lucky number's double pay means twice the chips)
     if(w){
-      chips=chips.concat(chipsPaid(b.chips,b.pay,w-b.amount));
+      chips=chips.concat(chipsPaid(b.chips,(w-b.amount)/b.amount,w-b.amount));
       var rows=Math.min(chips.length,RL_PER),ms=chipPileMs(chips.length-b.chips.length),p0=Math.min(1,(performance.now()-rlResolved.t0)/ms);
       tag='<span class="rl-win-tag" style="bottom:'+((rows-1)*RL_GAP+s+8)+'px">+'+rlFmt(Math.round(w*p0))+'</span>';
       counts.push([k,Math.round(w*p0),w,ms*(1-p0)]);
@@ -4404,6 +4467,12 @@ function spinRoulette(){
   document.getElementById('roulette-spin-btn').disabled=true;
   document.getElementById('roulette-result').textContent='';document.getElementById('roulette-message').textContent='';
   setPeccySpeech('roulette-peccy-speech',"No more bets! The ball is spinning... 🎡");
+  // Arcade: once the bets are down, Peccy picks a lucky number for this spin
+  rlClearLucky();
+  if(gameMode==='arcade'){
+    rlLucky=Math.floor(Math.random()*37);document.getElementById('rlc-'+rlLucky).classList.add('rl-lucky');
+    document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">🍀 Lucky number '+rlLucky+': wins on it pay double</span>';
+  }
   var ri=Math.floor(Math.random()*rouletteNumbers.length),rn=rouletteNumbers[ri],target=rlPocketAngle(ri);
   // Wheel spins clockwise and coasts to a stop over wDur
   var w0=curWheelRot,wDur=8500,wSpin=(140+Math.random()*50)*(wDur/1000)/2;
@@ -4437,23 +4506,29 @@ function evalRoulette(num){
   document.getElementById('roulette-result').innerHTML='<span class="rl-ball '+cn.toLowerCase()+'">'+num+'</span><span class="rl-ball-label">'+cn+'</span>';
   rlAddRecent(num);
   // Each winning bet returns its stake plus the payout; losing chips stay with the house
-  var tw=0,staked=rlTotal(),msgs=[],wins={};
+  // Arcade: the lucky number pays double, and when 0 comes up the bets it beat come back ("back")
+  var tw=0,staked=rlTotal(),msgs=[],wins={},back={},zeroBack=0,arc=gameMode==='arcade',lucky=arc&&num===rlLucky;
   Object.keys(rlBets).forEach(function(k){
     var b=rlBets[k];
-    if(rlBetWins(b,num)){var ret=b.amount*(b.pay+1);wins[k]=ret;tw+=ret;msgs.push(b.label+' pays '+b.pay+' to 1: +'+ret);}
+    if(rlBetWins(b,num)){var pay=lucky?b.pay*2:b.pay,ret=b.amount*(pay+1);wins[k]=ret;tw+=ret;msgs.push(b.label+' pays '+pay+' to 1: +'+ret);}
+    else if(arc&&num===0){back[k]=b.amount;zeroBack+=b.amount;}
   });
+  rlLucky=-1;
   // Arcade: a Mojito hands back the losing bets of a spin that loses (up to its cap)
-  var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k])lostStake+=rlBets[k].amount;});
+  var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k]&&!back[k])lostStake+=rlBets[k].amount;});
   if(lostStake>0&&barFind('mojito')){var mj=barTake('mojito');refund=Math.min(lostStake,Math.round(mj.cap));}
-  balance+=tw+refund;updateBalance();
+  balance+=tw+zeroBack+refund;updateBalance();
   rlLastBets=JSON.parse(JSON.stringify(rlBets));
-  rlResolved={bets:rlBets,wins:wins,t0:performance.now()};rlBets={};rlHistory=[];
+  rlResolved={bets:rlBets,wins:wins,back:back,t0:performance.now()};rlBets={};rlHistory=[];
   document.getElementById('rlc-'+num).classList.add('rl-win-num');
   rlRender();
   clearTimeout(rlResolvedTimer);rlResolvedTimer=setTimeout(function(){rlClearResolved();rlRender();},tw?6000:3500);  // winnings stay up long enough to watch them pile on
-  if(tw>0){showConfetti();peccyHop('.peccy-croupier-svg');document.getElementById('roulette-message').innerHTML='<span style="color:#7dffb2">Won '+tw+' on '+msgs.length+' bet'+(msgs.length>1?'s':'')+'!</span><div class="rl-result-detail">'+msgs.join(' · ')+(refund?' · 🌿 Mojito refunded '+fmtChips(refund):'')+'</div>';
-    var q=["The wheel favors the bold! 🎉","Magnifique! A winning spin! ✨","Resolves flow like Lambda invocations! 🚀","Lady Luck rides on a CloudFront edge! 🌟"];
+  var extra=(lucky&&tw?' · 🍀 Lucky number paid double':'')+(zeroBack?' · 0 handed back '+fmtChips(zeroBack):'')+(refund?' · 🌿 Mojito refunded '+fmtChips(refund):'');
+  if(tw>0){showConfetti();peccyHop('.peccy-croupier-svg');document.getElementById('roulette-message').innerHTML='<span style="color:#7dffb2">Won '+tw+' on '+msgs.length+' bet'+(msgs.length>1?'s':'')+'!</span><div class="rl-result-detail">'+msgs.join(' · ')+extra+'</div>';
+    var q=lucky?["🍀 The lucky number! Double pay! 🎉","Lucky "+num+" comes through, paid double! 🍀"]:["The wheel favors the bold! 🎉","Magnifique! A winning spin! ✨","Resolves flow like Lambda invocations! 🚀","Lady Luck rides on a CloudFront edge! 🌟"];
     setPeccySpeech('roulette-peccy-speech',q[Math.floor(Math.random()*q.length)]);
+  }else if(zeroBack){document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">0 is on the house: your bets come back. +'+zeroBack+'</span>';
+    setPeccySpeech('roulette-peccy-speech',"Zero! On the Arcade floor that one's on the house. 🍀");
   }else{document.getElementById('roulette-message').innerHTML='<span style="color:#e63946">No luck this time. -'+staked+'</span>';
     if(refund)document.getElementById('roulette-message').innerHTML+='<div class="rl-result-detail">🌿 Mojito handed back '+fmtChips(refund)+' of it</div>';
     var lq=["The wheel is a fickle service... Try again! 🎡","Even S3 has occasional errors. Spin again! ☁️","Availability zones of luck shift! 🔄","A 503 from Lady Luck. Retry with exponential backoff! 😄"];
@@ -4514,17 +4589,34 @@ var PK_PAYS={
   15:{L:[15,8,3,2,1.5,1.1,1,0.7,0.7,1,1.1,1.5,2,3,8,15],M:[88,18,11,5,3,1.3,0.5,0.3,0.3,0.5,1.3,3,5,11,18,88],H:[620,83,27,8,3,0.5,0.2,0.2,0.2,0.2,0.5,3,8,27,83,620]},
   16:{L:[16,9,2,1.4,1.4,1.2,1.1,1,0.5,1,1.1,1.2,1.4,1.4,2,9,16],M:[110,41,10,5,3,1.5,1,0.5,0.3,0.5,1,1.5,3,5,10,41,110],H:[1000,130,26,9,4,2,0.2,0.2,0.2,0.2,0.2,2,4,9,26,130,1000]}
 };
+// Arcade boards: Stake's tables with the buckets under 1x raised (never higher toward the middle; the
+// 1x-and-up buckets are unchanged). Medium and High go up in 0.05 steps to about 103% (102.5-103.9%).
+// Low only goes up to just under 100% (99.8-99.99%, in 0.01 steps): it hardly ever loses much, so at
+// over 100% an autobet left running would farm chips.
+var PK_ARCADE={
+  8:{L:[5.6,2.1,1.1,1,0.53,1,1.1,2.1,5.6],M:[13,3,1.3,0.75,0.45,0.75,1.3,3,13],H:[29,4,1.5,0.35,0.25,0.35,1.5,4,29]},
+  9:{L:[5.6,2,1.6,1,0.72,0.72,1,1.6,2,5.6],M:[18,4,1.7,0.95,0.55,0.55,0.95,1.7,4,18],H:[43,7,2,0.65,0.25,0.25,0.65,2,7,43]},
+  10:{L:[8.9,3,1.4,1.1,1,0.54,1,1.1,1.4,3,8.9],M:[22,5,2,1.4,0.65,0.5,0.65,1.4,2,5,22],H:[76,10,3,0.95,0.35,0.25,0.35,0.95,3,10,76]},
+  11:{L:[8.4,3,1.9,1.3,1,0.72,0.72,1,1.3,1.9,3,8.4],M:[24,6,3,1.8,0.75,0.55,0.55,0.75,1.8,3,6,24],H:[120,14,5.2,1.4,0.45,0.25,0.25,0.45,1.4,5.2,14,120]},
+  12:{L:[10,3,1.6,1.4,1.1,1,0.54,1,1.1,1.4,1.6,3,10],M:[33,11,4,2,1.1,0.65,0.4,0.65,1.1,2,4,11,33],H:[170,24,8.1,2,0.75,0.25,0.25,0.25,0.75,2,8.1,24,170]},
+  13:{L:[8.1,4,3,1.9,1.2,0.93,0.7,0.7,0.93,1.2,1.9,3,4,8.1],M:[43,13,6,3,1.3,0.75,0.45,0.45,0.75,1.3,3,6,13,43],H:[260,37,11,4,1,0.25,0.25,0.25,0.25,1,4,11,37,260]},
+  14:{L:[7.1,4,1.9,1.4,1.3,1.1,1,0.54,1,1.1,1.3,1.4,1.9,4,7.1],M:[58,15,7,4,1.9,1,0.55,0.3,0.55,1,1.9,4,7,15,58],H:[420,56,18,5,1.9,0.35,0.25,0.25,0.25,0.35,1.9,5,18,56,420]},
+  15:{L:[15,8,3,2,1.5,1.1,1,0.72,0.72,1,1.1,1.5,2,3,8,15],M:[88,18,11,5,3,1.3,0.55,0.35,0.35,0.55,1.3,3,5,11,18,88],H:[620,83,27,8,3,0.55,0.25,0.25,0.25,0.25,0.55,3,8,27,83,620]},
+  16:{L:[16,9,2,1.4,1.4,1.2,1.1,1,0.55,1,1.1,1.2,1.4,1.4,2,9,16],M:[110,41,10,5,3,1.5,1,0.55,0.4,0.55,1,1.5,3,5,10,41,110],H:[1000,130,26,9,4,2,0.25,0.25,0.25,0.25,0.25,2,4,9,26,130,1000]}
+};
 // Ball timing: the drop onto the first peg, each bounce, and the fall into the bucket (ms)
 var PK_DROP=140,PK_SEG=85,PK_LAST=150;
 var pk={rows:16,risk:'M',auto:false,running:false,autoLeft:0,timer:0,balls:[],flash:{},land:{},hist:[],change:0,dropped:0,raf:0,W:0,H:0,dpr:1,lastFrame:0,lastKick:0};
-function pkPays(){return PK_PAYS[pk.rows][pk.risk];}
+function pkPays(){return (gameMode==='arcade'?PK_ARCADE:PK_PAYS)[pk.rows][pk.risk];}
+// Exact payback of the board on screen: each bucket's multiplier times its odds, C(n,k)/2^n
+function pkRtp(){var n=pk.rows,p=pkPays(),c=1,s=0;for(var k=0;k<=n;k++){s+=c*p[k];c=c*(n-k)/(k+1);}return s/Math.pow(2,n)*100;}
 function pkBusy(){return pk.balls.length>0||pk.running;}
 function pkSay(t){setPeccySpeech('plinko-peccy-speech',t);}
 function pkBet(){var el=document.getElementById('pk-bet'),v=Math.max(1,Math.floor(+el.value||1));return v;}
 function pkBetInput(){var el=document.getElementById('pk-bet');if(+el.value<0)el.value=1;}
 function pkBetScale(f){var el=document.getElementById('pk-bet');el.value=Math.max(1,Math.min(Math.max(1,balance),Math.floor(pkBet()*f)));}
-function pkSetRisk(r){if(pkBusy()){document.getElementById('pk-risk').value=pk.risk;return;}pk.risk=r;pkDraw();}
-function pkSetRows(n){if(pkBusy()){document.getElementById('pk-rows').value=pk.rows;return;}pk.rows=n;pkDraw();}
+function pkSetRisk(r){if(pkBusy()){document.getElementById('pk-risk').value=pk.risk;return;}pk.risk=r;pkUI();pkDraw();}
+function pkSetRows(n){if(pkBusy()){document.getElementById('pk-rows').value=pk.rows;return;}pk.rows=n;pkUI();pkDraw();}
 function pkSetAuto(on){
   if(pk.running)pkStopAuto();
   pk.auto=on;document.getElementById('pk-wrap').classList.toggle('auto',on);
@@ -4538,6 +4630,7 @@ function pkUI(){
   // Risk and rows stay put while balls are in the air (the buckets would change under them)
   document.getElementById('pk-risk').disabled=busy;document.getElementById('pk-rows').disabled=busy;
   document.getElementById('pk-count-done').textContent=fmtChips(pk.dropped);
+  document.getElementById('pk-rtp').textContent=pkRtp().toFixed(1)+'%';
 }
 function pkPlay(){
   if(!pk.auto){pkDrop();return;}
