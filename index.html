@@ -494,7 +494,13 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--c) 72%, #fff) 0, var(--c) 46%, color-mix(in srgb, var(--c) 78%, #000) 57%, transparent 58%),
       repeating-conic-gradient(from 8deg, var(--spot-c) 0 13deg, var(--c) 13deg 45deg);
     box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 45%, #000), 0 3px 6px rgba(0,0,0,0.45);
+    /* Each chip carries its value, like the ones you bet with; in a pile only the top one shows */
+    display: flex; align-items: center; justify-content: center; font: 800 calc(var(--s) * 0.3) var(--display); line-height: 1;
+    color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.65); user-select: none;
   }
+  .pile-chip.c50 { color: var(--gold-2); }
+  .pile-chip.c1000, .pile-chip.c1 { color: #2a1a00; text-shadow: none; }
+  .pile-chip.c1000, .pile-chip.c5000, .pile-chip.c25000, .pile-chip.c100000 { font-size: calc(var(--s) * 0.24); }
   .pile-chip.pile-new { animation: pileDrop 0.24s cubic-bezier(.3,1.4,.5,1) both; }
   @keyframes pileDrop { from { transform: translateY(calc(var(--s) * -1.2)); opacity: 0; } }
 
@@ -778,6 +784,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   }
   .sl-hub-head p { margin-top: 4px; font-size: 13px; color: var(--muted); }
   .sl-hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); gap: 14px; }
+  .sl-hub-grid.scrolls { overflow-y: auto; align-content: start; padding: 6px 6px 6px 2px; margin: -6px -6px 0 -2px; }
   .sl-card {
     display: flex; flex-direction: column; padding: 0; border-radius: 18px; overflow: hidden; cursor: pointer; color: #fff; text-align: left; font: inherit;
     background: linear-gradient(180deg, color-mix(in srgb, var(--tile) 16%, #12141c) 0%, #0b0c11 100%);
@@ -807,7 +814,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   /* Cabinet: fills the rest of the screen; the reel stage takes whatever height is left */
   .sl-cabinet {
     position: relative; display: flex; flex-direction: column; max-width: 1500px; margin: 0 auto;
-    height: calc(100vh - 150px); height: calc(100dvh - 150px); min-height: 560px; padding: 12px 16px 14px; border-radius: 28px; text-align: center;
+    height: calc(100vh - 150px); height: calc(100dvh - 150px); min-height: 380px; padding: 12px 16px 14px; border-radius: 28px; text-align: center;
     background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
     border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
     box-shadow: 0 0 0 6px rgba(0,0,0,0.4), 0 0 0 7px color-mix(in srgb, var(--acc) 30%, transparent), 0 30px 70px rgba(0,0,0,0.65), 0 0 120px color-mix(in srgb, var(--acc) 18%, transparent), inset 0 1px 0 rgba(255,255,255,0.1);
@@ -1222,6 +1229,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .shop-cat:hover { color: #fff; background: rgba(255,255,255,0.1); }
   .shop-cat.on { color: #1d1203; border-color: transparent; background: linear-gradient(180deg, #ffd27a 0%, var(--aws-orange) 100%); box-shadow: 0 4px 16px rgba(255,153,0,0.3); }
   .shop-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(228px, 1fr)); gap: 12px; }
+  .shop-grid.scrolls { overflow-y: auto; align-content: start; padding: 6px 6px 6px 2px; margin: -6px -6px 0 -2px; }
   .shop-item {
     display: flex; flex-direction: column; border-radius: 18px; overflow: hidden; transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
     background: linear-gradient(180deg, #161925, #0d0f16); border: 1px solid var(--line-2);
@@ -1373,12 +1381,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   body.arcade .chip-bank .balance { color: #e6c8ff; }
   .arcade-strip { display: none; flex: 1 1 100%; align-items: center; gap: 14px; padding: 6px 4px 0; margin-top: -4px; }
   body.arcade .arcade-strip { display: flex; }
-  .bar-btn {
-    padding: 7px 14px; border-radius: 999px; cursor: pointer; white-space: nowrap; transition: transform 0.2s, filter 0.2s;
-    border: none; color: #fff; font: 800 12.5px 'Inter', sans-serif; background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 4px 16px rgba(123,44,191,0.45);
-  }
-  .bar-btn:hover { transform: translateY(-1px); filter: brightness(1.1); }
-  .hud-buzz { display: flex; align-items: center; gap: 8px; }
+  .hud-buzz { display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .hud-buzz small { font: 700 9.5px 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); }
   .hud-buzz b { min-width: 38px; font: 800 13px var(--display); color: var(--buzz-c, #7dffb2); }
   .buzz-bar { position: relative; width: 140px; height: 9px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); }
@@ -1408,53 +1411,247 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .rl-lucky-msg { color: #9dffc8; }
   .rl-win-tag.back { background: linear-gradient(180deg, #b8ffd6, #3ddc84); color: #06311a; }
 
-  /* ═══ PECCY'S BAR ═══ */
-  .bar-overlay { position: fixed; inset: 0; z-index: 200; display: none; align-items: center; justify-content: center; padding: 16px; background: rgba(6,3,12,0.72); backdrop-filter: blur(6px); }
-  .bar-overlay.show { display: flex; animation: areaIn 0.3s ease; }
-  .bar-panel {
-    position: relative; width: min(920px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 18px 20px 20px; border-radius: 24px;
-    background: radial-gradient(80% 60% at 20% 0%, rgba(192,107,255,0.22), transparent 70%), linear-gradient(180deg, #1c1228 0%, #0d0914 100%);
-    border: 1px solid rgba(192,107,255,0.45); box-shadow: 0 30px 70px rgba(0,0,0,0.7), 0 0 60px rgba(123,44,191,0.3);
+  /* ═══ PECCY'S BAR ═══ The Bar tab (Arcade only): Peccy behind the counter, the menu, and the mixing station */
+  .game-tab.arcade-only { display: none; }
+  body.arcade .game-tab.arcade-only { display: flex; }
+  #game-bar.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  .bar-wrap { position: relative; height: 640px; }
+  .bar-front { display: grid; grid-template-columns: minmax(290px, 0.72fr) 1.75fr; gap: 12px; height: 100%; }
+  .bar-wrap.mixing .bar-front { display: none; }
+  .bar-left, .bar-right { display: flex; flex-direction: column; gap: 10px; min-height: 0; min-width: 0; }
+  /* The scene: bottles on the shelves, a neon sign, and Peccy standing behind the counter */
+  .bar-scene {
+    position: relative; flex: 1; min-height: 210px; border-radius: 22px; overflow: hidden; border: 1px solid rgba(192,107,255,0.35);
+    background: radial-gradient(60% 50% at 50% 16%, rgba(192,107,255,0.3), transparent 70%), linear-gradient(180deg, #2a1830 0%, #1b1022 60%, #120a16 100%);
+    box-shadow: inset 0 0 50px rgba(0,0,0,0.5), 0 14px 34px rgba(0,0,0,0.4);
   }
-  .bar-close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255,255,255,0.06); color: #fff; font-size: 20px; cursor: pointer; }
-  .bar-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; padding-right: 40px; }
-  .bar-peccy { width: 74px; height: 87px; flex: none; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
-  .bar-peccy.has-hat { height: calc(87px * 286 / 240); }
-  .bar-head h2 { font: 900 26px var(--display); background: linear-gradient(180deg, #fff 10%, #e6c8ff 60%, #b06bff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .bar-head p { margin-top: 3px; font-size: 13px; line-height: 1.45; color: var(--muted); }
-  .bar-buzz { padding: 12px 14px; border-radius: 16px; background: rgba(0,0,0,0.35); border: 1px solid var(--line); margin-bottom: 12px; }
-  .bar-buzz-top { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 7px; }
-  .bar-buzz-top span { font: 700 10px 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); }
-  .bar-buzz-top b { font: 900 22px var(--display); color: var(--buzz-c, #7dffb2); }
-  .bar-buzz small { display: block; margin-top: 8px; font-size: 11.5px; line-height: 1.45; color: var(--faint); }
-  .bar-active { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-  .bar-active:empty { display: none; }
-  .bar-menu { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 10px; }
+  .bar-neon { position: absolute; top: 9px; left: 0; right: 0; text-align: center; font: 900 22px var(--display); letter-spacing: 1px; color: #ffe0ff;
+    text-shadow: 0 0 6px #ff6ad5, 0 0 16px #c06bff, 0 0 30px #c06bff; animation: pdNeon 2.4s ease-in-out infinite alternate; }
+  .bar-shelf { position: absolute; left: 5%; right: 5%; height: 9px; display: flex; align-items: flex-end; justify-content: space-around; border-radius: 3px;
+    background: linear-gradient(180deg, #8a5a32, #4e2f17); box-shadow: 0 6px 10px rgba(0,0,0,0.45); }
+  #bar-shelf-1 { top: 34%; } #bar-shelf-2 { top: 56%; }
+  .bar-shelf i { position: relative; bottom: 9px; width: 12px; height: var(--h); border-radius: 5px 5px 3px 3px; opacity: 0.85;
+    background: linear-gradient(90deg, rgba(255,255,255,0.35), transparent 40%), var(--bc); box-shadow: inset 0 -6px 0 rgba(0,0,0,0.2); }
+  .bar-shelf i::before { content: ''; position: absolute; left: 3px; right: 3px; top: -8px; height: 9px; border-radius: 2px 2px 0 0; background: var(--bc); }
+  .bar-peccy-wrap { position: absolute; left: 0; right: 0; bottom: 17%; height: 60%; display: flex; justify-content: center; align-items: flex-end; pointer-events: none; }
+  .bar-peccy { height: 100%; width: auto; aspect-ratio: 204 / 240; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.5)); }
+  .bar-peccy.has-hat { height: calc(100% * 286 / 240); aspect-ratio: 204 / 286; }
+  .bar-counter { position: absolute; left: 0; right: 0; bottom: 0; height: 23%; z-index: 2;
+    background: linear-gradient(180deg, #d0935a 0, #a2632f 8%, #6d3d1a 9%, #4a2810 100%); box-shadow: 0 -6px 18px rgba(0,0,0,0.45); }
+  .bar-counter::before { content: ''; position: absolute; left: 0; right: 0; top: 0; height: 8%; background: linear-gradient(90deg, rgba(255,255,255,0.2), rgba(255,255,255,0.04) 40%, rgba(255,255,255,0.16)); }
+  .bar-served { position: absolute; left: 50%; top: -34px; }
+  .served { position: absolute; left: -20px; top: 0; font-size: 36px; filter: drop-shadow(0 0 10px var(--dc)); animation: served 1.6s cubic-bezier(.2,.8,.3,1) forwards; }
+  @keyframes served { 0% { transform: translate(0, 12px) scale(0.5); opacity: 0; } 25% { opacity: 1; transform: none; } 100% { transform: translate(-86px, 16px) scale(1.12); opacity: 1; } }
+  .bar-say { position: absolute; z-index: 3; top: 44px; left: 12px; max-width: min(48%, 230px); font-size: 12.5px; }
+  .bar-say::before { display: none; }
+  /* Help wanted: the shift board */
+  .bar-job { display: flex; align-items: center; gap: 12px; padding: 11px 13px; border-radius: 16px; flex: none;
+    background: linear-gradient(180deg, #24312b, #17211c); border: 3px solid #7a5230; box-shadow: inset 0 0 20px rgba(0,0,0,0.5), 0 10px 24px rgba(0,0,0,0.35); }
+  .bar-job-text { flex: 1; min-width: 0; color: #e9f5ee; }
+  .bar-job-text b { display: block; font: 900 15px var(--display); color: #fff7d6; }
+  .bar-job-text span { display: block; font-size: 12px; line-height: 1.35; color: rgba(233,245,238,0.82); }
+  .bar-job-text small { display: block; margin-top: 3px; font-size: 11px; color: #ffd27a; }
+  .bar-job-btn { flex: none; padding: 10px 16px; font-size: 12px; }
+  /* The menu side */
+  .bar-status { display: flex; align-items: center; gap: 8px 14px; flex-wrap: wrap; padding: 8px 12px; border-radius: 16px; background: rgba(0,0,0,0.35); border: 1px solid var(--line); flex: none; }
+  .bar-buzz { display: flex; align-items: center; gap: 10px; min-width: 210px; flex: 1; }
+  .bar-buzz span { font: 700 10px 'Inter', sans-serif; letter-spacing: 1.6px; text-transform: uppercase; color: var(--faint); white-space: nowrap; }
+  .bar-buzz .buzz-bar { flex: 1; }
+  .bar-buzz b { min-width: 42px; font: 900 18px var(--display); color: var(--buzz-c, #7dffb2); }
+  .bar-active { display: flex; flex-wrap: wrap; gap: 6px; }
+  .bar-none { font-size: 11.5px; color: var(--faint); }
+  .bar-menu { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(196px, 1fr)); grid-auto-rows: min-content; gap: 8px; padding: 1px 2px 1px 1px; }
+  .bar-note { flex: none; font-size: 11px; line-height: 1.4; color: var(--faint); }
   .drink {
-    display: flex; flex-direction: column; gap: 6px; padding: 12px; border-radius: 16px; text-align: center;
-    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border: 1px solid var(--line-2);
+    display: flex; flex-direction: column; gap: 6px; padding: 9px 10px; border-radius: 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)); border: 1px solid var(--line-2); border-top: 2px solid color-mix(in srgb, var(--dc) 70%, transparent);
   }
-  .drink-glass {
-    width: 64px; height: 64px; margin: 2px auto 2px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px;
-    background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--dc) 55%, #fff 10%), color-mix(in srgb, var(--dc) 25%, #000) 75%);
-    box-shadow: 0 0 22px color-mix(in srgb, var(--dc) 45%, transparent), inset 0 1px 0 rgba(255,255,255,0.3);
-  }
-  .drink-name { font: 800 14.5px var(--display); }
-  .drink-desc { font-size: 11.5px; line-height: 1.4; color: rgba(255,255,255,0.72); flex: 1; }
-  .drink-meta { display: flex; justify-content: center; gap: 8px; font: 700 11px 'Inter', sans-serif; color: var(--faint); }
+  .drink.off { opacity: 0.62; }
+  .drink-top { display: flex; align-items: center; gap: 9px; }
+  .drink-glass { width: 36px; height: 36px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px;
+    background: radial-gradient(circle at 40% 30%, color-mix(in srgb, var(--dc) 55%, #fff 10%), color-mix(in srgb, var(--dc) 25%, #000) 75%); box-shadow: 0 0 14px color-mix(in srgb, var(--dc) 40%, transparent); }
+  .drink-head { min-width: 0; }
+  .drink-name { font: 800 13.5px var(--display); line-height: 1.15; }
+  .drink-meta { display: flex; flex-wrap: wrap; gap: 2px 8px; margin-top: 2px; font: 700 10.5px 'Inter', sans-serif; color: var(--faint); }
+  .drink-price { display: inline-flex; align-items: center; gap: 4px; color: var(--gold-2); }
+  .drink-price .chip-dot { width: 11px; height: 11px; box-shadow: inset 0 0 0 2px #d0312d; }
   .drink-meta .bz { color: #ffb36b; }
+  .drink-desc { flex: 1; font-size: 11.5px; line-height: 1.35; color: rgba(255,255,255,0.74); }
+  .drink-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .drink-why { padding: 6px; border-radius: 999px; text-align: center; font: 700 11.5px 'Inter', sans-serif; color: var(--faint); background: rgba(255,255,255,0.05); }
   .drink-btn {
-    padding: 8px 10px; border-radius: 999px; border: none; cursor: pointer; font: 800 12.5px 'Inter', sans-serif; color: #fff;
-    background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 4px 14px rgba(123,44,191,0.4); transition: filter 0.2s, transform 0.2s;
+    padding: 7px 6px; border-radius: 999px; border: none; cursor: pointer; font: 800 11.5px 'Inter', sans-serif; color: #fff; white-space: nowrap;
+    background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 4px 12px rgba(123,44,191,0.35); transition: filter 0.2s, transform 0.2s;
   }
+  .drink-btn.diy { color: #1d1203; background: linear-gradient(180deg, #ffd27a, var(--aws-orange)); box-shadow: 0 4px 12px rgba(255,153,0,0.3); }
   .drink-btn:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
-  .drink-btn:disabled { opacity: 0.45; cursor: not-allowed; }
-  .drink-btn.danger { background: linear-gradient(180deg, #ff6a6a, #c1121f); box-shadow: 0 4px 14px rgba(193,18,31,0.45); }
+  .drink-btn.danger { background: linear-gradient(180deg, #ff6a6a, #c1121f); box-shadow: 0 4px 12px rgba(193,18,31,0.45); }
+  .hud-drink.mixed { border-color: rgba(255,210,122,0.65); }
 
-  /* ═══ BEING BUZZED ═══ The table sways more the drunker you get, then blurs, then sees double */
+  /* ═══ MIXING ═══ A ticket, the glass on the counter, and the station you're at */
+  .mix { display: none; height: 100%; flex-direction: column; gap: 10px; }
+  .bar-wrap.mixing .mix { display: flex; }
+  .mix-top { display: flex; align-items: center; gap: 12px; flex: none; }
+  .mix-host { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+  .mix-host .peccy-small { width: 44px; height: 52px; }
+  .mix-host .peccy-small.has-hat { height: calc(52px * 286 / 240); }
+  .mix-host .peccy-speech { font-size: 12.5px; max-width: 440px; padding: 8px 12px; }
+  .mix-steps { display: flex; gap: 3px; padding: 4px; border-radius: 999px; background: rgba(0,0,0,0.35); border: 1px solid var(--line); flex: none; }
+  .mx-step { display: flex; align-items: center; gap: 6px; padding: 6px 11px; border-radius: 999px; font: 700 12px 'Inter', sans-serif; color: var(--faint); white-space: nowrap; }
+  .mx-step b { width: 18px; height: 18px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 10.5px; background: rgba(255,255,255,0.08); }
+  .mx-step.on { color: #1d1203; background: linear-gradient(180deg, #ffd27a, var(--aws-orange)); }
+  .mx-step.on b { background: rgba(0,0,0,0.15); }
+  .mx-step.done { color: #7dffb2; }
+  .mx-step.done b { background: rgba(61,220,132,0.2); }
+  .mix-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 240px minmax(0, 1fr) 370px; gap: 12px; }
+  /* The ticket, like an order slip */
+  .mix-ticket { overflow-y: auto; padding: 13px 14px 11px; border-radius: 6px 6px 16px 16px; color: #2a2118;
+    background: repeating-linear-gradient(180deg, transparent 0 25px, rgba(60,40,20,0.07) 25px 26px), linear-gradient(180deg, #fffaf0, #f2e5cb); box-shadow: 0 14px 30px rgba(0,0,0,0.45); }
+  .tk-cust { display: flex; gap: 10px; align-items: center; padding-bottom: 9px; margin-bottom: 7px; border-bottom: 2px dashed rgba(60,40,20,0.25); }
+  .tk-cust > div { flex: 1; min-width: 0; }
+  .tk-face { font-size: 34px; line-height: 1; }
+  .tk-cust b { font: 800 14px var(--display); }
+  .tk-cust small { display: block; margin: 1px 0 5px; font-size: 11.5px; color: #6b5a45; }
+  .tk-wait { height: 7px; border-radius: 999px; background: rgba(60,40,20,0.15); overflow: hidden; }
+  .tk-wait i { display: block; height: 100%; width: 100%; border-radius: inherit; transition: width 0.25s linear, background 0.4s; }
+  .tk-no { font: 700 10px 'Inter', sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: #9b856a; }
+  .tk-name { margin: 2px 0 6px; font: 900 18px var(--display); line-height: 1.15; }
+  .tk-row { display: grid; grid-template-columns: 52px 1fr auto; gap: 6px; align-items: baseline; padding: 6px 0; border-top: 1px solid rgba(60,40,20,0.15); font-size: 12.5px; line-height: 1.35; }
+  .tk-l { font: 800 9.5px 'Inter', sans-serif; letter-spacing: 1px; text-transform: uppercase; color: #9b856a; }
+  .tk-s { font: 800 12px var(--display); color: #1b8a52; }
+  .tk-pour { display: flex; flex-direction: column; gap: 2px; }
+  .tk-pour span { display: flex; align-items: center; gap: 6px; }
+  .tk-pour i { width: 10px; height: 10px; flex: none; border-radius: 50%; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+  .tk-pour em { font-style: normal; color: #6b5a45; }
+  /* The glass on the counter */
+  .mix-stage { position: relative; min-height: 0; border-radius: 22px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(192,107,255,0.3);
+    background: radial-gradient(60% 50% at 50% 35%, rgba(192,107,255,0.2), transparent 70%), linear-gradient(180deg, #24162b 0%, #160d1a 88%, #a2632f 88%, #6d3d1a 89.5%, #4a2810 100%); }
+  .mix-glass { width: 100%; height: 100%; touch-action: none; }
+  .mx-glass-o path, .mx-glass-o ellipse { fill: rgba(255,255,255,0.06); stroke: rgba(255,255,255,0.78); stroke-width: 2.5; stroke-linejoin: round; }
+  .mx-glass-o .mx-stem { fill: none; stroke-width: 5; stroke-linecap: round; }
+  .mx-inside { fill: rgba(255,255,255,0.03); }
+  .mx-ph-box { fill: none; stroke: rgba(255,255,255,0.25); stroke-width: 2; stroke-dasharray: 8 6; }
+  .mx-ph { fill: rgba(255,255,255,0.45); font: 700 14px 'Inter', sans-serif; }
+  .mx-ice { fill: rgba(235,248,255,0.3); stroke: rgba(255,255,255,0.7); stroke-width: 1.2; }
+  .mx-line { stroke: #fff; stroke-width: 1.6; stroke-dasharray: 6 4; opacity: 0.5; }
+  .mx-line.next { stroke: #ffd27a; stroke-width: 2.6; opacity: 1; }
+  .mx-lab text { fill: rgba(255,255,255,0.68); font: 700 11px 'Inter', sans-serif; }
+  .mx-lab.next text { fill: #ffd27a; }
+  .mx-spill { fill: rgba(180,220,255,0.7); }
+  .mx-garn { font-size: 30px; }
+  .mx-garn.drop { animation: garnDrop 0.3s cubic-bezier(.3,1.5,.5,1); }
+  @keyframes garnDrop { from { transform: translateY(-34px); } }
+  .mx-mark { fill: rgba(255,210,122,0.12); stroke: #ffd27a; stroke-width: 2; stroke-dasharray: 4 3; animation: pdNeon 0.8s ease-in-out infinite alternate; }
+  .g-lime { filter: hue-rotate(55deg) saturate(1.4); }
+  /* The station panel */
+  .mix-station { overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 13px; border-radius: 22px; background: linear-gradient(180deg, #1a2433, #111823); border: 1px solid rgba(255,255,255,0.08); }
+  .mx-title { font: 800 15px var(--display); }
+  .mx-hint { margin-top: -4px; font-size: 12px; line-height: 1.4; color: var(--muted); }
+  .mx-glasses, .mx-tray { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .mx-ices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .mx-opt { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 7px 3px; border-radius: 12px; cursor: pointer; font-size: 20px; color: #fff;
+    background: rgba(255,255,255,0.05); border: 1px solid var(--line-2); transition: background 0.15s, border-color 0.15s; }
+  .mx-opt span { font: 700 10.5px 'Inter', sans-serif; line-height: 1.15; text-align: center; color: var(--muted); }
+  .mx-opt svg { width: 100%; height: 46px; }
+  .mx-opt b { font-size: 22px; font-weight: 400; line-height: 1.1; }
+  .mx-opt:hover:not(:disabled) { background: rgba(255,255,255,0.1); }
+  .mx-opt.on { border-color: var(--aws-orange); background: rgba(255,153,0,0.14); box-shadow: 0 0 0 1px var(--aws-orange); }
+  .mx-opt:disabled { opacity: 0.35; cursor: default; }
+  .mx-next { margin-top: auto; padding: 11px 18px; font-size: 12.5px; flex: none; }
+  .mx-shelf { display: flex; flex-direction: column; gap: 5px; }
+  .mx-shelf-row small { display: block; margin-bottom: 3px; font: 700 9.5px 'Inter', sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: var(--faint); }
+  .mx-shelf-row > div { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+  .mx-bottle { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 4px 2px; border-radius: 10px; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none;
+    background: rgba(255,255,255,0.04); border: 1px solid var(--line-2); color: var(--muted); font: 700 9.5px 'Inter', sans-serif; line-height: 1.1; text-align: center; }
+  .mx-bottle i { position: relative; width: 12px; height: 20px; margin-top: 6px; border-radius: 4px 4px 3px 3px; transition: transform 0.15s;
+    background: linear-gradient(90deg, rgba(255,255,255,0.4), transparent 45%), var(--bc); box-shadow: inset 0 -5px 0 rgba(0,0,0,0.2); }
+  .mx-bottle i::before { content: ''; position: absolute; left: 3px; right: 3px; top: -6px; height: 7px; border-radius: 2px 2px 0 0; background: var(--bc); }
+  .mx-bottle:hover { background: rgba(255,255,255,0.09); color: #fff; }
+  .mx-bottle.pouring { border-color: var(--bc); background: color-mix(in srgb, var(--bc) 22%, transparent); color: #fff; }
+  .mx-bottle.pouring i { transform: rotate(-40deg); }
+  .mx-poured { display: flex; flex-direction: column; gap: 4px; }
+  .mx-pbar { display: grid; grid-template-columns: 96px 1fr; gap: 8px; align-items: center; font: 700 10.5px 'Inter', sans-serif; color: var(--muted); }
+  .mx-pbar div { position: relative; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.08); }
+  .mx-pbar i { display: block; height: 100%; border-radius: inherit; }
+  .mx-pbar b { position: absolute; top: -3px; bottom: -3px; width: 2px; margin-left: -1px; border-radius: 1px; background: #ffd27a; }
+  .mx-extra { font-size: 11px; color: #ff8a80; }
+  .mx-shaker { align-self: center; font-size: 44px; line-height: 1; }
+  .mx-shaker.going.shake { animation: mxShake 0.16s linear infinite; }
+  .mx-shaker.going.stir { animation: mxStir 0.5s linear infinite; }
+  @keyframes mxShake { 0%, 100% { transform: rotate(-9deg); } 50% { transform: translateY(-8px) rotate(9deg); } }
+  @keyframes mxStir { from { transform: rotate(0deg) translateX(6px) rotate(0deg); } to { transform: rotate(360deg) translateX(6px) rotate(-360deg); } }
+  .mx-meter { position: relative; height: 18px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); box-shadow: inset 0 1px 3px rgba(0,0,0,0.6); }
+  .mx-band { position: absolute; top: 0; bottom: 0; background: rgba(61,220,132,0.4); border-left: 2px solid #3ddc84; border-right: 2px solid #3ddc84; }
+  .mx-meter i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, rgba(255,210,122,0.45), #ffd27a); border-right: 3px solid #fff; }
+  .mx-meter-scale { display: flex; justify-content: space-between; margin-top: -4px; font-size: 10px; color: var(--faint); }
+  .mx-holds { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .mx-hold { padding: 14px 8px; border: none; border-radius: 14px; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; font: 800 13px 'Inter', sans-serif; color: #fff;
+    background: linear-gradient(180deg, #c06bff, #7b2cbf); box-shadow: 0 6px 16px rgba(123,44,191,0.4); }
+  .mx-hold:active:not(:disabled) { transform: scale(0.97); }
+  .mx-hold:disabled { opacity: 0.4; cursor: default; }
+  .mx-result { font-size: 13px; text-align: center; color: #fff; }
+  .mx-drop { align-self: center; padding: 11px 26px; flex: none; }
+  .mx-scores { display: grid; gap: 4px; }
+  .mx-scores div { display: flex; justify-content: space-between; padding: 6px 10px; border-radius: 10px; background: rgba(255,255,255,0.05); font-size: 12.5px; }
+  .mx-scores b { font: 800 14px var(--display); color: var(--gold-2); }
+  .mx-total { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 8px; border-radius: 14px; background: rgba(255,153,0,0.1); border: 1px solid rgba(255,153,0,0.35); }
+  .mx-total span { font: 800 12px 'Inter', sans-serif; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+  .mx-total b { font: 900 32px var(--display); line-height: 1.05; color: var(--gold-2); }
+  .mx-total .mx-stars { font: 400 18px 'Inter', sans-serif; letter-spacing: 2px; text-transform: none; color: #ffd23d; }
+  .mx-stars i { font-style: normal; color: rgba(255,255,255,0.18); }
+  .mx-paid { font-size: 12.5px; line-height: 1.5; text-align: center; color: #fff; }
+  @media (max-height: 720px) {
+    .bar-note, .mx-shelf-row small, .mx-pour-hint { display: none; }
+    .drink { padding: 7px 9px; gap: 4px; }
+    .drink-glass { width: 30px; height: 30px; font-size: 17px; }
+    .drink-btn { padding: 5px 6px; }
+    .mix-station { padding: 10px 12px; gap: 6px; }
+    .mx-bottle i { height: 16px; margin-top: 5px; }
+    .mix-ticket { padding: 10px 12px 8px; }
+    .tk-row { padding: 4px 0; }
+    .bar-neon { font-size: 18px; top: 6px; }
+    .bar-say { top: 34px; }
+    .mx-opt svg { height: 36px; }
+    .mx-shaker { font-size: 34px; }
+    .mx-hold { padding: 10px 8px; }
+  }
+  @media (max-width: 1180px) {
+    .mix-body { grid-template-columns: 210px minmax(0, 1fr) 330px; }
+    .mx-step { padding: 6px 8px; }
+  }
+  @media (max-width: 980px) {
+    .bar-wrap { height: auto !important; }
+    .bar-front { grid-template-columns: 1fr; height: auto; }
+    .bar-scene { flex: none; height: 230px; }
+    .bar-menu { overflow: visible; }
+    .mix { height: auto; }
+    .mix-body { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+    .mix-ticket { grid-column: 1 / -1; }
+    .mix-stage { height: 320px; }
+  }
+  @media (max-width: 640px) {
+    .mix-body { grid-template-columns: 1fr; }
+    .mix-stage { height: 250px; }
+    .mix-top { flex-wrap: wrap; }
+    .mix-steps { order: 3; width: 100%; justify-content: space-between; }
+    .mx-step { gap: 0; padding: 5px; font-size: 0; }
+    .mx-step b { font-size: 10.5px; }
+    .mx-step.on { gap: 5px; padding: 5px 10px; font-size: 11px; }
+    .bar-job { flex-wrap: wrap; }
+    .bar-job-btn { width: 100%; }
+  }
+
+  /* ═══ BEING BUZZED ═══ The table sways more the drunker you get, and a haze closes in round the edges.
+     No blur or other filter goes on the game itself: some browsers stop drawing a big, moving area with a
+     filter on it, so at high buzz the games vanished. The haze is a separate layer that never hides them. */
   body.buzz-1 .game-area.active { animation: drunk1 7s ease-in-out infinite; }
-  body.buzz-2 .game-area.active { animation: drunk2 5s ease-in-out infinite; filter: blur(0.35px) saturate(1.12); }
-  body.buzz-3 .game-area.active { animation: drunk3 3.6s ease-in-out infinite; filter: blur(0.7px) saturate(1.3) drop-shadow(7px 0 0 rgba(255,255,255,0.08)); }
+  body.buzz-2 .game-area.active { animation: drunk2 5s ease-in-out infinite; }
+  body.buzz-3 .game-area.active { animation: drunk3 3.6s ease-in-out infinite; }
+  .buzz-haze { position: fixed; inset: 0; z-index: 45; pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
+    background: radial-gradient(ellipse 78% 72% at 50% 55%, transparent 52%, rgba(120,40,170,0.3) 100%); }
+  body.buzz-2 .buzz-haze { opacity: 0.75; }
+  body.buzz-3 .buzz-haze { opacity: 1; background: radial-gradient(ellipse 72% 66% at 50% 55%, transparent 42%, rgba(120,40,170,0.45) 100%); animation: hazePulse 3.6s ease-in-out infinite; }
+  @keyframes hazePulse { 50% { opacity: 0.7; } }
   @keyframes drunk1 { 0%, 100% { transform: none; } 25% { transform: translate(-3px, 1px) rotate(-0.3deg); } 75% { transform: translate(3px, -1px) rotate(0.3deg); } }
   @keyframes drunk2 { 0%, 100% { transform: none; } 25% { transform: translate(-6px, 2px) rotate(-0.6deg); } 75% { transform: translate(6px, -2px) rotate(0.6deg); } }
   @keyframes drunk3 { 0%, 100% { transform: none; } 20% { transform: translate(-10px, 3px) rotate(-1deg); } 50% { transform: translate(4px, -3px) rotate(0.5deg); } 80% { transform: translate(10px, 2px) rotate(1deg); } }
@@ -1554,6 +1751,64 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   @keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
 
   /* ═══ SMALLER SCREENS ═══ */
+  /* Laptops: the header keeps to one row (plus the Arcade strip) so the games get the height */
+  @media (max-width: 1440px) and (min-width: 761px) {
+    .topbar { gap: 12px; padding: 8px 18px; }
+    .brand-tag { display: none; }
+    .brand-peccy { width: 30px; height: 35px; }
+    .game-tab { padding: 8px 13px; }
+  }
+  @media (max-width: 1200px) and (min-width: 761px) {
+    .game-tab .tab-ico { display: none; }
+    .game-tab { padding: 8px 11px; font-size: 13.5px; }
+    .chip-bank .label { display: none; }
+    .brand-name { font-size: 19px; }
+  }
+  /* Short laptop screens: slimmer chrome round each game, so it all fits on one screen without scrolling
+     (the tables also scale down to fit, see fitTables) */
+  @media (max-height: 820px) and (min-width: 761px) {
+    #game-blackjack, #game-roulette, #game-slots.active, #game-plinko.active, #game-bar.active, #game-shop.active { padding-top: 8px; padding-bottom: 8px; }
+    /* Blackjack: a smaller Peccy standing further behind the table, and a tighter felt */
+    .peccy-dealer-svg { width: 122px; height: 144px; }
+    .peccy-dealer-svg.has-hat { height: calc(144px * 286 / 240); }
+    .bj-dealer { margin-bottom: -28px; }
+    .bj-dealer .peccy-speech { left: calc(50% + 70px); top: 10px; }
+    .bj-felt { padding-top: 34px; padding-bottom: 14px; }
+    .bj-mid { height: 64px; }
+    .bj-console { margin-top: 6px; padding: 7px 14px; }
+    /* Slots: a slimmer cabinet head, plaques and control deck */
+    .sl-cabinet { padding: 8px 14px 10px; }
+    .sl-head .peccy-small { width: 44px; height: 52px; }
+    .sl-head .peccy-small.has-hat { height: calc(52px * 286 / 240); }
+    .sl-marquee { padding: 6px 30px 5px; }
+    .sl-name { font-size: 24px; }
+    .sl-jackpots { margin-top: 5px; }
+    .sl-jp { padding: 3px 10px 4px; }
+    .sl-jp span { font-size: 16px; } .sl-jp-grand span { font-size: 18px; }
+    .sl-jp em { display: none; }
+    .sl-status { margin: 3px 0 2px; }
+    .sl-win-msg { margin-top: 3px; }
+    .sl-console { padding: 6px 12px; margin-top: 4px; }
+    .sl-spin-btn { width: 70px; height: 70px; }
+    .sl-spin-btn i { font-size: 18px; margin-bottom: 1px; }
+    .sl-side-btns { display: grid; grid-template-columns: 1fr 1fr; }
+    .sl-side-btns .rl-small-btn { padding: 6px 10px; }
+    /* The slot picker: shorter cards, five to a row */
+    .sl-hub-head { margin-bottom: 8px; }
+    .sl-hub-head p { display: none; }
+    .sl-hub-grid { grid-template-columns: repeat(auto-fill, minmax(226px, 1fr)); gap: 10px; }
+    .sl-card-preview { height: 88px; padding: 5px 8px; }
+    .sl-card-preview .sl-mini { transform: scale(0.7); }
+    .sl-card-body { gap: 4px; padding: 8px 12px 9px; }
+    .sl-card-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 11.5px; }
+    /* Shop: a slimmer header (its grid scrolls inside the window, see shopLayout) */
+    .shop-head { padding: 8px 16px; margin-bottom: 8px; }
+    .shop-host-peccy { width: 54px; height: 64px; }
+    .shop-host-peccy.has-hat { height: calc(64px * 286 / 240); }
+    .shop-title h2 { font-size: 23px; }
+    .shop-title p { font-size: 12px; }
+    .shop-cats { margin-bottom: 8px; }
+  }
   @media (max-width: 760px) {
     .topbar { flex-wrap: wrap; padding: 10px 14px; gap: 10px; }
     .brand-tag, .chip-bank .label { display: none; }
@@ -1619,6 +1874,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     <button class="game-tab" onclick="switchGame('slots')" id="tab-slots"><span class="tab-ico">7</span> Slots</button>
     <button class="game-tab" onclick="switchGame('roulette')" id="tab-roulette"><i class="tab-ico fa-solid fa-dharmachakra"></i> Roulette</button>
     <button class="game-tab" onclick="switchGame('plinko')" id="tab-plinko"><i class="tab-ico fa-solid fa-circle-dot"></i> Plinko</button>
+    <button class="game-tab arcade-only" onclick="switchGame('bar')" id="tab-bar"><i class="tab-ico fa-solid fa-martini-glass-citrus"></i> Bar</button>
     <button class="game-tab" onclick="switchGame('shop')" id="tab-shop"><i class="tab-ico fa-solid fa-bag-shopping"></i> Shop</button>
   </nav>
   <div class="top-right">
@@ -1636,14 +1892,15 @@ a { color: var(--color-link, var(--color-primary)); }</style>
       <button class="reset-btn" id="reset-btn" onclick="resetBank()" title="Reset to 100 chips"><i class="fa-solid fa-rotate-right"></i></button>
     </div>
   </div>
-  <!-- Arcade only: the bar, the buzz meter and the drinks you have going -->
+  <!-- Arcade only: the buzz meter and the drinks you have going (tap them for the bar) -->
   <div class="arcade-strip" id="arcade-strip">
-    <button class="bar-btn" onclick="barOpen()">🍸 Peccy's Bar</button>
-    <div class="hud-buzz" title="Each drink adds buzz; every spin or hand wears a little off"><small>Buzz</small><div class="buzz-bar"><i id="hud-buzz-fill"></i></div><b id="hud-buzz-pct">0%</b></div>
+    <div class="hud-buzz" onclick="barOpen()" title="Each drink adds buzz; every spin or hand wears a little off"><small>Buzz</small><div class="buzz-bar"><i id="hud-buzz-fill"></i></div><b id="hud-buzz-pct">0%</b></div>
     <div class="hud-drinks" id="hud-drinks"></div>
-    <div class="hud-tip">🍀 Odds lean your way · 3 drinks max · 100% buzz = blackout</div>
+    <div class="hud-tip">🍀 Odds lean your way · 100% buzz = blackout</div>
   </div>
 </header>
+<!-- The haze round the edges of the screen when you're buzzed (see BEING BUZZED) -->
+<div class="buzz-haze" aria-hidden="true"></div>
 
 <!-- ═══ BLACKJACK ═══ -->
 <div class="game-area active" id="game-blackjack">
@@ -1878,21 +2135,45 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   <div class="shop-grid" id="shop-grid"></div>
 </div>
 
-<!-- ═══ PECCY'S BAR (arcade) ═══ -->
-<div class="bar-overlay" id="bar-overlay" onclick="if(event.target===this)barClose()">
-  <div class="bar-panel" role="dialog" aria-label="Peccy's Bar">
-    <button class="bar-close" onclick="barClose()" aria-label="Close the bar">×</button>
-    <div class="bar-head">
-      <svg class="peccy-dealer bar-peccy" data-outfit="roulette" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
-      <div><h2>Peccy's Bar</h2><p id="bar-say">What'll it be? Every drink comes with a little something extra. 🍸</p></div>
+<!-- ═══ PECCY'S BAR (arcade) ═══ Peccy behind the counter and the drinks menu; the mixing station takes over the tab while you make a drink -->
+<div class="game-area" id="game-bar">
+  <div class="bar-wrap" id="bar-wrap">
+    <div class="bar-front">
+      <div class="bar-left">
+        <div class="bar-scene">
+          <div class="bar-neon" aria-hidden="true">Peccy's Bar</div>
+          <div class="bar-shelf" id="bar-shelf-1" aria-hidden="true"></div>
+          <div class="bar-shelf" id="bar-shelf-2" aria-hidden="true"></div>
+          <div class="bar-peccy-wrap"><svg class="peccy-dealer bar-peccy" data-outfit="bar" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg></div>
+          <div class="peccy-speech bar-say" id="bar-say">What'll it be? I can pour you one, or you can mix it yourself. 🍸</div>
+          <div class="bar-counter"><div class="bar-served" id="bar-served"></div></div>
+        </div>
+        <div class="bar-job">
+          <div class="bar-job-text"><b>Help wanted!</b><span>Work a shift behind the bar: mix drinks for 5 customers and earn wages and tips.</span><small id="bar-job-stats"></small></div>
+          <button class="btn btn-primary bar-job-btn" onclick="barShiftStart()">Work a shift</button>
+        </div>
+      </div>
+      <div class="bar-right">
+        <div class="bar-status">
+          <div class="bar-buzz" title="Each drink adds buzz; every spin, hand or ball wears a little off"><span>Your buzz</span><div class="buzz-bar big"><i id="bar-buzz-fill"></i></div><b id="bar-buzz-pct">0%</b></div>
+          <div class="bar-active" id="bar-active"></div>
+        </div>
+        <div class="bar-menu" id="bar-menu"></div>
+        <div class="bar-note">Up to 3 drinks at once. Every spin, hand or ball wears off a little buzz; hit 100% and you black out. <b>Mix it</b> yourself and how well you make it sets how strong it is: up to 1.5× Peccy's, or weaker if you botch it.</div>
+      </div>
     </div>
-    <div class="bar-buzz">
-      <div class="bar-buzz-top"><span>Your buzz</span><b id="bar-buzz-pct">0%</b></div>
-      <div class="buzz-bar big"><i id="bar-buzz-fill"></i></div>
-      <small>Each drink adds buzz and every spin or hand you play wears a little off. Up to 3 drinks at once. Hit 100% and you black out: your drinks wear off and some of your chips go missing.</small>
+    <div class="mix" id="mix">
+      <div class="mix-top">
+        <div class="mix-host"><svg class="peccy-dealer peccy-small" data-outfit="bar" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg><div class="peccy-speech" id="mix-say"></div></div>
+        <div class="mix-steps" id="mix-steps"></div>
+        <button class="clear-bet" id="mix-quit" onclick="mxQuit()">Cancel</button>
+      </div>
+      <div class="mix-body">
+        <div class="mix-ticket" id="mix-ticket"></div>
+        <div class="mix-stage"><svg class="mix-glass" id="mix-glass" viewBox="-30 -52 300 300" aria-label="The glass you're making"></svg></div>
+        <div class="mix-station" id="mix-station"></div>
+      </div>
     </div>
-    <div class="bar-active" id="bar-active"></div>
-    <div class="bar-menu" id="bar-menu"></div>
   </div>
 </div>
 <!-- Blacking out: the screen fades to black, then you come round on the casino floor -->
@@ -1947,7 +2228,7 @@ function resetBank() {
   var start = MODE_START[gameMode];
   if (balance > start && !confirm('Reset your ' + (gameMode === 'arcade' ? 'arcade ' : '') + 'chips to ' + fmtChips(start) + '? You have ' + fmtChips(balance) + ' right now. Anything you bought in the shop stays yours.')) return;
   balance = start;
-  if (gameMode === 'arcade') { bar.drinks = []; bar.buzz = 0; barHUD(); }
+  if (gameMode === 'arcade') { if (mx.on) mxClose(); bar.drinks = []; bar.buzz = 0; barRender(); }
   updateBalance();
   bjBetAmount = 0; slState.auto = 0; slUI();
   document.getElementById('bj-bet-display').textContent = '0';
@@ -1963,8 +2244,10 @@ function switchGame(g) {
   document.getElementById('tab-'+g).classList.add('active');
   fitTables();setTimeout(fitTables,480);  // again once the tab's slide-in has finished
   if(g==='roulette')rlRender();
-  if(g==='shop')shopRender();
+  if(g==='shop'){shopRender();shopLayout();}
   if(g==='plinko')pkLayout();
+  if(g==='bar'){barRender();barLayout();if(mx.on)mxRender();}
+  else if(mx.on){mxPourStop();mxMixStop();}  // let go of the bottle (or shaker) on the way out
   // The Slots tab opens on the machine picker, unless a spin is still playing out
   if(g==='slots'){if(slState.playing)slLayout();else slShowHub();}
 }
@@ -1973,14 +2256,13 @@ function switchGame(g) {
 var tableScale={blackjack:1,roulette:1};
 // The footer line sits under every game, so the games leave room for it
 function footH(){var f=document.getElementById('site-foot');return f?f.offsetHeight:0;}
+// The height left for `el` before the bottom of the window: less its game area's bottom padding and the footer
+function roomBelow(el){var a=el.closest('.game-area'),pb=a?parseFloat(getComputedStyle(a).paddingBottom)||0:0;return innerHeight-el.getBoundingClientRect().top-window.scrollY-pb-footH()-2;}
 function fitTables(){
   ['blackjack','roulette'].forEach(function(g){
     var area=document.getElementById('game-'+g),fit=area.querySelector('.table-fit'),s=1,h=fit.offsetHeight;
     if(!area.classList.contains('active'))return;
-    if(innerWidth>760&&h){
-      var top=area.getBoundingClientRect().top+window.scrollY+parseFloat(getComputedStyle(area).paddingTop);
-      s=Math.max(0.6,Math.min(1,(innerHeight-top-14-footH())/h));
-    }
+    if(innerWidth>760&&h)s=Math.max(0.45,Math.min(1,roomBelow(fit)/h));
     tableScale[g]=s;
     fit.style.transform=s<1?'scale('+s.toFixed(4)+')':'';
     fit.style.marginBottom=s<1?(-(1-s)*h)+'px':'';
@@ -1988,6 +2270,13 @@ function fitTables(){
   if(document.getElementById('game-roulette').classList.contains('active'))rlRender();
 }
 window.addEventListener('resize',fitTables);
+// The shop's items scroll inside the window on a wide screen, so its header and tabs stay put
+function shopLayout(){
+  var g=document.getElementById('shop-grid');if(!g||!g.offsetParent)return;
+  var on=innerWidth>760;g.classList.toggle('scrolls',on);
+  g.style.maxHeight=on?Math.max(220,roomBelow(g))+'px':'';
+}
+window.addEventListener('resize',shopLayout);
 
 // ── Chip piles (blackjack and roulette) ──
 // Any amount as chips, biggest first (the bottom of a stack), so a bigger amount makes a taller pile.
@@ -2012,10 +2301,12 @@ function chipPileHTML(chips,o){
     var col=Math.floor(i/o.per),row=i%o.per,x=(o.right?col:(col%2?1:-1)*Math.ceil(col/2))*o.s*0.94,d=(i-fresh)*step-gone,anim=i>=fresh&&d>-240;
     // Higher chips cover lower ones; the first column stands in front of the ones beside it
     h+='<span class="pile-chip c'+chips[i]+(anim?' pile-new':'')+'" style="left:'+x.toFixed(1)+'px;bottom:'+(row*o.gap)+'px;z-index:'+((cols-col)*(o.per+1)+row)+
-      (anim?';animation-delay:'+Math.max(0,Math.round(d))+'ms':'')+'"></span>';
+      (anim?';animation-delay:'+Math.max(0,Math.round(d))+'ms':'')+'">'+chipLabel(chips[i])+'</span>';
   }
   return h;
 }
+// The value printed on a chip: 5, 100, 1K, 25K...
+function chipLabel(v){return v>=1000?(v/1000)+'K':String(v);}
 // How long a payout of `n` new chips takes to finish dropping in, in ms: a chip every 45ms, up to 3 seconds
 function chipPileMs(n){return n>0?Math.min(3200,240+n*45):0;}
 // Count a label up from `from` to `to` while its chips drop in
@@ -2152,7 +2443,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!
 var SAVE_KEY='peccys-casino-v2',OLD_SAVE_KEY='peccys-casino-v1';
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null};
-function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;}return s;}
+function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   modeSaves[gameMode]=modeSnapshot();
   try{localStorage.setItem(SAVE_KEY,JSON.stringify({mode:gameMode,classic:modeSaves.classic,arcade:modeSaves.arcade}));}catch(e){}
@@ -2166,6 +2457,10 @@ function modeRestore(m){
   if(s.eq)for(var k in SHOP_FREE)if(s.eq[k]&&shopOwns(k,s.eq[k]))shopState.eq[k]=s.eq[k];
   bar.buzz=m==='arcade'&&typeof s.buzz==='number'?Math.max(0,Math.min(99,s.buzz)):0;
   bar.drinks=m==='arcade'&&Array.isArray(s.drinks)?s.drinks.filter(function(d){return d&&barEffectDef(d.id)&&d.left>0;}):[];
+  // Drinks saved before they had a strength get their standard one
+  bar.drinks.forEach(function(d){if(typeof d.power!=='number')d.power=barEffectDef(d.id).power||0;if(typeof d.cap!=='number')d.cap=0;if(typeof d.paid!=='number')d.paid=0;});
+  var st=m==='arcade'&&s.barStats||{};
+  bar.stats={shifts:+st.shifts||0,earned:+st.earned||0,best:+st.best||0};
 }
 function loadGame(){
   try{
@@ -2272,11 +2567,12 @@ function shopDrawBall(cv,B){
 //   blackjack blackjack pays 2 to 1, and five cards without busting win (about +3% with basic strategy)
 //   roulette  0 hands back the bets it beat, and one lucky number a spin pays double (101-103%)
 var ARCADE_RTP=103;
-var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech'};
+var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech',bar:'bar-say'};
 function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
 function setMode(m){
   if(m===gameMode||!MODE_START[m])return;
   if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
+  if(mx.on){mxSay(mx.cust?'Finish the shift (or clock out) before you switch floors! 🍸':'Finish your drink (or cancel it) before you switch floors! 🍸');return;}
   // Chips on a table go back to the stack they came from before the floors swap
   if(rlTotal())rouletteClearBet();
   rlClearResolved();bjNewHand();
@@ -2296,8 +2592,9 @@ function modeApply(){
   document.getElementById('chip-label').textContent=arc?'Arcade chips':'Resolve chips';
   document.getElementById('chip-icon').textContent=arc?'A':'R';
   document.getElementById('reset-btn').title='Reset to '+fmtChips(MODE_START[gameMode])+' chips';
-  if(!arc)barClose();
-  barHUD();
+  // The bar is Arcade only, so the Classic floor sends you back to the tables
+  if(!arc&&document.getElementById('game-bar').classList.contains('active'))switchGame('blackjack');
+  barRender();
   // The house rules and paybacks shown on each game
   document.getElementById('bj-arc-main').textContent=arc?'BLACKJACK PAYS 2 TO 1':'BLACKJACK PAYS 3 TO 2';
   document.getElementById('bj-arc-sub').textContent=arc?'FIVE CARDS WITHOUT BUSTING WIN':'DEALER STANDS ON ALL 17s';
@@ -2308,61 +2605,114 @@ function modeApply(){
 }
 
 // ═══ PECCY'S BAR (arcade) ═══
-// Drinks are short buffs. Each adds buzz; up to 3 can be going at once; 100% buzz is a blackout. Prices
-// climb with your stack (the bartender sizes you up), and the buffs that pay chips are capped at 8x
-// what you paid, so drinking stays a gamble instead of a chip printer.
-var bar={buzz:0,drinks:[]};
+// The Bar tab, Arcade only: Peccy behind the counter. Drinks are short buffs. Each adds buzz; up to 3 can be
+// going at once; 100% buzz is a blackout. Prices climb with your stack (the bartender sizes you up), and the
+// buffs that pay chips are capped at 8x what you paid, so drinking stays a gamble instead of a chip printer.
+// Peccy pours a drink at standard strength, or you can mix it yourself (MIXING below): made well it's up to
+// 1.5x as strong, botched it can drop to 0.5x. Working a shift (also MIXING) pays wages and tips instead.
+var bar={buzz:0,drinks:[],stats:{shifts:0,earned:0,best:0},shift:null};
+// left: spins, hands or balls it lasts. power: how strong, for buffs with a strength. capX: a payout buff pays
+// out at most capX x its price. scales: what a mixed drink's strength multiplies. instant: works the moment
+// it's drunk instead of lasting, and needs no free slot (noSlot). recipe: how it's made, for mixing.
 var DRINKS={
-  lemon:{name:'Lucky Lemon Drop',short:'Lemon Drop',icon:'🍋',color:'#ffd23d',buzz:20,base:150,pct:0.015,left:10,unit:'spin',capX:8,
-    desc:'Slot wins pay 25% more for your next 10 spins.'},
-  martini:{name:'Dirty Martini',short:'Martini',icon:'🍸',color:'#9be36a',buzz:25,base:120,pct:0.015,left:3,unit:'hand',
-    desc:'See Peccy\'s face-down card for your next 3 blackjack hands.'},
-  mojito:{name:'Mojito',short:'Mojito',icon:'🌿',color:'#3ddc84',buzz:20,base:100,pct:0.02,left:1,unit:'spin',capX:8,
-    desc:'If your next roulette spin loses, your losing bets come back to you.'},
-  sunrise:{name:'Tequila Sunrise',short:'Sunrise',icon:'🌅',color:'#ff8a3d',buzz:30,base:200,pct:0.02,left:20,unit:'spin',
-    desc:'Slot bonus games are about twice as likely for your next 20 spins.'},
-  longisland:{name:'Long Island',short:'Long Island',icon:'🥃',color:'#c06bff',buzz:35,base:60,pct:0.01,
-    desc:'Strong and unpredictable: a free random buff, or a random curse.'}
+  lemon:{name:'Lucky Lemon Drop',short:'Lemon Drop',icon:'🍋',color:'#ffd23d',game:'Slots',buzz:20,base:150,pct:0.015,left:10,unit:'spin',capX:8,power:0.25,scales:['power','cap'],
+    desc:'Slot wins pay 25% more for your next 10 spins.',
+    recipe:{glass:'coupe',ice:'none',pour:[['vodka',2],['triplesec',1],['lemon',1]],mix:['shake',55],garnish:['lemon']}},
+  margarita:{name:'Salty Margarita',short:'Margarita',icon:'🧂',color:'#c8f56a',game:'Slots',buzz:25,base:130,pct:0.015,left:15,unit:'spin',capX:8,power:0.5,scales:['left','cap'],
+    desc:'Slot spins that win nothing give back half your bet, for 15 spins.',
+    recipe:{glass:'coupe',ice:'none',pour:[['tequila',2],['triplesec',1],['lime',1]],mix:['shake',80],garnish:['lime']}},
+  sunrise:{name:'Tequila Sunrise',short:'Sunrise',icon:'🌅',color:'#ff8a3d',game:'Slots',buzz:30,base:200,pct:0.02,left:20,unit:'spin',scales:['left'],
+    desc:'Slot bonus games are about twice as likely for your next 20 spins.',
+    recipe:{glass:'highball',ice:'cubes',pour:[['tequila',2],['orange',4],['grenadine',1]],mix:['stir',35],garnish:['orange','cherry']}},
+  martini:{name:'Dirty Martini',short:'Martini',icon:'🍸',color:'#9be36a',game:'Blackjack',buzz:25,base:120,pct:0.015,left:3,unit:'hand',scales:['left'],
+    desc:'See Peccy\'s face-down card for your next 3 blackjack hands.',
+    recipe:{glass:'martini',ice:'none',pour:[['gin',3],['vermouth',1],['brine',1]],mix:['stir',70],garnish:['olive']}},
+  oldfash:{name:'Old Fashioned',short:'Old Fashioned',icon:'🥃',color:'#d98a3a',game:'Blackjack',buzz:25,base:120,pct:0.015,left:5,unit:'hand',scales:['left'],
+    desc:'A blackjack tie counts as a win for your next 5 hands.',
+    recipe:{glass:'rocks',ice:'cubes',pour:[['whiskey',3],['syrup',1],['bitters',1]],mix:['stir',70],garnish:['orange','cherry']}},
+  bloody:{name:'Bloody Mary',short:'Bloody Mary',icon:'🍅',color:'#e5483a',game:'Blackjack',buzz:20,base:100,pct:0.015,left:4,unit:'hand',capX:8,power:0.5,scales:['left','cap'],
+    desc:'Bust at blackjack and Peccy hands back half your bet, for 4 hands.',
+    recipe:{glass:'highball',ice:'cubes',pour:[['vodka',2],['tomato',4],['lemon',1]],mix:['stir',35],garnish:['celery','lemon']}},
+  mojito:{name:'Mojito',short:'Mojito',icon:'🌿',color:'#3ddc84',game:'Roulette',buzz:20,base:100,pct:0.02,left:1,unit:'spin',capX:8,scales:['cap'],
+    desc:'If your next roulette spin loses, your losing bets come back to you.',
+    recipe:{glass:'highball',ice:'crushed',pour:[['rum',2],['lime',1],['syrup',1],['soda',3]],mix:['stir',35],garnish:['mint','lime']}},
+  hurricane:{name:'Hurricane',short:'Hurricane',icon:'🌀',color:'#ff5f8f',game:'Roulette',buzz:30,base:120,pct:0.015,left:5,unit:'spin',power:2,scales:['left'],
+    desc:'Two extra lucky numbers on each roulette spin, for 5 spins.',
+    recipe:{glass:'hurricane',ice:'crushed',pour:[['rum',3],['orange',2],['pineapple',2],['grenadine',1]],mix:['shake',55],garnish:['umbrella','cherry']}},
+  lagoon:{name:'Blue Lagoon',short:'Blue Lagoon',icon:'🫐',color:'#2fa8ff',game:'Plinko',buzz:20,base:120,pct:0.015,left:30,unit:'ball',capX:8,power:0.2,scales:['power','cap'],
+    desc:'Plinko balls pay 20% more for your next 30 balls.',
+    recipe:{glass:'highball',ice:'cubes',pour:[['vodka',2],['curacao',1],['lemon',1],['soda',2]],mix:['stir',35],garnish:['lemon','cherry']}},
+  cosmo:{name:'Cosmopolitan',short:'Cosmo',icon:'🍒',color:'#ff4f9a',game:'Plinko',buzz:25,base:140,pct:0.015,left:20,unit:'ball',capX:8,scales:['left','cap'],
+    desc:'Plinko balls that land under 1× pay your bet back instead, for 20 balls.',
+    recipe:{glass:'martini',ice:'none',pour:[['vodka',2],['triplesec',1],['cranberry',2],['lime',1]],mix:['shake',80],garnish:['lime']}},
+  longisland:{name:'Long Island',short:'Long Island',icon:'🧊',color:'#c06bff',game:'Any game',buzz:35,base:60,pct:0.01,instant:1,scales:[],
+    desc:'Strong and unpredictable: a free random buff, or a random curse.',
+    recipe:{glass:'highball',ice:'cubes',pour:[['vodka',1],['gin',1],['rum',1],['tequila',1],['cola',2]],mix:['stir',35],garnish:['lemon']}},
+  espresso:{name:'Espresso Martini',short:'Espresso',icon:'☕',color:'#b07a4f',game:'Sobers you up',buzz:0,base:80,pct:0.01,instant:1,noSlot:1,power:30,scales:['power'],
+    desc:'Wakes you up: takes 30% off your buzz, and needs no free slot.',
+    recipe:{glass:'martini',ice:'none',pour:[['vodka',2],['coffee',1],['espresso',2]],mix:['shake',80],garnish:['beans']}}
 };
 // What a Long Island can do to you instead
 var CURSES={
-  hiccups:{name:'Hiccups',short:'Hiccups',icon:'🫨',left:10,unit:'spin',desc:'Slot wins pay 25% less for 10 spins.'},
+  hiccups:{name:'Hiccups',short:'Hiccups',icon:'🫨',left:10,unit:'spin',power:0.25,desc:'Slot wins pay 25% less for 10 spins.'},
   blurry:{name:'Double Vision',short:'Double Vision',icon:'😵‍💫',left:3,unit:'hand',desc:'Your blackjack cards are a blur for 3 hands.'},
   spill:{name:'Spilled it',short:'Spill',icon:'💦',desc:'You knocked it over and dropped 5% of your chips.'}
 };
 function barEffectDef(id){return DRINKS[id]||CURSES[id]||null;}
 function barPrice(d){return Math.round(d.base+balance*d.pct);}
 function barFind(id){for(var i=0;i<bar.drinks.length;i++)if(bar.drinks[i].id===id)return bar.drinks[i];return null;}
-// Use up one spin or hand of an effect; returns the effect if it was going
+// Use up one spin, hand or ball of an effect; returns the effect if it was going
 function barTake(id){
   if(gameMode!=='arcade')return null;
   var e=barFind(id);if(!e)return null;
   if(--e.left<=0)bar.drinks.splice(bar.drinks.indexOf(e),1);
   barHUD();saveGame();return e;
 }
-// Ordering the same drink again tops up the one you have
-function barGrant(id,price){
-  var d=barEffectDef(id),e=barFind(id);
-  if(e){e.left+=d.left;if(d.capX)e.cap+=price*d.capX;}
-  else bar.drinks.push({id:id,left:d.left,cap:d.capX?price*d.capX:0,paid:0});
+// A drink's buff at a strength (1 = as Peccy pours it). Ordering the same drink again tops up the one you have.
+function barGrant(id,price,mult,q){
+  var d=barEffectDef(id),e=barFind(id),m=mult||1,sc=d.scales||[];
+  function s(k){return sc.indexOf(k)>=0?m:1;}
+  var left=Math.max(1,Math.round((d.left||1)*s('left'))),cap=d.capX?price*d.capX*s('cap'):0,power=(d.power||0)*s('power');
+  if(e){e.left+=left;e.cap+=cap;e.power=Math.max(e.power||0,power);if(q!=null)e.q=q;}
+  else bar.drinks.push({id:id,left:left,cap:cap,paid:0,power:power,q:q==null?null:q});
 }
+// Why a drink can't be had right now ('' if it can)
+function barBlocked(id){
+  var d=DRINKS[id];
+  if(!d.noSlot&&bar.drinks.length>=3&&!barFind(id))return 'Three drinks max';
+  if(barPrice(d)>balance)return 'Need '+fmtChips(barPrice(d)-balance)+' more';
+  return '';
+}
+function barBlockedSay(id){
+  barSay(barBlocked(id)==='Three drinks max'?"Easy there! You've got three drinks going. Play a bit and let one wear off. 🥴":"That one's "+fmtChips(barPrice(DRINKS[id]))+" chips. Come back when you're flush, or work a shift! 💸");
+}
+// Peccy pours it: standard strength
 function barOrder(id){
-  if(gameMode!=='arcade')return;
+  if(gameMode!=='arcade'||mx.on)return;
+  if(barBlocked(id)){barBlockedSay(id);return;}
   var d=DRINKS[id],price=barPrice(d);
-  if(bar.drinks.length>=3&&!barFind(id)){barSay("Easy there! You've got three drinks going. Play a bit and let one wear off. 🥴");return;}
-  if(price>balance){barSay("That one's "+fmtChips(price)+" chips. Come back when you're flush! 💸");return;}
   balance-=price;updateBalance();
-  bar.buzz+=d.buzz;
+  barServeAnim(d);
+  barServe(id,price,1,null,false);
+}
+// Drinking it: the buzz goes up (a perfect mix goes down smooth, at half the buzz), then the buff kicks in
+function barServe(id,price,mult,q,smooth){
+  var d=DRINKS[id];
+  bar.buzz+=d.buzz*(smooth?0.5:1);
   if(bar.buzz>=100){barBlackout();return;}
-  if(id==='longisland')barLongIsland();
-  else{barGrant(id,price);barSay(slRand(["One "+d.name+", coming right up! 🍹","Cheers! "+d.icon,"Bottoms up! That'll put a spring in your step. ✨"]));}
+  if(id==='longisland')barLongIsland(mult);
+  else if(id==='espresso'){var off=Math.round(d.power*(mult||1));bar.buzz=Math.max(0,bar.buzz-off);barSay("An Espresso Martini! That's "+off+"% of your buzz gone. Wide awake! ☕");}
+  else{
+    barGrant(id,price,mult,q);
+    barSay(q!=null?"Your own "+d.name+", at "+mxStrength(mult)+" strength. "+d.icon:slRand(["One "+d.name+", coming right up! "+d.icon,"Cheers! "+d.icon,"Bottoms up! That'll put a spring in your step. ✨"]));
+  }
   barRender();saveGame();
 }
-// 60% a free buff at full strength, 40% a curse
-function barLongIsland(){
-  var good=['lemon','martini','mojito','sunrise'],bad=['hiccups','blurry','spill'];
-  if(Math.random()<0.6){
-    var g=slRand(good);barGrant(g,barPrice(DRINKS[g]));
+// A free buff (more likely the better it's made), or a curse
+function barLongIsland(mult){
+  var m=mult||1,good=Object.keys(DRINKS).filter(function(k){return !DRINKS[k].instant;}),bad=['hiccups','blurry','spill'];
+  if(Math.random()<Math.min(0.85,0.35+0.25*m)){
+    var g=slRand(good);barGrant(g,barPrice(DRINKS[g]),m);
     barSay("The Long Island kicks in... it's a free "+DRINKS[g].name+"! "+DRINKS[g].icon);
   }else{
     var c=slRand(bad);
@@ -2370,11 +2720,12 @@ function barLongIsland(){
     else{barGrant(c,0);barSay("Uh oh... the Long Island gave you "+CURSES[c].name+". "+CURSES[c].icon);}
   }
 }
-// Every spin or hand you play wears a little buzz off
+// Every spin, hand or ball you play wears a little buzz off
 function barRound(n){if(gameMode!=='arcade'||!bar.buzz)return;bar.buzz=Math.max(0,bar.buzz-(n==null?4:n));barHUD();saveGame();}
 function barBadge(e){
-  var d=barEffectDef(e.id);
-  return '<span class="hud-drink'+(CURSES[e.id]?' curse':'')+'" title="'+d.desc.replace(/"/g,'&quot;')+'">'+d.icon+' '+d.short+' · '+e.left+' '+d.unit+(e.left===1?'':'s')+'</span>';
+  var d=barEffectDef(e.id),tip=d.desc;
+  if(e.q!=null)tip+=' You mixed it yourself ('+e.q+'%): '+mxStrength(mxMult(e.q))+' strength'+((d.scales||[]).indexOf('power')>=0&&d.power?', so +'+Math.round(e.power*100)+'% instead of +'+Math.round(d.power*100)+'%':'')+'.';
+  return '<span class="hud-drink'+(CURSES[e.id]?' curse':'')+(e.q!=null?' mixed':'')+'" title="'+tip.replace(/"/g,'&quot;')+'">'+d.icon+' '+d.short+' · '+e.left+' '+d.unit+(e.left===1?'':'s')+'</span>';
 }
 // The buzz meter in the header and the bar, and the sway that goes with it
 function barHUD(){
@@ -2384,29 +2735,53 @@ function barHUD(){
     if(f)f.style.width=b+'%';if(t){t.textContent=b+'%';t.style.setProperty('--buzz-c',col);}
   });
   document.getElementById('hud-drinks').innerHTML=badges;
-  document.getElementById('bar-active').innerHTML=badges;
+  document.getElementById('bar-active').innerHTML=badges||'<span class="bar-none">No drinks going yet</span>';
   document.body.classList.toggle('buzz-1',arc&&b>=30&&b<60);
   document.body.classList.toggle('buzz-2',arc&&b>=60&&b<85);
   document.body.classList.toggle('buzz-3',arc&&b>=85);
 }
-function barOpen(){if(gameMode!=='arcade')return;barRender();document.getElementById('bar-overlay').classList.add('show');}
-function barClose(){document.getElementById('bar-overlay').classList.remove('show');}
-function barSay(t){document.getElementById('bar-say').textContent=t;}
+function barOpen(){if(gameMode==='arcade')switchGame('bar');}
+function barSay(t){setPeccySpeech('bar-say',t);}
+// The menu: every drink, poured by Peccy or mixed yourself
 function barRender(){
-  var full=bar.drinks.length>=3;
-  document.getElementById('bar-menu').innerHTML=Object.keys(DRINKS).map(function(id){
-    var d=DRINKS[id],p=barPrice(d),again=!!barFind(id),out=bar.buzz+d.buzz>=100,btn;
-    if(full&&!again)btn='<button class="drink-btn" disabled>Three drinks max</button>';
-    else if(p>balance)btn='<button class="drink-btn" disabled>Need '+fmtChips(p-balance)+' more</button>';
-    else btn='<button class="drink-btn'+(out?' danger':'')+'" onclick="barOrder(\''+id+'\')">'+(out?'Order (you\'ll black out!)':again?'Another round':'Order')+'</button>';
-    return '<div class="drink" style="--dc:'+d.color+'"><div class="drink-glass">'+d.icon+'</div><div class="drink-name">'+d.name+'</div>'+
-      '<div class="drink-desc">'+d.desc+'</div><div class="drink-meta"><span class="bz">+'+d.buzz+'% buzz</span><span><span class="chip-dot"></span> '+fmtChips(p)+'</span></div>'+btn+'</div>';
+  var menu=document.getElementById('bar-menu');
+  menu.innerHTML=Object.keys(DRINKS).map(function(id){
+    var d=DRINKS[id],p=barPrice(d),why=barBlocked(id),again=!!barFind(id),out=bar.buzz+d.buzz>=100;
+    return '<div class="drink'+(why?' off':'')+'" style="--dc:'+d.color+'">'+
+      '<div class="drink-top"><span class="drink-glass">'+d.icon+'</span><div class="drink-head"><div class="drink-name">'+d.name+'</div>'+
+        '<div class="drink-meta"><span class="drink-price"><span class="chip-dot"></span>'+fmtChips(p)+'</span><span class="bz">'+(d.buzz?'+'+d.buzz+'% buzz':'−'+d.power+'% buzz')+'</span><span class="drink-game">'+d.game+'</span></div></div></div>'+
+      '<div class="drink-desc">'+d.desc+'</div>'+
+      (why?'<div class="drink-why">'+why+'</div>':
+        '<div class="drink-btns"><button class="drink-btn'+(out?' danger':'')+'" onclick="barOrder(\''+id+'\')" title="Peccy makes it, at standard strength">'+(out?'Pour (blackout!)':again?'Another one':'Peccy pours')+'</button>'+
+        '<button class="drink-btn diy" onclick="mxStart(\''+id+'\')" title="Make it yourself: the better you mix it, the stronger it is">🧑‍🍳 Mix it</button></div>')+
+    '</div>';
   }).join('');
+  var s=bar.stats;
+  document.getElementById('bar-job-stats').textContent=s.shifts?'Shifts worked: '+s.shifts+' · earned '+fmtChips(s.earned)+' · best shift '+fmtChips(s.best):'Wages + tips, about 15 to 60 chips a drink';
   barHUD();
 }
+// Peccy slides a fresh drink down the counter
+function barServeAnim(d){
+  var el=document.getElementById('bar-served');if(!el)return;
+  el.innerHTML='<span class="served" style="--dc:'+d.color+'">'+d.icon+'</span>';
+  peccyHop('.bar-peccy');
+}
+// The bottles on the shelves behind Peccy, one of each ingredient
+function barShelves(){
+  var keys=Object.keys(MX_INGS),half=Math.ceil(keys.length/2);
+  [keys.slice(0,half),keys.slice(half)].forEach(function(row,i){
+    document.getElementById('bar-shelf-'+(i+1)).innerHTML=row.map(function(k,j){return '<i style="--bc:'+MX_INGS[k][1]+';--h:'+(30+((j*37+i*11)%5)*5)+'px" title="'+MX_INGS[k][0]+'"></i>';}).join('');
+  });
+}
+// The bar fills the window from the header down, like the tables
+function barLayout(){
+  var w=document.getElementById('bar-wrap');if(!w||!w.offsetParent)return;
+  w.style.height=innerWidth>760?Math.max(380,roomBelow(w))+'px':'';
+}
+window.addEventListener('resize',barLayout);
 // 100% buzz: the screen goes black, the drinks wear off, and 15% of your chips wander off
 function barBlackout(){
-  barClose();
+  if(mx.on)mxClose();
   var lost=Math.floor(balance*0.15);balance-=lost;updateBalance();
   bar.drinks=[];bar.buzz=0;slState.auto=0;barHUD();saveGame();
   var b=document.getElementById('blackout'),t=document.getElementById('blackout-text');
@@ -2424,13 +2799,374 @@ function barSpinSteps(m,bet){
   if(barTake('sunrise')&&!feat(s)){var s2=m.play(bet);if(feat(s2))s=s2;}
   return s;
 }
-// Lemon Drop adds 25% to a slot win (up to its cap); Hiccups takes 25% off. Both count down every spin.
-function barSlotWin(run){
-  var out={amt:0,note:''},l=barTake('lemon'),h=barTake('hiccups');
-  if(l&&run>0){var add=Math.min(run*0.25,Math.max(0,l.cap-l.paid));l.paid+=add;out.amt+=add;if(add>0)out.note+=' · 🍋 +'+slFmt(add);}
-  if(h&&run>0){var cut=run*0.25;out.amt-=cut;out.note+=' · 🫨 −'+slFmt(cut);}
+// Slot buffs, settled once a spin's wins are counted; each counts down every spin it's going.
+// Lemon Drop: wins pay more (up to its cap). Hiccups: wins pay 25% less. Margarita: a spin that wins nothing
+// gives back half the bet (up to its cap).
+function barSlotWin(run,bet){
+  var out={amt:0,note:''},l=barTake('lemon'),h=barTake('hiccups'),mg=barTake('margarita');
+  if(l&&run>0){var add=Math.min(run*(l.power||0.25),Math.max(0,l.cap-l.paid));l.paid+=add;out.amt+=add;if(add>0)out.note+=' · 🍋 +'+slFmt(add);}
+  if(h&&run>0){var cut=run*(h.power||0.25);out.amt-=cut;out.note+=' · 🫨 −'+slFmt(cut);}
+  if(mg&&run===0){var back=Math.min(bet*(mg.power||0.5),Math.max(0,mg.cap-mg.paid));mg.paid+=back;out.amt+=back;if(back>0)out.note+=' · 🧂 half your bet back';}
   return out;
 }
+// Bloody Mary: half a busted blackjack bet back (up to its cap), in whole chips
+function barBustBack(e,bet){if(!e)return 0;var b=Math.floor(Math.min(bet*(e.power||0.5),Math.max(0,e.cap-e.paid)));e.paid+=b;return b;}
+
+// ═══ MIXING (the bar's minigame) ═══
+// Making a drink, in the spirit of Papa's Freezeria: four stations, each scored, then serve.
+//   1 Glass & ice  pick the glass and the ice on the ticket
+//   2 Pour         hold a bottle to pour, and let go on its line (the amounts count, not the order)
+//   3 Mix          hold to shake or stir, and let go with the meter in the green
+//   4 Garnish      pick each garnish on the ticket and drop it on its mark as it swings over the glass
+// The total (0-100%) sets a drink's strength (mxMult): 60% matches Peccy's own, 100% is 1.5x and a botch can
+// fall to 0.5x. 95% or better goes down smooth, at half the buzz. On a shift the drinks are for customers: how
+// long they waited counts too, and they pay a wage plus a tip that grows with the score.
+var MX_INGS={
+  vodka:['Vodka','#e3efff'],gin:['Gin','#d6f3e8'],rum:['Rum','#f1d6a0'],tequila:['Tequila','#f4e19a'],whiskey:['Whiskey','#c47a2c'],
+  triplesec:['Triple sec','#ffdc9e'],vermouth:['Vermouth','#e3cf8f'],coffee:['Coffee liqueur','#5a3219'],curacao:['Blue curaçao','#1e9bff'],bitters:['Bitters','#9a2c18'],
+  lime:['Lime juice','#bdf06a'],lemon:['Lemon juice','#fff07a'],orange:['Orange juice','#ffab33'],cranberry:['Cranberry','#d3264f'],pineapple:['Pineapple','#ffe066'],tomato:['Tomato juice','#cc3422'],
+  syrup:['Sugar syrup','#fff3d2'],grenadine:['Grenadine','#d10f3c'],cola:['Cola','#4b1f0f'],soda:['Soda water','#dff3ff'],espresso:['Espresso','#2b170c'],brine:['Olive brine','#cdd6a0']
+};
+var MX_SHELF=[['Spirits',['vodka','gin','rum','tequila','whiskey']],['Liqueurs',['triplesec','vermouth','coffee','curacao','bitters']],
+  ['Juices',['lime','lemon','orange','cranberry','pineapple','tomato']],['Mixers',['syrup','grenadine','cola','soda','espresso','brine']]];
+// Each glass in a 200x240 box: its outline (o), the inside the drink fills (inner, from `bottom` up to `top`),
+// where its rim is for garnishes, and its half-width there
+var MX_GLASSES={
+  martini:{name:'Martini',o:'<path d="M28 42 L172 42 L100 146 Z"/><path d="M100 146 L100 212" class="mx-stem"/><ellipse cx="100" cy="215" rx="40" ry="6"/>',inner:'M35 46 L165 46 L100 140 Z',top:46,bottom:140,rim:42,half:66},
+  coupe:{name:'Coupe',o:'<path d="M26 58 C26 128 60 136 100 136 C140 136 174 128 174 58 Z"/><path d="M100 136 L100 210" class="mx-stem"/><ellipse cx="100" cy="214" rx="40" ry="6"/>',inner:'M32 62 C32 124 64 130 100 130 C136 130 168 124 168 62 Z',top:62,bottom:130,rim:58,half:70},
+  highball:{name:'Highball',o:'<path d="M56 28 L144 28 L141 212 Q141 218 135 218 L65 218 Q59 218 59 212 Z"/>',inner:'M62 34 L138 34 L135.5 209 L64.5 209 Z',top:34,bottom:209,rim:28,half:40},
+  rocks:{name:'Rocks',o:'<path d="M44 96 L156 96 L152 212 Q152 218 146 218 L54 218 Q48 218 48 212 Z"/>',inner:'M50 102 L150 102 L146.5 207 L53.5 207 Z',top:102,bottom:207,rim:96,half:52},
+  hurricane:{name:'Hurricane',o:'<path d="M60 24 C54 70 86 92 82 128 C79 156 72 170 100 180 C128 170 121 156 118 128 C114 92 146 70 140 24 Z"/><path d="M100 180 L100 210" class="mx-stem"/><ellipse cx="100" cy="214" rx="36" ry="6"/>',inner:'M66 30 C61 70 92 92 88 128 C85 154 80 166 100 173 C120 166 115 154 112 128 C108 92 139 70 134 30 Z',top:30,bottom:173,rim:24,half:38}
+};
+var MX_ICE={none:'No ice',cubes:'Cubes',crushed:'Crushed'};
+// [emoji, name, extra class]: lime is a lemon tinted green, since there's no lime emoji everywhere yet
+var MX_GARNISH={lemon:['🍋','Lemon wheel'],lime:['🍋','Lime wedge','g-lime'],orange:['🍊','Orange slice'],cherry:['🍒','Cherry'],olive:['🫒','Olives'],
+  mint:['🌿','Mint sprig'],celery:['🥬','Celery stick'],pineapple:['🍍','Pineapple wedge'],umbrella:['⛱️','Umbrella'],beans:['🫘','Coffee beans']};
+var MX_STEPS=[['glass','Glass & ice'],['pour','Pour'],['mix','Mix'],['garnish','Garnish'],['serve','Serve']];
+var MX_FILL=0.85,MX_POUR_RATE=0.12;  // the lines go up to 85% of the glass; a held bottle pours 12% of it a second
+var MX_WEIGHTS={glass:0.15,pour:0.4,mix:0.2,garnish:0.25};
+var MX_CUSTOMERS=[['Dana','🧔'],['Marco','👨‍🦱'],['Priya','👩‍🦰'],['Jules','🧑‍🎤'],['Kenji','👨‍💼'],['Rosa','👵'],['Theo','🧑‍🚀'],['Amara','👩‍🔬'],
+  ['Felix','👨‍🎨'],['Noor','🧕'],['Sam','🤠'],['Lena','👩‍💻'],['Omar','🧑‍🍳'],['Ivy','🧛‍♀️'],['Hugo','🕵️'],['Mei','🧜‍♀️']];
+var mx={on:false},mxOrderNo=40;
+function mxMult(q){return q>=60?1+(q-60)/80:0.5+q/120;}
+function mxStrength(m){return '×'+m.toFixed(2);}
+function mxGrade(q){return q>=95?['Perfect!',5]:q>=85?['Great',4]:q>=70?['Good',3]:q>=55?['Okay',2]:['Rough',1];}
+function mxStars(n){return '<span class="mx-stars">'+'★★★★★'.slice(0,n)+'<i>'+'★★★★★'.slice(n)+'</i></span>';}
+function mxRecipe(){return DRINKS[mx.id].recipe;}
+function mxSay(t){setPeccySpeech('mix-say',t);}
+// Start mixing a drink: for yourself (paid now, refunded if you cancel), or for a shift customer
+function mxStart(id,cust){
+  if(gameMode!=='arcade'||(mx.on&&!cust))return;
+  var price=0;
+  if(!cust){
+    if(barBlocked(id)){barBlockedSay(id);return;}
+    price=barPrice(DRINKS[id]);balance-=price;updateBalance();
+  }
+  mx={on:true,id:id,cust:cust||null,price:price,no:++mxOrderNo,step:'glass',glass:null,ice:null,poured:[],pouring:null,mixV:null,mixUsed:null,mixing:null,mixed:false,
+    garn:[],swing:null,mistakes:0,scores:{},t0:performance.now(),served:false};
+  document.getElementById('bar-wrap').classList.add('mixing');
+  clearInterval(mxStart.timer);if(cust)mxStart.timer=setInterval(mxWaitTick,250);
+  mxRender();
+  mxSay(cust?cust.name+' wants a '+DRINKS[id].name+'. Check the ticket and start with the glass! 📝':'Your own '+DRINKS[id].name+'! Mix it well and it packs more punch. Start with the glass. 📝');
+}
+function mxClose(){
+  clearInterval(mx.pourTimer);clearInterval(mx.mixTimer);clearInterval(mx.swingTimer);clearInterval(mxStart.timer);
+  mx={on:false};bar.shift=null;
+  document.getElementById('bar-wrap').classList.remove('mixing');
+  barRender();barLayout();
+}
+// Cancel: your own drink is refunded; on a shift, you clock out (the drinks already served stay paid)
+function mxQuit(){
+  if(!mx.on)return;
+  if(mx.cust){var s=bar.shift;mxClose();barShiftEnd(s,true);return;}
+  if(mx.price){balance+=mx.price;updateBalance();}
+  mxClose();barSay("Changed your mind? No charge. 🍸");
+}
+function mxRender(){mxRenderSteps();mxRenderTicket();mxRenderGlass();mxRenderStation();}
+function mxRenderSteps(){
+  var at=MX_STEPS.map(function(s){return s[0];}).indexOf(mx.step);
+  document.getElementById('mix-steps').innerHTML=MX_STEPS.map(function(s,i){
+    return '<span class="mx-step'+(i===at?' on':i<at?' done':'')+'"><b>'+(i<at?'✓':i+1)+'</b>'+s[1]+'</span>';
+  }).join('');
+  document.getElementById('mix-quit').textContent=mx.cust?'Clock out':'Cancel';
+}
+function mxRenderTicket(){
+  var d=DRINKS[mx.id],r=d.recipe,sc=mx.scores,h='';
+  function row(label,body,score){return '<div class="tk-row"><span class="tk-l">'+label+'</span><span class="tk-b">'+body+'</span>'+(score!=null?'<span class="tk-s">'+score+'%</span>':'')+'</div>';}
+  if(mx.cust)h+='<div class="tk-cust"><span class="tk-face">'+mx.cust.face+'</span><div><b>'+mx.cust.name+'</b><small>“'+mx.cust.line+'”</small><div class="tk-wait"><i id="mx-wait"></i></div></div></div>';
+  h+='<div class="tk-no">Order #'+mx.no+(bar.shift?' · customer '+bar.shift.n+' of '+bar.shift.of:'')+'</div><div class="tk-name">'+d.icon+' '+d.name+'</div>';
+  h+=row('Glass',MX_GLASSES[r.glass].name+' · '+MX_ICE[r.ice],sc.glass);
+  var tot=r.pour.reduce(function(s,p){return s+p[1];},0);
+  h+=row('Pour','<span class="tk-pour">'+r.pour.map(function(p){return '<span><i style="background:'+MX_INGS[p[0]][1]+'"></i>'+MX_INGS[p[0]][0]+' <em>'+p[1]+' part'+(p[1]>1?'s':'')+'</em></span>';}).join('')+'</span>',sc.pour);
+  h+=row('Mix',mxMixName(r.mix),sc.mix);
+  h+=row('Garnish',r.garnish.map(function(g){return '<span class="'+(MX_GARNISH[g][2]||'')+'">'+MX_GARNISH[g][0]+'</span> '+MX_GARNISH[g][1];}).join(', '),sc.garnish);
+  document.getElementById('mix-ticket').innerHTML=h;
+  if(mx.cust)mxWaitTick();
+}
+function mxMixName(m){return m[0]==='shake'?'Shake · '+(m[1]<40?'light':m[1]<70?'medium':'hard'):'Stir · '+(m[1]<50?'short':'long');}
+// A shift customer's patience: full marks if served within `mxWaitT`, none at twice that
+function mxWaitT(){var r=mxRecipe();return 26+4*r.pour.length+3*r.garnish.length;}
+function mxWaited(){return ((mx.servedAt||performance.now())-mx.t0)/1000;}
+function mxWaitScore(){var t=mxWaited(),T=mxWaitT();return t<=T?100:Math.max(0,Math.round(100*(1-(t-T)/T)));}
+function mxWaitTick(){
+  var el=document.getElementById('mx-wait');if(!el||!mx.cust)return;
+  var left=Math.max(0,1-mxWaited()/(2*mxWaitT()));
+  el.style.width=(left*100).toFixed(1)+'%';el.style.background=left>0.5?'#3ddc84':left>0.25?'#ffd23d':'#ff4d5e';
+}
+// ── The glass on the counter ──
+function mxPourAmounts(){var a={};mx.poured.forEach(function(p){a[p[0]]=(a[p[0]]||0)+p[1];});return a;}
+function mxPoured(){return mx.poured.reduce(function(s,p){return s+p[1];},0);}
+// What's in the glass, bottom to top: the pours in order, or one blended colour once it's been mixed
+function mxLayers(){
+  if(!mx.mixed)return mx.poured.filter(function(p){return p[1]>0;}).map(function(p){return [MX_INGS[p[0]][1],p[1]];});
+  var tot=mxPoured(),c=[0,0,0];if(!tot)return [];
+  mx.poured.forEach(function(p){var hx=MX_INGS[p[0]][1];for(var i=0;i<3;i++)c[i]+=parseInt(hx.substr(1+2*i,2),16)*p[1]/tot;});
+  return [['rgb('+c.map(Math.round).join(',')+')',tot]];
+}
+function mxRenderGlass(){
+  var svg=document.getElementById('mix-glass'),G=MX_GLASSES[mx.glass],h='';
+  if(!G){svg.innerHTML='<rect x="40" y="40" width="120" height="170" rx="14" class="mx-ph-box"/><text x="100" y="130" text-anchor="middle" class="mx-ph">Pick a glass</text>';return;}
+  var H=G.bottom-G.top,lvl=function(f){return G.bottom-Math.min(1,f)*H;},f=0;
+  h+='<defs><clipPath id="mx-clip"><path d="'+G.inner+'"/></clipPath></defs><path d="'+G.inner+'" class="mx-inside"/><g clip-path="url(#mx-clip)">';
+  mxLayers().forEach(function(L){var y1=lvl(f),y0=lvl(f+L[1]);h+='<rect x="0" y="'+y0.toFixed(1)+'" width="200" height="'+(y1-y0+0.6).toFixed(1)+'" fill="'+L[0]+'"/>';f+=L[1];});
+  if(f>0)h+='<rect x="0" y="'+(lvl(f)-1.5).toFixed(1)+'" width="200" height="3" fill="rgba(255,255,255,0.4)"/>';
+  if(mx.mixed&&mxRecipe().mix[0]==='shake'&&f>0)h+='<rect x="0" y="'+(lvl(f)-1).toFixed(1)+'" width="200" height="7" fill="rgba(255,255,255,0.55)"/>';  // a shaken drink's froth
+  h+=mxIceSVG(G);
+  // The pour lines, one for each ingredient on the ticket, stacked in ticket order
+  if(mx.step==='pour'){
+    var r=mxRecipe(),tot=r.pour.reduce(function(s,p){return s+p[1];},0),cum=0,lines='',labels='',next=-1,have=mxPoured();
+    r.pour.forEach(function(p,i){cum+=p[1];var c=MX_FILL*cum/tot,y=lvl(c).toFixed(1);if(next<0&&have<c-0.005)next=i;
+      lines+='<line x1="0" x2="200" y1="'+y+'" y2="'+y+'" class="mx-line'+(i===next?' next':'')+'"/>';
+      labels+='<g class="mx-lab'+(i===next?' next':'')+'"><circle cx="186" cy="'+y+'" r="4" fill="'+MX_INGS[p[0]][1]+'"/><text x="194" y="'+(+y+3.5)+'">'+MX_INGS[p[0]][0]+'</text></g>';});
+    h+=lines+'</g>'+labels;
+  }else h+='</g>';
+  if(mx.pouring)h+='<rect x="97.5" y="0" width="5" height="'+lvl(f).toFixed(1)+'" rx="2" fill="'+MX_INGS[mx.pouring][1]+'" opacity="0.92"/>';
+  if(mxPoured()>1)h+='<circle cx="'+(100-G.half-6)+'" cy="'+(G.rim+18)+'" r="4" class="mx-spill"/><circle cx="'+(100+G.half+5)+'" cy="'+(G.rim+30)+'" r="3" class="mx-spill"/>';
+  h+='<g class="mx-glass-o">'+G.o+'</g>';
+  // Garnishes on the rim; the next one's mark; the one swinging, waiting to be dropped
+  var r2=mxRecipe();
+  mx.garn.forEach(function(p){if(p)h+='<text x="'+p.x.toFixed(1)+'" y="'+(G.rim+4)+'" class="mx-garn '+(MX_GARNISH[p.g][2]||'')+(p.fresh?' drop':'')+'" text-anchor="middle">'+MX_GARNISH[p.g][0]+'</text>';});
+  if(mx.step==='garnish'){
+    var slot=mx.swing?mx.swing.i:mxNextGarnishSlot();
+    if(slot>=0)h+='<circle cx="'+mxGarnishTarget(slot).toFixed(1)+'" cy="'+(G.rim-2)+'" r="11" class="mx-mark"/>';
+    if(mx.swing)h+='<text x="'+mxSwingX().toFixed(1)+'" y="'+(G.rim-30)+'" class="mx-garn swing '+(MX_GARNISH[mx.swing.g][2]||'')+'" text-anchor="middle">'+MX_GARNISH[mx.swing.g][0]+'</text>';
+  }
+  svg.innerHTML=h;
+  mx.garn.forEach(function(p){if(p)p.fresh=0;});
+}
+// Ice: a few cubes, or a heap of crushed bits, seen through the drink
+function mxIceSVG(G){
+  if(!mx.ice||mx.ice==='none')return '';
+  var h='',H=G.bottom-G.top,w=G.half,seed=7;
+  function rnd(){seed=(seed*9301+49297)%233280;return seed/233280;}
+  if(mx.ice==='cubes'){
+    var s=Math.min(26,w*0.6);
+    [[-0.45,0.22],[0.32,0.16],[-0.05,0.42],[0.42,0.56],[-0.38,0.7],[0.08,0.82]].forEach(function(c,i){
+      var x=100+c[0]*w*1.1-s/2,y=G.top+c[1]*H-s/2;
+      h+='<rect x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" width="'+s.toFixed(1)+'" height="'+s.toFixed(1)+'" rx="4" class="mx-ice" transform="rotate('+(i*23%40-20)+' '+(x+s/2).toFixed(1)+' '+(y+s/2).toFixed(1)+')"/>';
+    });
+  }else for(var i=0;i<46;i++){var x=100+(rnd()*2-1)*w,y=G.top+H*(0.12+rnd()*0.86);h+='<circle cx="'+x.toFixed(1)+'" cy="'+y.toFixed(1)+'" r="'+(2.5+rnd()*3).toFixed(1)+'" class="mx-ice"/>';}
+  return h;
+}
+// ── The station panel ──
+function mxRenderStation(){
+  var el=document.getElementById('mix-station'),r=mxRecipe(),h='';
+  if(mx.step==='glass'){
+    h='<div class="mx-title">Pick the glass</div><div class="mx-glasses">'+Object.keys(MX_GLASSES).map(function(k){
+      return '<button class="mx-opt'+(mx.glass===k?' on':'')+'" onclick="mxSetGlass(\''+k+'\')"><svg viewBox="0 0 200 240" class="mx-glass-o">'+MX_GLASSES[k].o+'</svg><span>'+MX_GLASSES[k].name+'</span></button>';
+    }).join('')+'</div><div class="mx-title">Ice</div><div class="mx-ices">'+Object.keys(MX_ICE).map(function(k){
+      return '<button class="mx-opt'+(mx.ice===k?' on':'')+'" onclick="mxSetIce(\''+k+'\')">'+(k==='none'?'🚫':k==='cubes'?'🧊':'❄️')+'<span>'+MX_ICE[k]+'</span></button>';
+    }).join('')+'</div>'+mxNextBtn(mx.glass&&mx.ice,'Pour');
+  }else if(mx.step==='pour'){
+    h='<div class="mx-title">Hold a bottle to pour</div><div class="mx-hint mx-pour-hint">Let go right on its line. The amounts count, not the order.</div><div class="mx-shelf">'+
+      MX_SHELF.map(function(g){return '<div class="mx-shelf-row"><small>'+g[0]+'</small><div>'+g[1].map(function(k){
+        return '<button class="mx-bottle" data-ing="'+k+'" style="--bc:'+MX_INGS[k][1]+'"><i></i><span>'+MX_INGS[k][0]+'</span></button>';}).join('')+'</div></div>';}).join('')+
+      '</div><div class="mx-poured" id="mx-poured"></div>'+mxNextBtn(mxPoured()>0,'Mix');
+  }else if(mx.step==='mix'){
+    var done=mx.mixV!=null,c=r.mix[1];
+    h='<div class="mx-title">Mix it</div><div class="mx-hint">The ticket says <b>'+mxMixName(r.mix)+'</b>. Hold the right button, and let go in the green.</div>'+
+      '<div class="mx-shaker'+(mx.mixing?' going '+mx.mixing:'')+'" id="mx-shaker">'+(mx.mixing==='stir'||(!mx.mixing&&mx.mixUsed==='stir')?'🥄':'🍸')+'</div>'+
+      '<div class="mx-meter"><div class="mx-band" style="left:'+(c-6)+'%;width:12%"></div><i id="mx-meter-fill" style="width:'+(done?mx.mixV:0)+'%"></i></div>'+
+      '<div class="mx-meter-scale"><span>Barely</span><span>Lots</span></div>'+
+      '<div class="mx-holds"><button class="mx-hold" data-mix="shake"'+(done?' disabled':'')+'>🍸 Hold to shake</button><button class="mx-hold" data-mix="stir"'+(done?' disabled':'')+'>🥄 Hold to stir</button></div>'+
+      (done?'<div class="mx-result">'+mxMixFeedback()+'</div>':'')+mxNextBtn(done,'Garnish');
+  }else if(mx.step==='garnish'){
+    var all=mx.garn.filter(Boolean).length>=r.garnish.length;
+    h='<div class="mx-title">Garnish</div><div class="mx-hint">Pick a garnish from the ticket, then drop it as it swings over its mark.</div><div class="mx-tray">'+
+      Object.keys(MX_GARNISH).map(function(k){var used=mx.garn.some(function(p){return p&&p.g===k;})&&r.garnish.filter(function(x){return x===k;}).length<=mx.garn.filter(function(p){return p&&p.g===k;}).length;
+        return '<button class="mx-opt'+(mx.swing&&mx.swing.g===k?' on':'')+'" onclick="mxPickGarnish(\''+k+'\')"'+(used||all?' disabled':'')+'><b class="'+(MX_GARNISH[k][2]||'')+'">'+MX_GARNISH[k][0]+'</b><span>'+MX_GARNISH[k][1]+'</span></button>';}).join('')+
+      '</div><button class="btn btn-gold mx-drop" onclick="mxDrop()"'+(mx.swing?'':' disabled')+'>Drop it</button>'+mxNextBtn(all,'Serve');
+  }else{
+    var q=mx.total,gr=mxGrade(q),rows=[['Glass & ice',mx.scores.glass],['Pour',mx.scores.pour],['Mix',mx.scores.mix],['Garnish',mx.scores.garnish]];
+    if(mx.cust)rows.push(['Wait',mx.wait]);
+    h='<div class="mx-title">'+(mx.cust?'Serve it':'Your drink')+'</div><div class="mx-scores">'+rows.map(function(x){return '<div><span>'+x[0]+'</span><b>'+x[1]+'%</b></div>';}).join('')+'</div>'+
+      '<div class="mx-total"><span>'+gr[0]+'</span><b>'+q+'%</b>'+mxStars(gr[1])+'</div>';
+    if(mx.cust){
+      if(!mx.served)h+='<button class="btn btn-primary mx-next" onclick="mxServe()">Hand it over</button>';
+      else h+='<div class="mx-paid">'+mx.paidText+'</div><button class="btn btn-primary mx-next" onclick="barShiftNext()">'+(bar.shift.n>=bar.shift.of?'Finish the shift':'Next customer ▶')+'</button>';
+    }else{
+      var m=mxMult(q);
+      h+='<div class="mx-paid">Strength <b>'+mxStrength(m)+'</b> '+(m>=1.005?'(stronger than Peccy\'s)':m<=0.995?'(weaker than Peccy\'s)':'(same as Peccy\'s)')+(q>=95?'<br>Perfect pour: it goes down smooth, at half the buzz.':'')+'</div>'+
+        '<button class="btn btn-primary mx-next" onclick="mxServe()">Drink up '+DRINKS[mx.id].icon+'</button>';
+    }
+  }
+  el.innerHTML=h;
+  if(mx.step==='pour')mxRenderPoured();
+}
+function mxNextBtn(ok,label){return '<button class="btn btn-primary mx-next" onclick="mxNext()"'+(ok?'':' disabled')+'>Next: '+label+' ▶</button>';}
+function mxSetGlass(k){if(mx.step!=='glass')return;mx.glass=k;mxRenderGlass();mxRenderStation();}
+function mxSetIce(k){if(mx.step!=='glass')return;mx.ice=k;mxRenderGlass();mxRenderStation();}
+// How much of each ticket ingredient is in, against how much should be (the tick)
+function mxRenderPoured(){
+  var el=document.getElementById('mx-poured');if(!el)return;
+  var r=mxRecipe(),tot=r.pour.reduce(function(s,p){return s+p[1];},0),a=mxPourAmounts(),extra=0;
+  for(var k in a)if(!r.pour.some(function(p){return p[0]===k;}))extra+=a[k];
+  el.innerHTML=r.pour.map(function(p){var t=MX_FILL*p[1]/tot,v=a[p[0]]||0,sc=0.5/t;
+    return '<div class="mx-pbar"><span>'+MX_INGS[p[0]][0]+'</span><div><i style="width:'+Math.min(100,v*sc*100).toFixed(1)+'%;background:'+MX_INGS[p[0]][1]+'"></i><b style="left:50%"></b></div></div>';}).join('')+
+    (extra>0.005?'<div class="mx-extra">Not on the ticket: '+Math.round(extra*100)+'% of a glass</div>':'');
+  var nb=document.querySelector('#mix-station .mx-next');if(nb)nb.disabled=!(mxPoured()>0);
+}
+// Pouring: hold a bottle (pointer events, so touch screens work too)
+function mxPourStart(ing){
+  if(mx.step!=='pour'||mx.pouring)return;
+  if(mxPoured()>=1.15){mxSay("Whoa, it's overflowing! That's plenty. 💦");return;}
+  mx.pouring=ing;mx.pourLast=performance.now();
+  var last=mx.poured[mx.poured.length-1];if(!last||last[0]!==ing)mx.poured.push([ing,0]);
+  clearInterval(mx.pourTimer);mx.pourTimer=setInterval(mxPourTick,33);
+  document.querySelectorAll('.mx-bottle').forEach(function(b){b.classList.toggle('pouring',b.dataset.ing===ing);});
+  mxRenderGlass();
+}
+function mxPourTick(){
+  if(!mx.pouring)return;
+  var now=performance.now(),dt=Math.min(0.1,(now-mx.pourLast)/1000);mx.pourLast=now;
+  mx.poured[mx.poured.length-1][1]+=MX_POUR_RATE*dt;
+  if(mxPoured()>=1.15){mxPourStop();mxSay("Whoa, it's overflowing! That's plenty. 💦");return;}
+  mxRenderGlass();mxRenderPoured();
+}
+function mxPourStop(){
+  if(!mx.pouring)return;
+  clearInterval(mx.pourTimer);mx.pouring=null;
+  document.querySelectorAll('.mx-bottle.pouring').forEach(function(b){b.classList.remove('pouring');});
+  mxRenderGlass();mxRenderPoured();
+}
+// Mixing: hold to shake or stir; the meter climbs while you hold, and where you let go is what counts
+function mxMixLevel(){return Math.min(100,(performance.now()-mx.mixT0)/1000*(mx.mixing==='shake'?45:32));}
+function mxMixStart(kind){
+  if(mx.step!=='mix'||mx.mixV!=null||mx.mixing)return;
+  mx.mixing=kind;mx.mixT0=performance.now();
+  var sh=document.getElementById('mx-shaker');sh.className='mx-shaker going '+kind;sh.textContent=kind==='stir'?'🥄':'🍸';
+  clearInterval(mx.mixTimer);mx.mixTimer=setInterval(function(){var f=document.getElementById('mx-meter-fill');if(f)f.style.width=mxMixLevel()+'%';},33);
+}
+function mxMixStop(){
+  if(!mx.mixing)return;
+  mx.mixV=mxMixLevel();mx.mixUsed=mx.mixing;mx.mixing=null;clearInterval(mx.mixTimer);mx.mixed=true;
+  mxRenderGlass();mxRenderStation();
+}
+function mxMixFeedback(){
+  var r=mxRecipe(),s=mxScoreMix(),off=mx.mixV-r.mix[1];
+  var t=mx.mixUsed!==r.mix[0]?'That drink should be '+(r.mix[0]==='shake'?'shaken':'stirred')+'!':Math.abs(off)<=6?'Spot on!':off<0?'A bit under-mixed.':'A bit over-mixed.';
+  return t+' <b>'+s+'%</b>';
+}
+// Garnish: each slot on the ticket has a mark on the rim; the picked garnish swings over the glass
+function mxNextGarnishSlot(){var n=mxRecipe().garnish.length;for(var i=0;i<n;i++)if(!mx.garn[i])return i;return -1;}
+function mxGarnishTarget(i){var G=MX_GLASSES[mx.glass]||{half:50},n=mxRecipe().garnish.length;return n===1?100:100+(i===0?-1:1)*G.half*0.55;}
+function mxSwingX(){var G=MX_GLASSES[mx.glass]||{half:50};return 100+(G.half+22)*Math.sin((performance.now()-mx.swing.t0)/1000*Math.PI*2/1.7);}
+function mxPickGarnish(k){
+  if(mx.step!=='garnish'||mx.swing)return;
+  var r=mxRecipe(),slot=-1;
+  r.garnish.forEach(function(g,i){if(g===k&&!mx.garn[i]&&slot<0)slot=i;});
+  if(slot<0){
+    if(r.garnish.indexOf(k)<0){mx.mistakes++;mxSay(MX_GARNISH[k][1]+"? That's not on the ticket! 🙈");}
+    return;
+  }
+  mx.swing={g:k,i:slot,t0:performance.now()};
+  clearInterval(mx.swingTimer);mx.swingTimer=setInterval(mxRenderGlass,33);
+  mxRenderGlass();mxRenderStation();mxSay("Tap Drop it (or the glass) when it's over the mark! 🎯");
+}
+function mxDrop(){
+  if(!mx.swing)return;
+  var G=MX_GLASSES[mx.glass]||{half:50},x=mxSwingX(),t=mxGarnishTarget(mx.swing.i),s=Math.max(0,1-Math.abs(x-t)/(G.half*0.9));
+  mx.garn[mx.swing.i]={g:mx.swing.g,x:x,s:s,fresh:1};
+  clearInterval(mx.swingTimer);mx.swing=null;
+  mxSay(s>0.85?'Right on the mark! 🎯':s>0.5?'Close enough! 👍':'Hmm, a bit off. 😬');
+  mxRenderGlass();mxRenderStation();
+}
+// ── Scores ──
+function mxScoreGlass(){var r=mxRecipe();return (mx.glass===r.glass?60:0)+(mx.ice===r.ice?40:0);}
+// Pour: how far off each amount is, plus anything that isn't on the ticket (a little slack per ingredient is free)
+function mxScorePour(){
+  var r=mxRecipe(),tot=r.pour.reduce(function(s,p){return s+p[1];},0),a=mxPourAmounts(),e=0;
+  r.pour.forEach(function(p){e+=Math.abs((a[p[0]]||0)-MX_FILL*p[1]/tot);delete a[p[0]];});
+  for(var k in a)e+=a[k];
+  return Math.round(100*Math.max(0,Math.min(1,1-Math.max(0,e-0.02*r.pour.length)/0.45)));
+}
+// Mix: full marks within 6 of the target, nothing 36 away; the wrong method (shaking a stirred drink) halves it
+function mxScoreMix(){
+  var r=mxRecipe();if(mx.mixV==null)return 0;
+  var s=Math.max(0,1-Math.max(0,Math.abs(mx.mixV-r.mix[1])-6)/30);
+  return Math.round(100*s*(mx.mixUsed===r.mix[0]?1:0.5));
+}
+function mxScoreGarnish(){
+  var r=mxRecipe(),sum=0;r.garnish.forEach(function(g,i){sum+=mx.garn[i]?mx.garn[i].s:0;});
+  return Math.max(0,Math.round(100*sum/r.garnish.length)-20*mx.mistakes);
+}
+// Finish a station and move to the next one
+function mxNext(){
+  var order=MX_STEPS.map(function(s){return s[0];}),i=order.indexOf(mx.step);
+  if(mx.step==='glass'){if(!mx.glass||!mx.ice)return;mx.scores.glass=mxScoreGlass();}
+  if(mx.step==='pour'){mxPourStop();if(!mxPoured())return;mx.scores.pour=mxScorePour();}
+  if(mx.step==='mix'){if(mx.mixV==null)return;mx.scores.mix=mxScoreMix();}
+  if(mx.step==='garnish'){
+    if(mx.garn.filter(Boolean).length<mxRecipe().garnish.length)return;
+    mx.scores.garnish=mxScoreGarnish();mx.servedAt=performance.now();clearInterval(mxStart.timer);
+    var w=MX_WEIGHTS,s=mx.scores,q=w.glass*s.glass+w.pour*s.pour+w.mix*s.mix+w.garnish*s.garnish;
+    if(mx.cust){mx.wait=mxWaitScore();q=0.85*q+0.15*mx.wait;}
+    mx.total=Math.round(q);
+  }
+  mx.step=order[i+1];mxRender();
+  var tips={pour:'Hold a bottle to pour, and let go right on its line! 🍾',mix:'Now mix it: hold to shake or stir, and let go in the green. 🍸',garnish:'Pick the garnish and drop it on the mark! 🍒'};
+  if(tips[mx.step])mxSay(tips[mx.step]);
+  if(mx.step==='serve'){var g=mxGrade(mx.total);mxSay(g[1]>=5?"Wow, that's a perfect drink! I couldn't have made it better. 🤩":g[1]>=4?'Great work, that looks delicious! 😋':g[1]>=3?'Not bad at all! 👍':g[1]>=2?"It's... drinkable. 😅":'Oof. Maybe let me make the next one? 😬');}
+}
+// Serve: drink your own (its strength set by the score), or hand it to the customer for a wage and a tip
+function mxServe(){
+  if(!mx.on||mx.step!=='serve'||mx.served)return;
+  if(!mx.cust){var id=mx.id,price=mx.price,q=mx.total;mx.price=0;mxClose();barServeAnim(DRINKS[id]);barServe(id,price,mxMult(q),q,q>=95);return;}
+  var q=mx.total,wage=15,tip=Math.round(45*Math.max(0,Math.min(1,(q-40)/60))),g=mxGrade(q);
+  balance+=wage+tip;updateBalance();bar.shift.earned+=wage+tip;bar.shift.scores.push(q);mx.served=true;
+  var react=g[1]>=5?'Best drink I\'ve had all year!':g[1]>=4?'Delicious, thank you!':g[1]>=3?'Pretty good!':g[1]>=2?'It\'s... fine.':'Uh... what is this?';
+  mx.paidText=mx.cust.face+' “'+react+'”<br>Wage <b>'+wage+'</b> + tip <b>'+tip+'</b> = <b>'+(wage+tip)+' chips</b>';
+  mxRenderStation();
+}
+// ── Working a shift ──
+function barShiftStart(){
+  if(gameMode!=='arcade'||mx.on)return;
+  bar.shift={n:0,of:5,earned:0,scores:[]};
+  barShiftNext();
+}
+function barShiftNext(){
+  var s=bar.shift;if(!s)return;
+  if(s.n>=s.of){mxClose();barShiftEnd(s,false);return;}
+  s.n++;
+  var c=slRand(MX_CUSTOMERS),id=slRand(Object.keys(DRINKS)),nm=DRINKS[id].name;
+  mx={on:false};mxStart(id,{name:c[0],face:c[1],line:slRand(['One '+nm+', please!',"I'll have a "+nm+'.','Can I get a '+nm+'?',nm+', and make it a good one!'])});
+  bar.shift=s;
+}
+function barShiftEnd(s,early){
+  if(!s)return;
+  var st=bar.stats;st.shifts++;st.earned+=s.earned;st.best=Math.max(st.best,s.earned);saveGame();barRender();
+  var avg=s.scores.length?Math.round(s.scores.reduce(function(a,b){return a+b;},0)/s.scores.length):0;
+  barSay(s.scores.length?(early?'Clocked out early. ':"Shift's over! ")+'You made '+s.scores.length+' drink'+(s.scores.length>1?'s':'')+' (average '+avg+'%) and earned '+fmtChips(s.earned)+' chips. 💼':'Clocked out before serving anyone. No harm done! 👋');
+}
+// Holding a bottle or the shake/stir button; let go anywhere to stop. Tapping the glass drops a garnish.
+document.addEventListener('pointerdown',function(e){
+  var b=e.target.closest&&e.target.closest('.mx-bottle,.mx-hold');
+  if(b&&!b.disabled){e.preventDefault();if(b.setPointerCapture)try{b.setPointerCapture(e.pointerId);}catch(x){}
+    if(b.dataset.ing)mxPourStart(b.dataset.ing);else mxMixStart(b.dataset.mix);return;}
+  if(e.target.closest&&e.target.closest('#mix-glass')&&mx.swing)mxDrop();
+});
+['pointerup','pointercancel'].forEach(function(t){document.addEventListener(t,function(){if(mx.pouring)mxPourStop();if(mx.mixing)mxMixStop();});});
+document.addEventListener('contextmenu',function(e){if(e.target.closest&&e.target.closest('.mx-bottle,.mx-hold'))e.preventDefault();});
 
 // The equipped outfit, deck and so on can change while a table is on screen, so they re-apply on load
 // and after every purchase (shopApply).
@@ -2443,7 +3179,8 @@ function barSlotWin(run){
 var PECCY_OUTFITS={
   blackjack:{vest:['#1d1e26','#454857','#0b0b10'],tie:['#ef4b43','#8e1515'],square:'#ff9900'},
   roulette:{vest:['#521220','#8a2c41','#2a0710'],tie:['#30313b','#0b0b0f'],square:'#f2c75c'},
-  slots:{vest:['#26364b','#4a6587','#121a26'],tie:['#ffbd59','#d46f00'],square:'#ffffff'}
+  slots:{vest:['#26364b','#4a6587','#121a26'],tie:['#ffbd59','#d46f00'],square:'#ffffff'},
+  bar:{vest:['#3a2116','#6b4128','#1c0e07'],tie:['#c06bff','#6a1fae'],square:'#ff9900'}
 };
 // Hats reach above the artwork, so a Peccy wearing one is drawn in a box this much taller
 var PECCY_HAT_TOP=-46;
@@ -2625,7 +3362,7 @@ function peccyBlinkPhase(svg){
 }
 
 // ═══ BLACKJACK ═══
-var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false;
+var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false,bjTie=false,bjBust=null;
 var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1; // 1=main, 2=split
 var suits=['&spades;','&hearts;','&diams;','&clubs;'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 
@@ -2754,8 +3491,9 @@ function bjShowGameBtns(){
 function bjDeal(){
   if(bjBetAmount<=0||bjBetAmount>balance){setPeccySpeech('bj-peccy-speech','You need to place a bet first! 🃏');return;}
   balance-=bjBetAmount;updateBalance();createDeck();
-  // Arcade: a Dirty Martini lets you see the hole card this hand; Double Vision blurs your cards
-  barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');
+  // Arcade: a Dirty Martini lets you see the hole card this hand; Double Vision blurs your cards; an Old
+  // Fashioned turns a tie into a win; a Bloody Mary hands back half a busted bet
+  barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');bjTie=!!barTake('oldfash');bjBust=barTake('bloody');
   document.getElementById('player-hands-container').classList.toggle('blurry',bjBlur);
   bjPlayerHand=[bjDeck.pop(),bjDeck.pop()];bjDealerHand=[bjDeck.pop(),bjDeck.pop()];
   bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;
@@ -2889,18 +3627,21 @@ function bjResolveAll(){
   var totalWin=0;var msgs=[];
 
   // Resolve hand 1
-  var ps1=handScore(bjPlayerHand);
-  if(ps1>21){msgs.push('Hand 1: Bust');}
+  // (Arcade bar buffs: an Old Fashioned wins ties, a Bloody Mary hands back half a busted bet)
+  var ps1=handScore(bjPlayerHand),back;
+  if(ps1>21){back=barBustBack(bjBust,bjBetAmount);totalWin+=back;msgs.push('Hand 1: Bust'+(back?' (🍅 +'+back+' back)':''));}
   else if(bjCharlie(bjPlayerHand)){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Charlie +'+bjBetAmount*2);}
   else if(ds>21||ps1>ds){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Win +'+bjBetAmount*2);}
+  else if(ps1===ds&&bjTie){totalWin+=bjBetAmount*2;msgs.push('Hand 1: 🥃 Tie wins +'+bjBetAmount*2);}
   else if(ps1===ds){totalWin+=bjBetAmount;msgs.push('Hand 1: Push');}
   else{msgs.push('Hand 1: Lose');}
 
   // Resolve hand 2
   var ps2=handScore(bjSplitHand);
-  if(ps2>21){msgs.push('Split: Bust');}
+  if(ps2>21){back=barBustBack(bjBust,bjSplitBet);totalWin+=back;msgs.push('Split: Bust'+(back?' (🍅 +'+back+' back)':''));}
   else if(bjCharlie(bjSplitHand)){totalWin+=bjSplitBet*2;msgs.push('Split: Charlie +'+bjSplitBet*2);}
   else if(ds>21||ps2>ds){totalWin+=bjSplitBet*2;msgs.push('Split: Win +'+bjSplitBet*2);}
+  else if(ps2===ds&&bjTie){totalWin+=bjSplitBet*2;msgs.push('Split: 🥃 Tie wins +'+bjSplitBet*2);}
   else if(ps2===ds){totalWin+=bjSplitBet;msgs.push('Split: Push');}
   else{msgs.push('Split: Lose');}
 
@@ -2929,17 +3670,22 @@ function bjEndGame(r,m){
   if(r==='blackjack'){w=Math.floor(bjBetAmount*(gameMode==='arcade'?3:2.5));showConfetti();setPeccySpeech('bj-peccy-speech',"Natural 21! That's a beautiful hand! 🌟");}
   else if(r==='charlie'){w=bjBetAmount*2;showConfetti();setPeccySpeech('bj-peccy-speech',"Five cards and still standing? That's a Charlie, you win! 🃏");}
   else if(r==='player'){w=bjBetAmount*2;showConfetti();setPeccySpeech('bj-peccy-speech',"Well played! You got me this time. 👏");}
+  // Arcade bar buffs: an Old Fashioned turns a tie into a win; a Bloody Mary hands back half a busted bet
+  else if(r==='push'&&bjTie){w=bjBetAmount*2;m+=' 🥃 The Old Fashioned turns the tie into a win!';showConfetti();setPeccySpeech('bj-peccy-speech',"A tie... but that Old Fashioned says it's yours! 🥃");}
   else if(r==='push'){w=bjBetAmount;setPeccySpeech('bj-peccy-speech',"A tie! Your bet is returned. 🤝");}
-  else{setPeccySpeech('bj-peccy-speech',"House wins! Don't worry, try again! 😎");}
+  else{
+    if(handScore(bjPlayerHand)>21){w=barBustBack(bjBust,bjBetAmount);if(w)m+=' 🍅 The Bloody Mary hands back half your bet.';}
+    setPeccySpeech('bj-peccy-speech',"House wins! Don't worry, try again! 😎");
+  }
   balance+=w;updateBalance();
   bjRenderBet(w>bjBetAmount?'won':w<bjBetAmount?'lost':'',w-bjBetAmount);
   if(w>bjBetAmount)peccyHop('.peccy-dealer-svg');
-  var wt=w>0?(r==='push'?'Bet returned: '+w:'Won: +'+w):'Lost: -'+bjBetAmount;
+  var wt=r==='push'&&!bjTie?'Bet returned: '+w:w>bjBetAmount?'Won: +'+w:w>0?'Got back '+w+' of '+bjBetAmount:'Lost: -'+bjBetAmount;
   document.getElementById('bj-message').innerHTML=m+'<br><span style="font-size:16px;color:'+(w>bjBetAmount?'#2d8b57':w>0?'#fff':'#e63946')+'">'+wt+'</span>';
 }
 
 function bjNewHand(){
-  bjPeek=bjBlur=false;document.getElementById('player-hands-container').classList.remove('blurry');
+  bjPeek=bjBlur=bjTie=false;bjBust=null;document.getElementById('player-hands-container').classList.remove('blurry');
   bjGameActive=false;bjPlayerHand=[];bjDealerHand=[];bjSplitHand=[];bjBetAmount=0;bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;
   document.getElementById('bj-bet-display').textContent='0';
   document.getElementById('bj-deal-btn').style.display='';
@@ -3700,7 +4446,7 @@ async function slSpin(){
   // Wins are paid in whole chips. Fractions (small bets on many-line games pay bits of a chip) are
   // kept as change and paid once they add up, so the payback holds at every bet size.
   // Arcade bar buffs adjust the win before it's paid
-  var bx=barSlotWin(run);run=Math.max(0,run+bx.amt);
+  var bx=barSlotWin(run,bet);run=Math.max(0,run+bx.amt);
   // Arcade: now and then a spin that wins nothing is on the house, and the bet comes back
   var comp=run===0&&Math.random()<slCompChance(m);
   if(comp)run=bet;
@@ -3814,8 +4560,15 @@ function slBuildHub(){
       '<div class="sl-card-meta" title="Based on '+m.based+'">Based on '+m.based+'</div></div></div>';
   }
   document.getElementById('sl-hub').innerHTML=h+'</div>';
-  slHubReady=true;slHubRtp();
+  slHubReady=true;slHubRtp();slHubLayout();
 }
+// On a wide screen too short for every card, the machine cards scroll inside the window instead of the page
+function slHubLayout(){
+  var g=document.querySelector('.sl-hub-grid');if(!g||!g.offsetParent)return;
+  var on=innerWidth>760;g.classList.toggle('scrolls',on);
+  g.style.maxHeight=on?Math.max(220,roomBelow(g))+'px':'';
+}
+window.addEventListener('resize',slHubLayout);
 var slHubReady=false;
 // Each card's payback badge: the machine's own in Classic, the lifted one in Arcade
 function slHubRtp(){
@@ -3845,7 +4598,7 @@ function slShowHub(){
   var area=document.getElementById('game-slots');
   area.classList.add('show-hub');
   ['--acc','--bg1','--bg2'].forEach(function(p){area.style.removeProperty(p);});
-  window.scrollTo(0,0);
+  window.scrollTo(0,0);slHubLayout();
 }
 function slOpen(id){
   document.getElementById('game-slots').classList.remove('show-hub');
@@ -3875,7 +4628,7 @@ function slLayout(){
   if(!stage||!stage.clientWidth)return;
   // On a wide screen the cabinet runs from where it starts down to the bottom of the window
   var cab=document.getElementById('sl-cabinet');
-  cab.style.height=innerWidth>640?Math.max(560,innerHeight-cab.getBoundingClientRect().top-window.scrollY-16-footH())+'px':'';
+  cab.style.height=innerWidth>640?Math.max(380,roomBelow(cab))+'px':'';
   var ws=getComputedStyle(win),chrome=parseFloat(ws.paddingLeft)+parseFloat(ws.paddingRight)+parseFloat(ws.borderLeftWidth)+parseFloat(ws.borderRightWidth);
   var gap=parseFloat(getComputedStyle(reels).columnGap)||4,tall=m.colCells||m.rows;
   var W=stage.clientWidth-chrome,H=stage.clientHeight-chrome,cw=(W-gap*(m.cols-1))/m.cols;
@@ -3885,7 +4638,7 @@ function slLayout(){
   reels.style.setProperty('--cell',cell+'px');reels.style.setProperty('--colh',Math.round(row*tall)+'px');
   // On a tall, narrow screen the reels run out of width first: drop the spare height instead of leaving a gap
   var spare=stage.clientHeight-(row*tall+chrome)-24;
-  if(cab.style.height&&spare>0)cab.style.height=Math.max(560,parseFloat(cab.style.height)-spare)+'px';
+  if(cab.style.height&&spare>0)cab.style.height=Math.max(380,parseFloat(cab.style.height)-spare)+'px';
   document.getElementById('sl-lines').innerHTML='';
 }
 window.addEventListener('resize',function(){if(slState.grid)slLayout();});
@@ -3992,8 +4745,8 @@ var rlBets={},rlHistory=[],rlLastBets=null,rlResolved=null,rlResolvedTimer=0,rlS
 function rlTotal(){var t=0;for(var k in rlBets)t+=rlBets[k].amount;return t;}
 function rlFmt(a){return a>=1000?(Math.round(a/100)/10)+'k':String(a);}
 function rlNewBet(t){return {key:t.key,nums:t.nums,out:t.out,pay:t.pay,label:t.label,gx:t.gx,gy:t.gy,el:t.el,chips:[],amount:0};}
-// Arcade's lucky number for the spin (-1 when there isn't one); its glow stays up with the result
-var rlLucky=-1;
+// Arcade's lucky numbers for the spin (one, or three with a Hurricane); their glow stays up with the result
+var rlLucky=[];
 function rlClearLucky(){document.querySelectorAll('.rl-lucky').forEach(function(e){e.classList.remove('rl-lucky');});}
 function rlClearResolved(){
   rlClearLucky();
@@ -4467,11 +5220,13 @@ function spinRoulette(){
   document.getElementById('roulette-spin-btn').disabled=true;
   document.getElementById('roulette-result').textContent='';document.getElementById('roulette-message').textContent='';
   setPeccySpeech('roulette-peccy-speech',"No more bets! The ball is spinning... 🎡");
-  // Arcade: once the bets are down, Peccy picks a lucky number for this spin
-  rlClearLucky();
+  // Arcade: once the bets are down, Peccy picks a lucky number for this spin (a Hurricane adds two more)
+  rlClearLucky();rlLucky=[];
   if(gameMode==='arcade'){
-    rlLucky=Math.floor(Math.random()*37);document.getElementById('rlc-'+rlLucky).classList.add('rl-lucky');
-    document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">🍀 Lucky number '+rlLucky+': wins on it pay double</span>';
+    var hu=barTake('hurricane'),n=1+(hu?Math.round(hu.power||2):0);
+    while(rlLucky.length<n){var ln=Math.floor(Math.random()*37);if(rlLucky.indexOf(ln)<0)rlLucky.push(ln);}
+    rlLucky.forEach(function(ln){document.getElementById('rlc-'+ln).classList.add('rl-lucky');});
+    document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">'+(hu?'🌀 ':'🍀 ')+'Lucky number'+(n>1?'s ':' ')+rlLucky.join(', ')+': wins on '+(n>1?'them':'it')+' pay double</span>';
   }
   var ri=Math.floor(Math.random()*rouletteNumbers.length),rn=rouletteNumbers[ri],target=rlPocketAngle(ri);
   // Wheel spins clockwise and coasts to a stop over wDur
@@ -4507,13 +5262,13 @@ function evalRoulette(num){
   rlAddRecent(num);
   // Each winning bet returns its stake plus the payout; losing chips stay with the house
   // Arcade: the lucky number pays double, and when 0 comes up the bets it beat come back ("back")
-  var tw=0,staked=rlTotal(),msgs=[],wins={},back={},zeroBack=0,arc=gameMode==='arcade',lucky=arc&&num===rlLucky;
+  var tw=0,staked=rlTotal(),msgs=[],wins={},back={},zeroBack=0,arc=gameMode==='arcade',lucky=arc&&rlLucky.indexOf(num)>=0;
   Object.keys(rlBets).forEach(function(k){
     var b=rlBets[k];
     if(rlBetWins(b,num)){var pay=lucky?b.pay*2:b.pay,ret=b.amount*(pay+1);wins[k]=ret;tw+=ret;msgs.push(b.label+' pays '+pay+' to 1: +'+ret);}
     else if(arc&&num===0){back[k]=b.amount;zeroBack+=b.amount;}
   });
-  rlLucky=-1;
+  rlLucky=[];
   // Arcade: a Mojito hands back the losing bets of a spin that loses (up to its cap)
   var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k]&&!back[k])lostStake+=rlBets[k].amount;});
   if(lostStake>0&&barFind('mojito')){var mj=barTake('mojito');refund=Math.min(lostStake,Math.round(mj.cap));}
@@ -4545,6 +5300,7 @@ function bugInfo(){
   var where=g;
   if(g==='slots')where+=document.getElementById('game-slots').classList.contains('show-hub')?' (machine picker)':' ('+slM().name+', bet '+slState.bet+')';
   if(g==='plinko')where+=' ('+{L:'Low',M:'Medium',H:'High'}[pk.risk]+' risk, '+pk.rows+' rows)';
+  if(g==='bar')where+=mx.on?' (mixing a '+DRINKS[mx.id].name+', at '+mx.step+(mx.cust?', on a shift':'')+')':' (menu)';
   lines.push('Game: '+where);
   lines.push('Mode: '+(gameMode==='arcade'?'Arcade':'Classic')+' · chips: '+fmtChips(balance));
   if(gameMode==='arcade')lines.push('Buzz: '+Math.round(bar.buzz)+'%'+(bar.drinks.length?' · drinks: '+bar.drinks.map(function(d){return d.id+' ('+d.left+' left)';}).join(', '):''));
@@ -4572,7 +5328,7 @@ function bugSend(){
   box.value='';bugClose();
 }
 // Esc closes whichever pop-up is open
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();barClose();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')bugClose();});
 
 // ═══ PLINKO ═══
 // Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
@@ -4650,7 +5406,8 @@ function pkDrop(){
   if(bet>balance){pkSay("Not enough chips for that bet! Lower it or hit Reset. 😬");return false;}
   balance-=bet;updateBalance();barRound(1);
   for(var i=0;i<n;i++){var right=Math.random()<0.5?1:0;path.push(right);R+=right;}
-  pk.balls.push({path:path,k:R,bet:bet,mult:pkPays()[R],rows:n,t0:performance.now(),hit:-1,jit:(Math.random()-0.5)*0.12});
+  // Arcade bar buffs ride along with the ball: Blue Lagoon (pays more) and Cosmopolitan (no loss under 1x)
+  pk.balls.push({path:path,k:R,bet:bet,mult:pkPays()[R],rows:n,t0:performance.now(),hit:-1,jit:(Math.random()-0.5)*0.12,lg:barTake('lagoon'),cs:barTake('cosmo')});
   pk.dropped++;pkUI();pkKick();
   return true;
 }
@@ -4690,6 +5447,9 @@ function pkUpdate(now){
 }
 function pkLand(b,now){
   var win=b.bet*b.mult;
+  // A Cosmopolitan lifts a bucket under 1x up to the bet; a Blue Lagoon adds to every win (each up to its cap)
+  if(b.cs&&b.mult<1){var up=Math.min(b.bet*(1-b.mult),Math.max(0,b.cs.cap-b.cs.paid));b.cs.paid+=up;win+=up;}
+  if(b.lg){var add=Math.min(win*(b.lg.power||0.2),Math.max(0,b.lg.cap-b.lg.paid));b.lg.paid+=add;win+=add;}
   pk.change+=win;var paid=Math.floor(pk.change+1e-9);pk.change-=paid;
   balance+=paid;updateBalance();
   pk.land[b.rows+':'+b.k]=now;
@@ -4739,7 +5499,7 @@ setInterval(function(){if(pk.balls.length&&performance.now()-pk.lastFrame>300)pk
 function pkLayout(){
   var wrap=document.getElementById('pk-wrap'),board=document.getElementById('pk-board'),cv=document.getElementById('pk-canvas');
   if(!wrap||!board.clientWidth)return;
-  wrap.style.height=innerWidth>760?Math.max(460,innerHeight-wrap.getBoundingClientRect().top-window.scrollY-16-footH())+'px':'';
+  wrap.style.height=innerWidth>760?Math.max(320,roomBelow(wrap))+'px':'';
   pk.W=board.clientWidth;pk.H=board.clientHeight;pk.dpr=Math.min(2,window.devicePixelRatio||1);
   cv.width=Math.round(pk.W*pk.dpr);cv.height=Math.round(pk.H*pk.dpr);
   pkDraw();
@@ -4758,6 +5518,7 @@ loadGame();modeApply();updateBalance();
 buildRouletteGrid();
 rlInitTable();
 pkInit();
+barShelves();barRender();
 slBuildHub();
 slSelect('classic');
 shopApply();
