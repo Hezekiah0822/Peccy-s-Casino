@@ -1487,6 +1487,9 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .drink-btn:hover:not(:disabled) { filter: brightness(1.12); transform: translateY(-1px); }
   .drink-btn.danger { background: linear-gradient(180deg, #ff6a6a, #c1121f); box-shadow: 0 4px 12px rgba(193,18,31,0.45); }
   .hud-drink.mixed { border-color: rgba(255,210,122,0.65); }
+  .hud-drink.hud-more { cursor: pointer; }
+  .hud-drinks { flex-wrap: nowrap; min-width: 0; }
+  @media (max-width: 760px) { .hud-drinks { flex-wrap: wrap; } }
 
   /* ═══ MIXING ═══ A ticket, the glass on the counter, and the station you're at */
   .mix { display: none; height: 100%; flex-direction: column; gap: 10px; }
@@ -1733,6 +1736,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     position: relative; width: min(560px, 100%); max-height: calc(100dvh - 32px); overflow-y: auto; padding: 20px 22px; border-radius: 22px;
     background: linear-gradient(180deg, #1a1f2c, #0e1118); border: 1px solid var(--line-2); box-shadow: 0 30px 70px rgba(0,0,0,0.7);
   }
+  .panel-close { position: absolute; top: 12px; right: 14px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--line-2); background: rgba(255,255,255,0.06); color: #fff; font-size: 20px; line-height: 1; cursor: pointer; }
+  .panel-close:hover { background: rgba(255,255,255,0.14); }
   .bug-panel h2 { margin-bottom: 6px; padding-right: 40px; font: 900 24px var(--display); }
   .bug-panel p { font-size: 13px; line-height: 1.5; color: var(--muted); }
   .bug-label { display: block; margin: 14px 0 6px; font: 700 12px 'Inter', sans-serif; color: var(--text); }
@@ -1746,6 +1751,15 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     font: 11px/1.5 ui-monospace, Consolas, monospace; color: var(--muted);
   }
   .bug-actions { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-top: 14px; }
+  /* Save codes: the same kind of panel as the bug report */
+  .save-sum { margin-top: 2px; font-size: 12px; color: var(--gold-2); }
+  .save-box { width: 100%; resize: none; padding: 9px 11px; border-radius: 12px; border: 1px solid var(--line-2); background: #0b0e14; color: #dfe6f3; outline: none;
+    font: 11px/1.45 ui-monospace, Consolas, monospace; word-break: break-all; }
+  .save-box:focus { border-color: rgba(255,153,0,0.6); box-shadow: 0 0 0 3px rgba(255,153,0,0.15); }
+  .save-panel .bug-actions { margin-top: 8px; }
+  .save-msg { min-height: 18px; margin-top: 8px; font-size: 12px; line-height: 1.45; color: var(--muted); }
+  .save-msg.good { color: #7dffb2; } .save-msg.bad { color: #ff8a80; }
+  .save-split { height: 1px; margin: 16px 0 2px; background: var(--line-2); }
   .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
   .confetti { position: absolute; width: 10px; height: 10px; opacity: 0; }
   @keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -2159,7 +2173,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
           <div class="bar-active" id="bar-active"></div>
         </div>
         <div class="bar-menu" id="bar-menu"></div>
-        <div class="bar-note">Up to 3 drinks at once. Every spin, hand or ball wears off a little buzz; hit 100% and you black out. <b>Mix it</b> yourself and how well you make it sets how strong it is: up to 1.5× Peccy's, or weaker if you botch it.</div>
+        <div class="bar-note">Drink as many as your buzz can take: every spin, hand or ball wears a little off, and hit 100% and you black out. <b>Mix it</b> yourself and how well you make it sets how strong it is: up to 1.5× Peccy's, or weaker if you botch it.</div>
       </div>
     </div>
     <div class="mix" id="mix">
@@ -2179,12 +2193,31 @@ a { color: var(--color-link, var(--color-primary)); }</style>
 <!-- Blacking out: the screen fades to black, then you come round on the casino floor -->
 <div class="blackout" id="blackout"><div class="blackout-text" id="blackout-text"></div></div>
 
-<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="bugOpen()">🐞 Report a bug</button></footer>
+<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="saveOpen()">💾 Save code</button><button class="bug-btn" onclick="bugOpen()">🐞 Report a bug</button></footer>
+
+<!-- ═══ SAVE CODES ═══ Copy your save as a code, and paste it into another browser or device -->
+<div class="bug-overlay" id="save-overlay" onclick="if(event.target===this)saveClose()">
+  <div class="bug-panel save-panel" role="dialog" aria-labelledby="save-title">
+    <button class="panel-close" onclick="saveClose()" aria-label="Close">×</button>
+    <h2 id="save-title">💾 Save code</h2>
+    <p>Your chips and everything you've bought are saved in this browser. Copy your save code to keep it safe, or to move your save to another browser or device: open the casino there, come back here and paste it under <b>Load a save code</b>.</p>
+    <label class="bug-label" for="save-mine">Your save code</label>
+    <div class="save-sum" id="save-sum"></div>
+    <textarea class="save-box" id="save-mine" rows="4" readonly onclick="this.select()"></textarea>
+    <div class="bug-actions"><button class="btn btn-primary" onclick="saveCopy()"><i class="fa-solid fa-copy"></i> Copy code</button></div>
+    <div class="save-split"></div>
+    <label class="bug-label" for="save-paste">Load a save code</label>
+    <textarea class="save-box" id="save-paste" rows="3" placeholder="Paste a save code here" oninput="saveMsg('')"></textarea>
+    <div class="bug-actions"><button class="btn btn-gold" onclick="saveLoad()"><i class="fa-solid fa-file-import"></i> Load this save</button></div>
+    <div class="save-msg" id="save-msg"></div>
+    <p style="margin-top:6px;font-size:11.5px;color:var(--faint)">Loading a code replaces the chips and items in this browser with the ones in the code. Your current save is kept as a backup first.</p>
+  </div>
+</div>
 
 <!-- ═══ BUG REPORTS ═══ Sending opens a pre-filled issue on the site's GitHub repo -->
 <div class="bug-overlay" id="bug-overlay" onclick="if(event.target===this)bugClose()">
   <div class="bug-panel" role="dialog" aria-labelledby="bug-title">
-    <button class="bar-close" onclick="bugClose()" aria-label="Close">×</button>
+    <button class="panel-close" onclick="bugClose()" aria-label="Close">×</button>
     <h2 id="bug-title">🐞 Report a bug</h2>
     <p>Tell us what went wrong. <b>Send report</b> opens a ready-made report on GitHub (you'll need a free GitHub account to post it), with the details below attached so it's easier to track down.</p>
     <label class="bug-label" for="bug-what">What happened, and what were you doing?</label>
@@ -2439,20 +2472,39 @@ function shopItem(cat,id){var c=SHOP[cat];if(!c)return null;for(var i=0;i<c.item
 function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!shopState.owned[cat+':'+id]);}
 
 // Saving, kept in this browser. Classic and Arcade are separate: each has its own chips, shop items and
-// equipped picks, and Arcade also keeps its buzz and the drinks you have going.
-var SAVE_KEY='peccys-casino-v2',OLD_SAVE_KEY='peccys-casino-v1';
+// equipped picks, and Arcade also keeps its buzz, the drinks you have going and your bar shifts.
+// Players' chips and items have to survive every update of the site, so:
+//   - SAVE_KEY never changes, and older saves are still read (a v1 save becomes the Classic save)
+//   - nothing is saved until the save has loaded, so starting values can never write over a real save
+//     (and if loading it fails, nothing is saved at all that visit, so the save stays as it was)
+//   - a save that can't be read is kept under BAD_KEY, and the backup (BACKUP_KEY) is used instead
+//   - each part is checked on its own, so one bad value doesn't cost the rest, and bought items are kept
+//     even if an update renames or drops one (equipping just falls back to the free item)
+//   - the ids in SHOP and DRINKS are what a save remembers, so don't rename them
+var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
-var gameMode='classic',modeSaves={classic:null,arcade:null};
+var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
 function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
+  if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
-  try{localStorage.setItem(SAVE_KEY,JSON.stringify({mode:gameMode,classic:modeSaves.classic,arcade:modeSaves.arcade}));}catch(e){}
+  var data=JSON.stringify({v:SAVE_VERSION,mode:gameMode,classic:modeSaves.classic,arcade:modeSaves.arcade});
+  try{
+    localStorage.setItem(SAVE_KEY,data);
+    // The backup follows along, at most every 30 seconds (and when the page closes, below)
+    if(Date.now()-saveBackedUp>30000){localStorage.setItem(BACKUP_KEY,data);saveBackedUp=Date.now();}
+  }catch(e){}
+}
+window.addEventListener('pagehide',function(){saveBackedUp=0;saveGame();});
+// A stored save: the object, null if there isn't one, or false if it's there but can't be read
+function readSave(key){
+  try{var raw=localStorage.getItem(key);if(raw==null)return null;var s=JSON.parse(raw);return s&&typeof s==='object'?s:false;}catch(e){return false;}
 }
 // Load a mode's saved state into the live game (a mode with no save starts fresh)
 function modeRestore(m){
   var s=modeSaves[m]||{};
   balance=balanceShown=typeof s.balance==='number'&&isFinite(s.balance)&&s.balance>=0?Math.floor(s.balance):MODE_START[m];
-  shopState.owned=s.owned&&typeof s.owned==='object'?s.owned:{};
+  shopState.owned=s.owned&&typeof s.owned==='object'&&!Array.isArray(s.owned)?s.owned:{};
   shopState.eq=JSON.parse(JSON.stringify(SHOP_FREE));
   if(s.eq)for(var k in SHOP_FREE)if(s.eq[k]&&shopOwns(k,s.eq[k]))shopState.eq[k]=s.eq[k];
   bar.buzz=m==='arcade'&&typeof s.buzz==='number'?Math.max(0,Math.min(99,s.buzz)):0;
@@ -2463,13 +2515,16 @@ function modeRestore(m){
   bar.stats={shifts:+st.shifts||0,earned:+st.earned||0,best:+st.best||0};
 }
 function loadGame(){
-  try{
-    var s=JSON.parse(localStorage.getItem(SAVE_KEY)||'null');
-    // A save from before Arcade existed becomes the Classic save
-    if(!s){var old=JSON.parse(localStorage.getItem(OLD_SAVE_KEY)||'null');if(old)s={mode:'classic',classic:old};}
-    if(s){modeSaves.classic=s.classic||null;modeSaves.arcade=s.arcade||null;if(s.mode==='arcade')gameMode='arcade';}
-  }catch(e){}
-  modeRestore(gameMode);
+  var s=readSave(SAVE_KEY);
+  // There's a save but it can't be read: keep a copy of it, and use the backup
+  if(s===false){try{if(localStorage.getItem(BAD_KEY)==null)localStorage.setItem(BAD_KEY,localStorage.getItem(SAVE_KEY));}catch(e){}s=null;}
+  if(!s)s=readSave(BACKUP_KEY)||null;
+  // A save from before Arcade existed becomes the Classic save
+  if(!s){var old=readSave(OLD_SAVE_KEY);if(old)s={mode:'classic',classic:old};}
+  function part(p){return p&&typeof p==='object'?p:null;}
+  if(s){modeSaves.classic=part(s.classic);modeSaves.arcade=part(s.arcade);if(s.mode==='arcade')gameMode='arcade';}
+  try{modeRestore(gameMode);saveLoaded=true;}
+  catch(e){bugNote('Loading the save failed: '+e.message);}  // leave the save alone rather than write over it
 }
 // Arcade chips come easier (the bar's buffs), so its shop charges double
 var ARCADE_PRICE_X=2;
@@ -2605,15 +2660,15 @@ function modeApply(){
 }
 
 // ═══ PECCY'S BAR (arcade) ═══
-// The Bar tab, Arcade only: Peccy behind the counter. Drinks are short buffs. Each adds buzz; up to 3 can be
-// going at once; 100% buzz is a blackout. Prices climb with your stack (the bartender sizes you up), and the
+// The Bar tab, Arcade only: Peccy behind the counter. Drinks are short buffs. Each adds buzz, and buzz is the
+// only limit on how many you have going: 100% is a blackout. Prices climb with your stack (the bartender sizes you up), and the
 // buffs that pay chips are capped at 8x what you paid, so drinking stays a gamble instead of a chip printer.
 // Peccy pours a drink at standard strength, or you can mix it yourself (MIXING below): made well it's up to
 // 1.5x as strong, botched it can drop to 0.5x. Working a shift (also MIXING) pays wages and tips instead.
 var bar={buzz:0,drinks:[],stats:{shifts:0,earned:0,best:0},shift:null};
 // left: spins, hands or balls it lasts. power: how strong, for buffs with a strength. capX: a payout buff pays
 // out at most capX x its price. scales: what a mixed drink's strength multiplies. instant: works the moment
-// it's drunk instead of lasting, and needs no free slot (noSlot). recipe: how it's made, for mixing.
+// it's drunk instead of lasting. recipe: how it's made, for mixing.
 var DRINKS={
   lemon:{name:'Lucky Lemon Drop',short:'Lemon Drop',icon:'🍋',color:'#ffd23d',game:'Slots',buzz:20,base:150,pct:0.015,left:10,unit:'spin',capX:8,power:0.25,scales:['power','cap'],
     desc:'Slot wins pay 25% more for your next 10 spins.',
@@ -2648,8 +2703,8 @@ var DRINKS={
   longisland:{name:'Long Island',short:'Long Island',icon:'🧊',color:'#c06bff',game:'Any game',buzz:35,base:60,pct:0.01,instant:1,scales:[],
     desc:'Strong and unpredictable: a free random buff, or a random curse.',
     recipe:{glass:'highball',ice:'cubes',pour:[['vodka',1],['gin',1],['rum',1],['tequila',1],['cola',2]],mix:['stir',35],garnish:['lemon']}},
-  espresso:{name:'Espresso Martini',short:'Espresso',icon:'☕',color:'#b07a4f',game:'Sobers you up',buzz:0,base:80,pct:0.01,instant:1,noSlot:1,power:30,scales:['power'],
-    desc:'Wakes you up: takes 30% off your buzz, and needs no free slot.',
+  espresso:{name:'Espresso Martini',short:'Espresso',icon:'☕',color:'#b07a4f',game:'Sobers you up',buzz:0,base:80,pct:0.01,instant:1,power:30,scales:['power'],
+    desc:'Wakes you up: takes 30% off your buzz, so you can keep drinking.',
     recipe:{glass:'martini',ice:'none',pour:[['vodka',2],['coffee',1],['espresso',2]],mix:['shake',80],garnish:['beans']}}
 };
 // What a Long Island can do to you instead
@@ -2676,15 +2731,14 @@ function barGrant(id,price,mult,q){
   if(e){e.left+=left;e.cap+=cap;e.power=Math.max(e.power||0,power);if(q!=null)e.q=q;}
   else bar.drinks.push({id:id,left:left,cap:cap,paid:0,power:power,q:q==null?null:q});
 }
-// Why a drink can't be had right now ('' if it can)
+// Why a drink can't be had right now ('' if it can). There's no cap on how many: your buzz is the limit.
 function barBlocked(id){
   var d=DRINKS[id];
-  if(!d.noSlot&&bar.drinks.length>=3&&!barFind(id))return 'Three drinks max';
   if(barPrice(d)>balance)return 'Need '+fmtChips(barPrice(d)-balance)+' more';
   return '';
 }
 function barBlockedSay(id){
-  barSay(barBlocked(id)==='Three drinks max'?"Easy there! You've got three drinks going. Play a bit and let one wear off. 🥴":"That one's "+fmtChips(barPrice(DRINKS[id]))+" chips. Come back when you're flush, or work a shift! 💸");
+  barSay("That one's "+fmtChips(barPrice(DRINKS[id]))+" chips. Come back when you're flush, or work a shift! 💸");
 }
 // Peccy pours it: standard strength
 function barOrder(id){
@@ -2734,7 +2788,10 @@ function barHUD(){
     var f=document.getElementById(p+'-buzz-fill'),t=document.getElementById(p+'-buzz-pct');
     if(f)f.style.width=b+'%';if(t){t.textContent=b+'%';t.style.setProperty('--buzz-c',col);}
   });
-  document.getElementById('hud-drinks').innerHTML=badges;
+  // The header strip keeps to one row: three badges, then a count of the rest (the bar lists them all)
+  var more=bar.drinks.slice(3);
+  document.getElementById('hud-drinks').innerHTML=bar.drinks.slice(0,3).map(barBadge).join('')+
+    (more.length?'<span class="hud-drink hud-more" onclick="barOpen()" title="'+more.map(function(e){return barEffectDef(e.id).short+' · '+e.left+' '+barEffectDef(e.id).unit+(e.left===1?'':'s');}).join(', ').replace(/"/g,'&quot;')+'">+'+more.length+' more</span>':'');
   document.getElementById('bar-active').innerHTML=badges||'<span class="bar-none">No drinks going yet</span>';
   document.body.classList.toggle('buzz-1',arc&&b>=30&&b<60);
   document.body.classList.toggle('buzz-2',arc&&b>=60&&b<85);
@@ -5327,8 +5384,70 @@ function bugSend(){
   window.open(BUG_REPO+'?labels=bug&title='+encodeURIComponent(title)+'&body='+encodeURIComponent(body),'_blank','noopener');
   box.value='';bugClose();
 }
+// ═══ SAVE CODES ═══
+// A save is kept per browser, so a save code carries it to another one: the whole save (both modes, chips,
+// items, drinks) as text, "PECCY1.<base64 of the save>.<check>". The check catches a code that's been cut
+// short or mistyped; it isn't tamper-proof, which is fine while chips are just for fun.
+// Loading one keeps the current save under PRE_LOAD_KEY first, writes the code's save, and reloads the page.
+var SAVE_CODE_TAG='PECCY1',PRE_LOAD_KEY='peccys-casino-v2-before-code';
+function saveCheck(s){var h=2166136261;for(var i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)>>>0;}return ('000000'+h.toString(36)).slice(-6);}
+function saveCodeMake(){
+  saveGame();
+  var json=JSON.stringify({v:SAVE_VERSION,mode:gameMode,classic:modeSaves.classic,arcade:modeSaves.arcade});
+  var b=btoa(unescape(encodeURIComponent(json))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  return SAVE_CODE_TAG+'.'+b+'.'+saveCheck('peccy:'+b);
+}
+// A pasted code: {save} if it's good, or {err} saying what's wrong with it
+function saveCodeRead(code){
+  var c=String(code||'').replace(/\s+/g,''),p=c.split('.');
+  if(!c)return {err:'Paste a save code in the box first.'};
+  if(p[0]!==SAVE_CODE_TAG)return {err:"That doesn't look like a Peccy's Casino save code. It should start with "+SAVE_CODE_TAG+'.'};
+  if(p.length!==3||saveCheck('peccy:'+p[1])!==p[2])return {err:"That code is cut short or has a typo. Copy the whole thing and try again."};
+  try{var b=p[1].replace(/-/g,'+').replace(/_/g,'/');while(b.length%4)b+='=';var s=JSON.parse(decodeURIComponent(escape(atob(b))));}
+  catch(e){return {err:"That code couldn't be read. Copy the whole thing and try again."};}
+  function part(x){return x&&typeof x==='object'&&!Array.isArray(x)?x:null;}
+  if(!s||typeof s!=='object'||(!part(s.classic)&&!part(s.arcade)))return {err:'That code has no save in it.'};
+  return {save:{v:SAVE_VERSION,mode:s.mode==='arcade'?'arcade':'classic',classic:part(s.classic),arcade:part(s.arcade)}};
+}
+// "Classic: 4,321 chips, 2 items · Arcade: 7,777 chips, 5 items"
+function saveSummary(s){
+  return ['classic','arcade'].map(function(m){
+    var x=s[m],name=m==='arcade'?'Arcade':'Classic';
+    if(!x)return name+': not played yet';
+    var chips=typeof x.balance==='number'?x.balance:MODE_START[m],items=x.owned?Object.keys(x.owned).filter(function(k){return x.owned[k];}).length:0;
+    return name+': '+fmtChips(chips)+' chips, '+items+' item'+(items===1?'':'s');
+  }).join(' · ');
+}
+function saveMsg(t,kind){var el=document.getElementById('save-msg');el.textContent=t;el.className='save-msg'+(kind?' '+kind:'');}
+function saveOpen(){
+  document.getElementById('save-mine').value=saveCodeMake();  // (this saves first, so modeSaves is up to date)
+  document.getElementById('save-sum').textContent=saveSummary(modeSaves);
+  document.getElementById('save-paste').value='';saveMsg('');
+  document.getElementById('save-overlay').classList.add('show');
+}
+function saveClose(){document.getElementById('save-overlay').classList.remove('show');}
+function saveCopy(){
+  var box=document.getElementById('save-mine'),code=box.value;
+  function done(){saveMsg('Copied! Keep it somewhere safe, or paste it into the casino on another browser or device.','good');}
+  function fallback(){box.focus();box.select();try{document.execCommand('copy');done();}catch(e){saveMsg('Copy didn\'t work here: select the code and copy it yourself.','bad');}}
+  if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(code).then(done,fallback);else fallback();
+}
+function saveLoad(){
+  var r=saveCodeRead(document.getElementById('save-paste').value);
+  if(r.err){saveMsg(r.err,'bad');return;}
+  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||mx.on){saveMsg('Finish the hand, spin or drink you\'re in the middle of, then load the code.','bad');return;}
+  if(!confirm('Load this save?\n\n'+saveSummary(r.save)+'\n\nIt replaces the chips and items in this browser. Your current save is kept as a backup first.'))return;
+  try{
+    var cur=localStorage.getItem(SAVE_KEY);if(cur)localStorage.setItem(PRE_LOAD_KEY,cur);
+    var data=JSON.stringify(r.save);localStorage.setItem(SAVE_KEY,data);localStorage.setItem(BACKUP_KEY,data);
+  }catch(e){saveMsg("This browser wouldn't store the save (its storage may be turned off, or full).",'bad');return;}
+  saveLoaded=false;  // so leaving this page doesn't write the old save back over the new one
+  saveMsg('Loaded! Opening your save…','good');
+  setTimeout(function(){location.reload();},400);
+}
+
 // Esc closes whichever pop-up is open
-document.addEventListener('keydown',function(e){if(e.key==='Escape')bugClose();});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();saveClose();}});
 
 // ═══ PLINKO ═══
 // Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
