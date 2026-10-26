@@ -355,7 +355,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%B0%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&family=Press+Start+2P&display=swap');
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -597,6 +597,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.22); font: 800 14px var(--display); letter-spacing: 0; color: #fff;
   }
   .hand-label .score:empty { display: none; }
+  /* Room for the score badge from the start, so the table doesn't grow when the cards come out */
+  .hand-label { min-height: 24px; display: flex; align-items: center; justify-content: center; }
   /* Printed arcs in the middle of the felt, with the round result shown over them */
   .bj-mid { position: relative; height: 86px; margin: 0 auto; max-width: 640px; }
   .bj-arc { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
@@ -611,7 +613,19 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   .bj-message:empty { display: none; }
   .bj-message span { font-family: 'Inter', sans-serif; font-weight: 700; }
   @keyframes msgIn { from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } }
-  #player-hands-container { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; position: relative; z-index: 2; }
+  /* Hit, Stand, Double and Split, in the middle of the felt; the printed arcs fade back while they're up */
+  .bj-play { position: absolute; left: 50%; top: 50%; z-index: 6; display: flex; gap: 8px; transform: translate(-50%, -50%); white-space: nowrap; }
+  .bj-play .btn { padding: 11px 18px; font-size: 13px; }
+  .bj-mid.playing .bj-arc { opacity: 0.18; transition: opacity 0.3s; }
+  @media (max-width: 640px) {
+    .bj-play { gap: 5px; }
+    .bj-play .btn { padding: 9px 11px; font-size: 11px; letter-spacing: 0.5px; }
+    .bj-play .btn i { display: none; }
+  }
+  /* Both hands of a split sit side by side (never wrapping to a new row, which would resize the table) */
+  #player-hands-container { display: flex; justify-content: center; gap: 24px; flex-wrap: nowrap; position: relative; z-index: 2; }
+  #player-hands-container.split .hand-area { padding-left: 4px; padding-right: 20px; }
+  #player-hands-container.split .hand-area .card + .card { margin-left: -40px; }
   #player-hand-2-wrapper { border-left: 1px solid rgba(242,199,92,0.25); padding-left: 24px; }
   /* Betting circle with the wager stacked as chips */
   .bj-bet-spot {
@@ -761,7 +775,7 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     border-radius: 20px; background: var(--panel); backdrop-filter: blur(10px); border: 1px solid var(--line); box-shadow: 0 14px 34px rgba(0,0,0,0.4);
   }
   .bet-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-  .bj-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+  .bj-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; min-width: 150px; }
 
   /* ═══ SLOTS ═══ */
   /* The slot floor takes the whole width; the selected machine tints the room around it */
@@ -1716,11 +1730,181 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     .pk-history span { font-size: 10.5px; padding: 4px 0; }
   }
   @media (max-width: 640px) {
-    /* Five tabs across a phone: drop the tab icons */
+    /* Seven or eight tabs on a phone: two rows of four, without the icons */
+    .game-nav { display: grid; grid-template-columns: repeat(4, 1fr); border-radius: 18px; }
     .game-tab .tab-ico { display: none; }
     .game-tab { padding: 8px 3px; font-size: 12px; }
   }
 
+  /* ═══ COIN FLIP ═══ The controls on the left (the same panel as Plinko), the coin in the spotlight */
+  #game-coin.active { max-width: 1200px; padding-top: 12px; padding-bottom: 14px; }
+  .cf-wrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 12px; height: 560px; }
+  .cf-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .cf-sides button { padding: 12px; border-radius: 12px; border: 1px solid var(--line-2); background: #0c121a; color: var(--muted); font: 800 14px 'Inter', sans-serif; cursor: pointer; transition: all 0.15s; }
+  .cf-sides button:hover { color: #fff; }
+  .cf-sides button.on { color: #2a1a00; border-color: transparent; background: linear-gradient(180deg, #ffe29a, #e0a92a); box-shadow: 0 4px 14px rgba(224,169,42,0.3); }
+  .pk-play:disabled { opacity: 0.55; cursor: default; }
+  .cf-double { margin-top: 6px; padding: 10px; border-radius: 12px; border: 1px solid rgba(255,210,122,0.5); background: rgba(255,153,0,0.12); color: #ffd27a; font: 800 12.5px 'Inter', sans-serif; cursor: pointer; }
+  .cf-double:hover { background: rgba(255,153,0,0.2); }
+  .cf-stage {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 0; border-radius: 22px; overflow: hidden;
+    background: radial-gradient(55% 50% at 50% 40%, #33405a, #121822 75%); border: 1px solid rgba(255,255,255,0.06); box-shadow: inset 0 0 60px rgba(0,0,0,0.5);
+  }
+  .cf-toss { --toss: -110px; width: 210px; height: 210px; perspective: 900px; }
+  .cf-toss.go { animation: cfToss 1.6s cubic-bezier(.3,.6,.4,1); }
+  @keyframes cfToss { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(var(--toss)) scale(1.12); } 100% { transform: translateY(0) scale(1); } }
+  .cf-coin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1.6s cubic-bezier(.25,.7,.3,1); }
+  .cf-face {
+    position: absolute; inset: 0; border-radius: 50%; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+    background: radial-gradient(circle at 35% 30%, #fff3c4, #f2c75c 40%, #b8862a 75%, #8a5f14);
+    box-shadow: inset 0 0 0 8px rgba(122,82,16,0.55), inset 0 0 0 12px rgba(255,231,160,0.5), 0 18px 40px rgba(0,0,0,0.5);
+  }
+  .cf-face svg { width: 44%; height: auto; opacity: 0.92; }
+  .cf-face span { font: 900 14px var(--display); letter-spacing: 3px; color: #6b4a0c; }
+  .cf-t { transform: rotateY(180deg); }
+  .cf-t b { font: 900 92px var(--serif); line-height: 1; color: #7a5410; text-shadow: 0 2px 0 rgba(255,240,190,0.6); }
+  .cf-shadow { width: 150px; height: 16px; margin-top: -8px; border-radius: 50%; background: rgba(0,0,0,0.45); filter: blur(5px); }
+  .cf-result { min-height: 26px; font: 800 20px var(--display); text-align: center; }
+  .cf-result .w { color: #7dffb2; } .cf-result .l { color: #ff8a80; }
+  .cf-hist { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 440px; min-height: 26px; }
+  .cf-hist span { width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 800 11px var(--display); color: #2a1a00; background: linear-gradient(180deg, #ffe29a, #e0a92a); }
+  .cf-hist span.l { filter: grayscale(0.85) brightness(0.65); }
+  @media (max-height: 720px) { .cf-toss { width: 170px; height: 170px; } .cf-t b { font-size: 74px; } }
+  @media (max-width: 760px) {
+    .cf-wrap { grid-template-columns: 1fr; height: auto !important; }
+    .cf-stage { order: -1; min-height: 360px; padding: 20px 0; }
+    .cf-toss { --toss: -60px; width: 170px; height: 170px; }
+  }
+
+  /* ═══ SPORTSBOOK ═══ This week's games on the left; the matchup, a team, or the broadcast on the right */
+  #game-sports.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  .sb-wrap { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 12px; height: 640px; }
+  .sb-side { display: flex; flex-direction: column; gap: 8px; min-height: 0; padding: 12px; border-radius: 22px; background: linear-gradient(180deg, #1a2433, #111823); border: 1px solid rgba(255,255,255,0.08); }
+  .sb-head { display: flex; align-items: center; gap: 10px; }
+  .sb-head .peccy-small { width: 46px; height: 54px; }
+  .sb-head .peccy-small.has-hat { height: calc(54px * 286 / 240); }
+  .sb-title b { display: block; font: 900 18px var(--display); }
+  .sb-title small { display: block; margin-top: 1px; font-size: 11.5px; color: var(--muted); }
+  .sb-say { max-width: none; padding: 7px 11px; font-size: 12px; }
+  .sb-say::before { display: none; }
+  .sb-tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; padding: 3px; border-radius: 999px; background: #0c121a; flex: none; }
+  .sb-tabs button { padding: 7px 4px; border: none; border-radius: 999px; background: transparent; color: var(--muted); font: 700 12px 'Inter', sans-serif; cursor: pointer; }
+  .sb-tabs button.on { color: #fff; background: #2a3747; }
+  .sb-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 1px 2px 1px 1px; }
+  .sb-foot { flex: none; display: flex; justify-content: center; }
+  .sb-foot .btn { padding: 10px 18px; font-size: 12.5px; }
+  .sb-game { padding: 6px 9px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1px solid var(--line-2); cursor: pointer; transition: background 0.15s; }
+  .sb-game:hover { background: rgba(255,255,255,0.08); }
+  .sb-game.on { border-color: var(--aws-orange); box-shadow: 0 0 0 1px var(--aws-orange); }
+  .sb-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto 50px; align-items: center; gap: 8px; padding: 2px 0; font-size: 12.5px; }
+  .sb-tn { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .sb-tn small { margin-left: 6px; font-size: 11px; color: var(--faint); }
+  .sb-row.won .sb-tn { color: #7dffb2; font-weight: 700; }
+  .sb-pct { font: 800 12.5px var(--display); }
+  .sb-mult { font: 800 12px var(--display); color: var(--gold-2); text-align: right; }
+  .sb-gst { margin-top: 2px; font-size: 10.5px; color: var(--faint); }
+  .sb-gst b { font-weight: 700; color: #ffd27a; }
+  .sb-badge { display: inline-flex; align-items: center; justify-content: center; flex: none; min-width: 36px; height: 20px; padding: 0 5px; border-radius: 5px; font: 400 8px 'Press Start 2P', monospace; vertical-align: middle;
+    background: var(--t1); box-shadow: inset 0 -3px 0 var(--t2), 0 0 0 1px rgba(255,255,255,0.14); }
+  .sb-badge.big { min-width: 60px; height: 42px; border-radius: 9px; font-size: 13px; box-shadow: inset 0 -5px 0 var(--t2), 0 0 0 1px rgba(255,255,255,0.16), 0 8px 18px rgba(0,0,0,0.35); }
+  .sb-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .sb-table th { padding: 4px; text-align: left; font: 700 10px 'Inter', sans-serif; color: var(--faint); }
+  .sb-table td { padding: 5px 4px; border-top: 1px solid var(--line); white-space: nowrap; }
+  .sb-table tr { cursor: pointer; }
+  .sb-table tr:hover td, .sb-table tr.on td { background: rgba(255,255,255,0.05); }
+  .sb-bet { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 10px; background: rgba(255,255,255,0.04); font-size: 12px; }
+  .sb-bet span { flex: 1; min-width: 0; }
+  .sb-bet small { display: block; font-size: 10.5px; color: var(--faint); }
+  .sb-bet b { font: 800 12.5px var(--display); }
+  .sb-bet.won b { color: #7dffb2; } .sb-bet.lost b { color: #ff8a80; } .sb-bet.open b { color: #ffd27a; }
+  .sb-empty { padding: 10px; font-size: 12px; text-align: center; color: var(--faint); }
+  .sb-main { position: relative; min-height: 0; min-width: 0; overflow-y: auto; padding: 14px; border-radius: 22px; border: 1px solid rgba(255,255,255,0.06);
+    background: radial-gradient(70% 50% at 50% 0%, rgba(61,220,132,0.08), transparent 70%), linear-gradient(180deg, #151d29, #0e131b); }
+  .sb-loading { padding: 40px; text-align: center; color: var(--muted); }
+  .sb-match { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .sb-mteam { display: flex; align-items: center; gap: 10px; min-width: 0; cursor: pointer; }
+  .sb-mteam b { display: block; font: 800 17px var(--display); }
+  .sb-mteam small { font-size: 12px; color: var(--muted); }
+  .sb-match .sb-mteam:last-child { flex-direction: row-reverse; text-align: right; }
+  .sb-at { font: 900 18px var(--display); color: var(--faint); }
+  .sb-odds { margin-top: 12px; }
+  .sb-obar { display: flex; height: 12px; border-radius: 999px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.12); }
+  .sb-obar i { display: block; height: 100%; }
+  .sb-olab { display: flex; justify-content: space-between; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+  .sb-olab span:nth-child(2) { color: var(--faint); }
+  .sb-slip { margin-top: 12px; padding: 10px; border-radius: 16px; background: rgba(0,0,0,0.28); border: 1px solid var(--line); }
+  .sb-picks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sb-picks button { display: flex; align-items: center; gap: 8px; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line-2); background: rgba(255,255,255,0.04); color: #fff; font: 700 13px 'Inter', sans-serif; cursor: pointer; }
+  .sb-picks button b { margin-left: auto; font: 800 15px var(--display); color: var(--gold-2); }
+  .sb-picks button.on { border-color: var(--aws-orange); background: rgba(255,153,0,0.12); box-shadow: 0 0 0 1px var(--aws-orange); }
+  .sb-amtrow { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .sb-amtrow .pk-amount { width: 210px; }
+  .sb-towin { flex: 1; font-size: 12.5px; color: #7dffb2; }
+  .sb-amtrow .btn { padding: 10px 20px; font-size: 12.5px; }
+  .sb-mine { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .sb-mine span { padding: 4px 10px; border-radius: 999px; font-size: 12px; color: #ffd27a; background: rgba(255,210,122,0.12); border: 1px solid rgba(255,210,122,0.35); }
+  .sb-mine .won { color: #7dffb2; border-color: rgba(125,255,178,0.45); background: rgba(125,255,178,0.1); }
+  .sb-mine .lost { color: #ff8a80; border-color: rgba(255,138,128,0.4); background: rgba(255,90,90,0.08); }
+  .sb-go { display: flex; align-items: center; gap: 12px; margin: 12px 0; }
+  .sb-go .btn { padding: 11px 20px; font-size: 12.5px; }
+  .sb-final { font: 800 14px var(--display); color: var(--gold-2); }
+  .sb-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sb-col { padding: 10px 12px; border-radius: 16px; background: rgba(255,255,255,0.03); border: 1px solid var(--line); }
+  .sb-col h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; font: 800 14px var(--display); }
+  .sb-col h4 { margin: 8px 0 4px; font: 700 10.5px 'Inter', sans-serif; letter-spacing: 1.4px; text-transform: uppercase; color: var(--faint); }
+  .sb-tline { margin: 2px 0 6px; font-size: 12px; line-height: 1.5; color: var(--muted); }
+  .sb-rbar { display: grid; grid-template-columns: 60px 1fr 26px; align-items: center; gap: 8px; margin: 3px 0; font-size: 11px; color: var(--muted); }
+  .sb-rbar div { height: 7px; border-radius: 999px; overflow: hidden; background: rgba(255,255,255,0.08); }
+  .sb-rbar i { display: block; height: 100%; background: linear-gradient(90deg, #3ddc84, #ffd23d); }
+  .sb-rbar b { font: 800 11px var(--display); color: #fff; }
+  .sb-l5 { display: flex; align-items: center; gap: 7px; padding: 3px 0; font-size: 12px; }
+  .sb-l5 i { width: 18px; height: 18px; flex: none; border-radius: 5px; display: inline-flex; align-items: center; justify-content: center; font: 800 10px var(--display); font-style: normal; }
+  .sb-l5 i.w { color: #7dffb2; background: rgba(61,220,132,0.25); } .sb-l5 i.l { color: #ff8a80; background: rgba(255,90,90,0.2); }
+  .sb-l5 small { margin-left: auto; font-size: 10.5px; color: var(--faint); }
+  .sb-team-head { display: flex; align-items: center; gap: 14px; margin-bottom: 12px; }
+  .sb-team-head h2 { font: 900 24px var(--display); }
+  /* The broadcast: a scoreboard bar, the pixel field (kept 16:9 and as big as fits), controls, play-by-play */
+  .sb-cast { display: flex; flex-direction: column; align-items: center; gap: 8px; height: 100%; }
+  .sb-cast > * { width: var(--castw, 100%); max-width: 100%; }
+  .sb-board { display: flex; align-items: center; gap: 12px; flex: none; padding: 7px 10px; border-radius: 6px; background: #050506; font: 400 10px 'Press Start 2P', monospace; color: #fff; white-space: nowrap; overflow: hidden; }
+  .sbb-t { display: flex; align-items: center; gap: 6px; padding: 2px 7px; border-left: 4px solid var(--t1); }
+  .sbb-t b { font-weight: 400; color: #ffd23d; }
+  .sbb-t.pos::after { content: '◀'; font-size: 8px; color: #ffd23d; }
+  .sbb-q { margin-left: auto; }
+  .sbb-d { min-width: 96px; text-align: right; color: #ffd23d; }
+  .sb-screen { position: relative; flex: none; aspect-ratio: 16 / 9; overflow: hidden; border-radius: 6px; background: #000; box-shadow: 0 0 0 3px #050506, 0 18px 40px rgba(0,0,0,0.5); }
+  .sb-screen canvas { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; }
+  .sb-banner { position: absolute; left: 50%; top: 40%; padding: 8px 14px; opacity: 0; pointer-events: none; transform: translate(-50%, -50%) scale(0.8); transition: opacity 0.2s, transform 0.2s;
+    background: rgba(0,0,0,0.8); color: #fff; font: 400 11px 'Press Start 2P', monospace; white-space: nowrap; }
+  .sb-banner.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  .sb-banner.big { padding: 12px 18px; background: rgba(0,0,0,0.55); color: #ffd23d; font-size: 22px; text-shadow: 3px 3px 0 #b3121f; }
+  .sb-result { position: absolute; left: 0; right: 0; bottom: 0; display: none; flex-direction: column; align-items: center; gap: 5px; padding: 26px 12px 12px; font-size: 13px; text-align: center;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,0.92) 35%); }
+  .sb-result.show { display: flex; }
+  .sb-result b { font: 400 12px 'Press Start 2P', monospace; color: #ffd23d; }
+  .sb-result .won { display: block; font-weight: 700; color: #7dffb2; } .sb-result .lost { display: block; font-weight: 700; color: #ff8a80; }
+  .sb-res-btns { display: flex; gap: 8px; margin-top: 4px; }
+  .sb-res-btns .btn { padding: 9px 16px; font-size: 12px; }
+  .sb-ctrl { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; flex: none; }
+  .sb-seg { display: flex; gap: 2px; padding: 3px; border-radius: 999px; background: #0c121a; }
+  .sb-seg button { padding: 6px 11px; border: none; border-radius: 999px; background: transparent; color: var(--muted); font: 700 12px 'Inter', sans-serif; cursor: pointer; }
+  .sb-seg button.on { color: #fff; background: #2a3747; }
+  .sb-pbp { flex: 1; min-height: 56px; overflow-y: auto; padding: 7px 10px; border-radius: 10px; background: rgba(0,0,0,0.35); font: 12px/1.6 ui-monospace, Consolas, monospace; color: #dfe6f3; }
+  .sb-pbp .skip { color: var(--faint); }
+  .sb-pbp div:first-child { color: #ffd27a; }
+  @media (max-width: 1200px) { .sb-wrap { grid-template-columns: 310px minmax(0, 1fr); } .sb-cols { grid-template-columns: 1fr; } }
+  @media (max-width: 900px) {
+    .sb-wrap { grid-template-columns: 1fr; height: auto !important; }
+    .sb-side { order: 2; }
+    .sb-list { max-height: 460px; }
+    .sb-main { overflow: visible; }
+    .sb-screen { width: 100%; }
+    .sb-board { gap: 8px; font-size: 7px; }
+    .sbb-d { min-width: 0; }
+    .sb-banner.big { font-size: 14px; }
+    .sb-pbp { max-height: 150px; }
+    .sb-match { flex-wrap: wrap; }
+  }
   /* ═══ CONFETTI ═══ */
   /* One quiet line under the games */
   .site-foot { position: relative; z-index: 1; padding: 0 16px 10px; text-align: center; font-size: 10.5px; line-height: 1.4; color: var(--faint); }
@@ -1766,17 +1950,22 @@ a { color: var(--color-link, var(--color-primary)); }</style>
 
   /* ═══ SMALLER SCREENS ═══ */
   /* Laptops: the header keeps to one row (plus the Arcade strip) so the games get the height */
-  @media (max-width: 1440px) and (min-width: 761px) {
+  @media (max-width: 1720px) and (min-width: 761px) {
     .topbar { gap: 12px; padding: 8px 18px; }
     .brand-tag { display: none; }
     .brand-peccy { width: 30px; height: 35px; }
-    .game-tab { padding: 8px 13px; }
-  }
-  @media (max-width: 1200px) and (min-width: 761px) {
+    .game-tab { padding: 8px 12px; }
     .game-tab .tab-ico { display: none; }
-    .game-tab { padding: 8px 11px; font-size: 13.5px; }
+  }
+  @media (max-width: 1380px) and (min-width: 761px) {
+    .brand-name { display: none; }   /* just Peccy, so all the tabs fit on one row */
     .chip-bank .label { display: none; }
-    .brand-name { font-size: 19px; }
+    .game-tab { padding: 8px 10px; font-size: 13.5px; }
+  }
+  @media (max-width: 1100px) and (min-width: 761px) {
+    .topbar { gap: 8px; padding: 8px 12px; }
+    .game-tab { padding: 7px 8px; font-size: 12.5px; }
+    .mode-opt { padding: 6px 9px; font-size: 11.5px; }
   }
   /* Short laptop screens: slimmer chrome round each game, so it all fits on one screen without scrolling
      (the tables also scale down to fit, see fitTables) */
@@ -1888,6 +2077,8 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     <button class="game-tab" onclick="switchGame('slots')" id="tab-slots"><span class="tab-ico">7</span> Slots</button>
     <button class="game-tab" onclick="switchGame('roulette')" id="tab-roulette"><i class="tab-ico fa-solid fa-dharmachakra"></i> Roulette</button>
     <button class="game-tab" onclick="switchGame('plinko')" id="tab-plinko"><i class="tab-ico fa-solid fa-circle-dot"></i> Plinko</button>
+    <button class="game-tab" onclick="switchGame('coin')" id="tab-coin"><i class="tab-ico fa-solid fa-coins"></i> Coin Flip</button>
+    <button class="game-tab" onclick="switchGame('sports')" id="tab-sports"><i class="tab-ico fa-solid fa-football"></i> Sports</button>
     <button class="game-tab arcade-only" onclick="switchGame('bar')" id="tab-bar"><i class="tab-ico fa-solid fa-martini-glass-citrus"></i> Bar</button>
     <button class="game-tab" onclick="switchGame('shop')" id="tab-shop"><i class="tab-ico fa-solid fa-bag-shopping"></i> Shop</button>
   </nav>
@@ -1943,6 +2134,13 @@ a { color: var(--color-link, var(--color-primary)); }</style>
             <text class="arc-sub"><textPath id="bj-arc-sub" href="#bj-arc-2" startOffset="50%" text-anchor="middle">DEALER STANDS ON ALL 17s</textPath></text>
           </svg>
           <div class="bj-message" id="bj-message"></div>
+          <!-- Your moves sit in the middle of the felt while a hand is on -->
+          <div class="bj-play" id="bj-play">
+            <button class="btn btn-success" id="bj-hit-btn" onclick="bjHit()" style="display:none"><i class="fa-solid fa-plus"></i> Hit</button>
+            <button class="btn btn-danger" id="bj-stand-btn" onclick="bjStand()" style="display:none"><i class="fa-solid fa-hand"></i> Stand</button>
+            <button class="btn btn-gold" id="bj-double-btn" onclick="bjDouble()" style="display:none"><i class="fa-solid fa-angles-up"></i> Double</button>
+            <button class="btn btn-blue" id="bj-split-btn" onclick="bjSplit()" style="display:none"><i class="fa-solid fa-code-branch"></i> Split</button>
+          </div>
         </div>
         <div class="bj-zone">
           <div id="player-hands-container">
@@ -1975,10 +2173,6 @@ a { color: var(--color-link, var(--color-primary)); }</style>
     </div>
     <div class="bj-actions" id="bj-actions">
       <button class="btn btn-primary" id="bj-deal-btn" onclick="bjDeal()"><i class="fa-solid fa-layer-group"></i> Deal</button>
-      <button class="btn btn-success" id="bj-hit-btn" onclick="bjHit()" style="display:none"><i class="fa-solid fa-plus"></i> Hit</button>
-      <button class="btn btn-danger" id="bj-stand-btn" onclick="bjStand()" style="display:none"><i class="fa-solid fa-hand"></i> Stand</button>
-      <button class="btn btn-gold" id="bj-double-btn" onclick="bjDouble()" style="display:none"><i class="fa-solid fa-angles-up"></i> Double</button>
-      <button class="btn btn-blue" id="bj-split-btn" onclick="bjSplit()" style="display:none"><i class="fa-solid fa-code-branch"></i> Split</button>
       <button class="btn btn-primary" id="bj-newhand-btn" onclick="bjNewHand()" style="display:none"><i class="fa-solid fa-rotate-right"></i> New hand</button>
     </div>
   </div>
@@ -2135,6 +2329,51 @@ a { color: var(--color-link, var(--color-primary)); }</style>
   </div>
 </div>
 
+<!-- ═══ COIN FLIP ═══ -->
+<div class="game-area" id="game-coin">
+  <div class="cf-wrap" id="cf-wrap">
+    <div class="pk-panel">
+      <div class="pk-host">
+        <svg class="peccy-small peccy-dealer cf-peccy" data-outfit="blackjack" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="peccy-speech" id="coin-peccy-speech">Call it and I'll flip! Heads or tails? 🪙</div>
+      </div>
+      <label class="pk-label" for="cf-bet">Bet amount</label>
+      <div class="pk-amount"><input id="cf-bet" type="number" min="1" step="1" value="10" inputmode="numeric"><button onclick="cfBetScale(0.5)">½</button><button onclick="cfBetScale(2)">2×</button></div>
+      <label class="pk-label">Call it</label>
+      <div class="cf-sides"><button id="cf-heads" class="on" onclick="cfPick('H')">Heads</button><button id="cf-tails" onclick="cfPick('T')">Tails</button></div>
+      <button class="pk-play" id="cf-flip" onclick="cfFlip()">Flip the coin</button>
+      <button class="cf-double" id="cf-double" onclick="cfDouble()" style="display:none"></button>
+      <div class="pk-stats"><div><small>Pays</small><span id="cf-pays">×1.96</span></div><div><small>Streak</small><span id="cf-streak">0</span></div><div><small>Best streak</small><span id="cf-best">0</span></div></div>
+    </div>
+    <div class="cf-stage">
+      <div class="cf-toss" id="cf-toss"><div class="cf-coin" id="cf-coin">
+        <div class="cf-face cf-h"><svg viewBox="0 0 204 240" aria-hidden="true"><use href="#peccy-art"></use></svg><span>HEADS</span></div>
+        <div class="cf-face cf-t"><b>P</b><span>TAILS</span></div>
+      </div></div>
+      <div class="cf-shadow"></div>
+      <div class="cf-result" id="cf-result">Call heads or tails, then flip</div>
+      <div class="cf-hist" id="cf-hist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ SPORTSBOOK ═══ Football to start: this week's games and odds on the left; the matchup, a team or the broadcast on the right -->
+<div class="game-area" id="game-sports">
+  <div class="sb-wrap" id="sb-wrap">
+    <div class="sb-side">
+      <div class="sb-head">
+        <svg class="peccy-dealer peccy-small" data-outfit="slots" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="sb-title"><b>🏈 Peccy's Sportsbook</b><small id="sb-week">Football</small></div>
+      </div>
+      <div class="peccy-speech sb-say" id="sports-peccy-speech">Pick a game, check the odds and back a team! 🏈</div>
+      <div class="sb-tabs"><button id="sbt-games" class="on" onclick="sbTab('games')">This week</button><button id="sbt-table" onclick="sbTab('table')">Standings</button><button id="sbt-bets" onclick="sbTab('bets')">My bets</button></div>
+      <div class="sb-list" id="sb-list"></div>
+      <div class="sb-foot" id="sb-foot"></div>
+    </div>
+    <div class="sb-main" id="sb-main"><div class="sb-loading">Setting up the league…</div></div>
+  </div>
+</div>
+
 <!-- ═══ SHOP ═══ -->
 <div class="game-area" id="game-shop">
   <div class="shop-head">
@@ -2279,6 +2518,8 @@ function switchGame(g) {
   if(g==='roulette')rlRender();
   if(g==='shop'){shopRender();shopLayout();}
   if(g==='plinko')pkLayout();
+  if(g==='coin'){cfUI();cfLayout();}
+  if(g==='sports')sbOpen();
   if(g==='bar'){barRender();barLayout();if(mx.on)mxRender();}
   else if(mx.on){mxPourStop();mxMixStop();}  // let go of the bottle (or shaker) on the way out
   // The Slots tab opens on the machine picker, unless a spin is still playing out
@@ -2291,10 +2532,13 @@ var tableScale={blackjack:1,roulette:1};
 function footH(){var f=document.getElementById('site-foot');return f?f.offsetHeight:0;}
 // The height left for `el` before the bottom of the window: less its game area's bottom padding and the footer
 function roomBelow(el){var a=el.closest('.game-area'),pb=a?parseFloat(getComputedStyle(a).paddingBottom)||0:0;return innerHeight-el.getBoundingClientRect().top-window.scrollY-pb-footH()-2;}
-function fitTables(){
+// `content` is true when it's the table's own contents that changed size (not the window): then the blackjack
+// table keeps its size while there are cards out, so it doesn't grow and shrink during a hand.
+function fitTables(content){
   ['blackjack','roulette'].forEach(function(g){
     var area=document.getElementById('game-'+g),fit=area.querySelector('.table-fit'),s=1,h=fit.offsetHeight;
     if(!area.classList.contains('active'))return;
+    if(content===true&&g==='blackjack'&&bjPlayerHand.length)return;
     if(innerWidth>760&&h)s=Math.max(0.45,Math.min(1,roomBelow(fit)/h));
     tableScale[g]=s;
     fit.style.transform=s<1?'scale('+s.toFixed(4)+')':'';
@@ -2484,7 +2728,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!
 var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
-function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
+function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
@@ -2513,6 +2757,9 @@ function modeRestore(m){
   bar.drinks.forEach(function(d){if(typeof d.power!=='number')d.power=barEffectDef(d.id).power||0;if(typeof d.cap!=='number')d.cap=0;if(typeof d.paid!=='number')d.paid=0;});
   var st=m==='arcade'&&s.barStats||{};
   bar.stats={shifts:+st.shifts||0,earned:+st.earned||0,best:+st.best||0};
+  // The sportsbook league (set up the first time the Sports tab opens); a game kicked off before the page
+  // closed is settled now, the way it was always going to end
+  sb=sbFromSave(s.sb);sbAway+=sbResume();
 }
 function loadGame(){
   var s=readSave(SAVE_KEY);
@@ -2622,11 +2869,12 @@ function shopDrawBall(cv,B){
 //   blackjack blackjack pays 2 to 1, and five cards without busting win (about +3% with basic strategy)
 //   roulette  0 hands back the bets it beat, and one lucky number a spin pays double (101-103%)
 var ARCADE_RTP=103;
-var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech',bar:'bar-say'};
+var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech',bar:'bar-say',coin:'coin-peccy-speech',sports:'sports-peccy-speech'};
 function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
 function setMode(m){
   if(m===gameMode||!MODE_START[m])return;
-  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
+  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||cf.busy){modeSay("Finish this round before you switch floors! 🎲");return;}
+  if(sbCast&&!sbCast.done){modeSay('Finish watching the game (or skip to the end) before you switch floors! 📺');return;}
   if(mx.on){mxSay(mx.cust?'Finish the shift (or clock out) before you switch floors! 🍸':'Finish your drink (or cancel it) before you switch floors! 🍸');return;}
   // Chips on a table go back to the stack they came from before the floors swap
   if(rlTotal())rouletteClearBet();
@@ -2636,6 +2884,9 @@ function setMode(m){
   gameMode=m;modeRestore(m);
   modeApply();updateBalance();shopApply();saveGame();
   if(document.getElementById('game-shop').classList.contains('active'))shopRender();
+  // Each floor has its own sportsbook league and its own coin streaks
+  sbCastStop();sbView={tab:'games',main:'game',gi:0,ti:null};cf.streak=0;cf.last=0;cf.hist=[];cfUI();
+  if(document.getElementById('game-sports').classList.contains('active'))sbOpen();
   modeSay(m==='arcade'?"Welcome to the Arcade floor! The bar's open and the odds lean your way. 🍸🕹️":"Back on the Classic floor: real odds, no funny business. 🎩");
 }
 // Everything on screen that shows which mode you're in
@@ -3508,14 +3759,14 @@ function renderBJHands(rv){
 
   // Split hand
   if(bjIsSplit){
-    hw2.style.display='';
+    hw2.style.display='';document.getElementById('player-hands-container').classList.add('split');
     bjDrawHand(ph2,bjSplitHand,false,q,1);
     ps2.textContent=bjSplitHand.length>0?handScoreDisplay(bjSplitHand):'';
     // Highlight active hand
     ph.classList.toggle('active-hand', bjActiveHand===1 && bjGameActive);
     ph2.classList.toggle('active-hand', bjActiveHand===2 && bjGameActive);
   } else {
-    hw2.style.display='none';
+    hw2.style.display='none';document.getElementById('player-hands-container').classList.remove('split');
     ph.classList.remove('active-hand');
     ph2.classList.remove('active-hand');
   }
@@ -3536,7 +3787,13 @@ function bjAllIn(){
 }
 function bjClearBet(){if(bjGameActive)return;bjBetAmount=0;document.getElementById('bj-bet-display').textContent='0';bjRenderBet();}
 
+// Your moves, in the middle of the felt; off while Peccy plays out the hand and once it's settled
+function bjPlayBtns(on){
+  document.querySelector('#game-blackjack .bj-mid').classList.toggle('playing',on);
+  if(!on)['bj-hit-btn','bj-stand-btn','bj-double-btn','bj-split-btn'].forEach(function(id){document.getElementById(id).style.display='none';});
+}
 function bjShowGameBtns(){
+  bjPlayBtns(true);
   document.getElementById('bj-deal-btn').style.display='none';
   document.getElementById('bj-hit-btn').style.display='';
   document.getElementById('bj-stand-btn').style.display='';
@@ -3653,8 +3910,8 @@ function bjStand(){
     if(handScore(bjSplitHand)===21) bjStand();
     return;
   }
-  // All player hands done — dealer draws
-  renderBJHands(true);
+  // All player hands done — dealer draws (your buttons go away while Peccy plays)
+  bjPlayBtns(false);renderBJHands(true);
   var draw=function(){
     if(handScore(bjDealerHand)<17){
       bjDealerHand.push(bjDeck.pop());renderBJHands(true);setTimeout(draw,400);
@@ -3673,7 +3930,7 @@ function bjStand(){
 }
 
 function bjResolveAll(){
-  bjGameActive=false;renderBJHands(true);
+  bjGameActive=false;bjPlayBtns(false);renderBJHands(true);
   document.getElementById('bj-hit-btn').style.display='none';
   document.getElementById('bj-stand-btn').style.display='none';
   document.getElementById('bj-double-btn').style.display='none';
@@ -3716,7 +3973,7 @@ function bjResolveAll(){
 }
 
 function bjEndGame(r,m){
-  bjGameActive=false;renderBJHands(true);
+  bjGameActive=false;bjPlayBtns(false);renderBJHands(true);
   document.getElementById('bj-hit-btn').style.display='none';
   document.getElementById('bj-stand-btn').style.display='none';
   document.getElementById('bj-double-btn').style.display='none';
@@ -3742,7 +3999,7 @@ function bjEndGame(r,m){
 }
 
 function bjNewHand(){
-  bjPeek=bjBlur=bjTie=false;bjBust=null;document.getElementById('player-hands-container').classList.remove('blurry');
+  bjPeek=bjBlur=bjTie=false;bjBust=null;document.getElementById('player-hands-container').classList.remove('blurry');bjPlayBtns(false);
   bjGameActive=false;bjPlayerHand=[];bjDealerHand=[];bjSplitHand=[];bjBetAmount=0;bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;
   document.getElementById('bj-bet-display').textContent='0';
   document.getElementById('bj-deal-btn').style.display='';
@@ -5357,6 +5614,7 @@ function bugInfo(){
   var where=g;
   if(g==='slots')where+=document.getElementById('game-slots').classList.contains('show-hub')?' (machine picker)':' ('+slM().name+', bet '+slState.bet+')';
   if(g==='plinko')where+=' ('+{L:'Low',M:'Medium',H:'High'}[pk.risk]+' risk, '+pk.rows+' rows)';
+  if(g==='sports'&&sb)where+=' (season '+sb.season+', week '+sb.week+', '+(sbView.main==='cast'?'watching game '+(sbView.gi+1):'on the '+sbView.main+' screen')+')';
   if(g==='bar')where+=mx.on?' (mixing a '+DRINKS[mx.id].name+', at '+mx.step+(mx.cust?', on a shift':'')+')':' (menu)';
   lines.push('Game: '+where);
   lines.push('Mode: '+(gameMode==='arcade'?'Arcade':'Classic')+' · chips: '+fmtChips(balance));
@@ -5631,6 +5889,919 @@ function pkInit(){
 }
 
 
+// ═══ COIN FLIP ═══
+// Call heads or tails and Peccy flips. A win pays CF_PAY x the bet: 1.96 in Classic (a 2% edge, like the
+// online flip games), 2.06 in Arcade (about 103%, like the rest of the Arcade floor). "Double it" bets your
+// last win again, for a streak; winnings are paid the moment you win, so nothing rides on a streak you leave.
+var CF_PAY={classic:1.96,arcade:2.06},cf={side:'H',face:'H',busy:false,angle:0,streak:0,best:0,last:0,change:0,hist:[]};
+function cfSay(t){setPeccySpeech('coin-peccy-speech',t);}
+function cfBet(){return Math.max(1,Math.floor(+document.getElementById('cf-bet').value||1));}
+function cfBetScale(f){if(cf.busy)return;var el=document.getElementById('cf-bet');el.value=Math.max(1,Math.min(Math.max(1,Math.floor(balance)),Math.floor(cfBet()*f)));}
+function cfPick(s){if(cf.busy)return;cf.side=s;cfUI();}
+function cfUI(){
+  var el=document.getElementById('cf-heads');if(!el)return;
+  el.classList.toggle('on',cf.side==='H');document.getElementById('cf-tails').classList.toggle('on',cf.side==='T');
+  document.getElementById('cf-pays').textContent='×'+CF_PAY[gameMode].toFixed(2);
+  document.getElementById('cf-streak').textContent=cf.streak;document.getElementById('cf-best').textContent=cf.best;
+  var d=document.getElementById('cf-double');d.style.display=cf.last>0&&!cf.busy?'':'none';
+  if(cf.last>0)d.innerHTML='<i class="fa-solid fa-angles-up"></i> Double it: flip '+fmtChips(cf.last)+' to win '+fmtChips(Math.floor(cf.last*CF_PAY[gameMode]));
+  document.getElementById('cf-flip').disabled=cf.busy;
+  document.getElementById('cf-hist').innerHTML=cf.hist.map(function(h){return '<span class="'+(h.w?'w':'l')+'" title="'+(h.r==='H'?'Heads':'Tails')+(h.w?', won':', lost')+'">'+h.r+'</span>';}).join('');
+}
+function cfFlip(amount){
+  if(cf.busy)return;
+  var bet=amount||cfBet();
+  if(bet>balance){cfSay(balance<1?"You're out of chips! Hit Reset"+(gameMode==='arcade'?', or work a shift at the bar. 🍸':'. 🔄'):"Not enough chips for that bet! 😬");return;}
+  balance-=bet;updateBalance();barRound();cf.busy=true;cf.last=0;cfUI();
+  var res=Math.random()<0.5?'H':'T',win=res===cf.side;
+  // The coin spins over a few times in the air and lands showing the result
+  cf.angle+=1440+(Math.random()<0.5?0:360)+(res!==cf.face?180:0);
+  var coin=document.getElementById('cf-coin'),toss=document.getElementById('cf-toss');
+  coin.style.transform='rotateY('+cf.angle+'deg)';toss.classList.remove('go');void toss.offsetWidth;toss.classList.add('go');
+  document.getElementById('cf-result').textContent='Flipping…';
+  cfSay(slRand(['Heads or tails... here it goes! 🪙','Up she goes! 🪙','Call it in the air! 🪙']));
+  setTimeout(function(){
+    cf.face=res;cf.busy=false;
+    var name=res==='H'?'Heads':'Tails',r=document.getElementById('cf-result');
+    if(win){
+      cf.change+=bet*CF_PAY[gameMode];var whole=Math.floor(cf.change+1e-9);cf.change-=whole;balance+=whole;updateBalance();
+      cf.streak++;cf.best=Math.max(cf.best,cf.streak);cf.last=whole;
+      r.innerHTML='<b class="w">'+name+'! You win '+fmtChips(whole)+'</b>';
+      cfSay(cf.streak>=3?cf.streak+" in a row! You're on fire! 🔥":slRand(['Called it! 🎉','Lucky you! 🍀','Winner winner! 🪙']));
+      if(cf.streak>=3)showConfetti();peccyHop('.cf-peccy');
+    }else{
+      cf.streak=0;r.innerHTML='<b class="l">'+name+'. Better luck next flip!</b>';
+      cfSay(slRand(['So close! Flip again? 🪙','The coin giveth, the coin taketh. 😅','Not this time! 🪙']));
+    }
+    cf.hist.unshift({r:res,w:win});cf.hist=cf.hist.slice(0,14);cfUI();
+  },1650);
+}
+function cfDouble(){if(cf.last>0&&!cf.busy)cfFlip(cf.last);}
+function cfLayout(){var w=document.getElementById('cf-wrap');if(!w||!w.offsetParent)return;w.style.height=innerWidth>760?Math.max(360,roomBelow(w))+'px':'';}
+window.addEventListener('resize',function(){if(document.getElementById('game-coin').classList.contains('active'))cfLayout();});
+
+// ═══ SPORTSBOOK: FOOTBALL ═══
+// A league of 16 made-up teams playing a 12-week season, 8 games a week. You bet on who wins. The chance shown
+// for each team comes from the same simulator that plays the game, run many times (sbOdds), and when a game is
+// played its winner is drawn at exactly that chance before a full game ending that way is simulated (sbPlay), so
+// a team shown at 20% really does win one game in five. A bet pays SB_RTP[mode] / chance: in Classic a 5% cut
+// like a real book, in Arcade a little over the odds like the rest of the Arcade floor.
+// Every game is played out from a seed by sbSim, play by play, and shown as a pixel-art broadcast (SB CUTSCENE
+// below). The same seed always plays the same game, so a finished game can be replayed, and a game that was
+// kicked off before the page closed still ends the same way.
+var SB_TEAMS=[
+  {city:'Seattle',name:'Thunder',ab:'SEA',c1:'#1d3768',c2:'#9be36a',hl:'#1d3768',off:86,def:80},
+  {city:'Austin',name:'Armadillos',ab:'AUS',c1:'#d4621c',c2:'#ffffff',hl:'#f4f1ea',off:78,def:74},
+  {city:'Portland',name:'Lumberjacks',ab:'POR',c1:'#1f6b3a',c2:'#e9c46a',hl:'#1f6b3a',off:70,def:83},
+  {city:'Las Vegas',name:'Aces',ab:'LV',c1:'#141414',c2:'#e2b23c',hl:'#e2b23c',off:90,def:66},
+  {city:'Chicago',name:'Blizzard',ab:'CHI',c1:'#7fc4ef',c2:'#0e2a47',hl:'#ffffff',off:68,def:88},
+  {city:'Miami',name:'Sharks',ab:'MIA',c1:'#139a9a',c2:'#ff8c42',hl:'#ffffff',off:82,def:72},
+  {city:'Denver',name:'Peaks',ab:'DEN',c1:'#5b2c86',c2:'#c9ccd4',hl:'#c9ccd4',off:74,def:76},
+  {city:'Nashville',name:'Riffs',ab:'NSH',c1:'#d9a82b',c2:'#1b1b1b',hl:'#1b1b1b',off:72,def:70},
+  {city:'Detroit',name:'Engines',ab:'DET',c1:'#6c7a89',c2:'#d62f2f',hl:'#6c7a89',off:64,def:73},
+  {city:'Phoenix',name:'Firebirds',ab:'PHX',c1:'#c8202f',c2:'#ffd23d',hl:'#ffd23d',off:80,def:69},
+  {city:'Brooklyn',name:'Bridges',ab:'BKN',c1:'#f2f2f2',c2:'#1a1a1a',hl:'#1a1a1a',off:66,def:66},
+  {city:'Atlanta',name:'Blaze',ab:'ATL',c1:'#a3111c',c2:'#121212',hl:'#121212',off:76,def:81},
+  {city:'San Diego',name:'Surf',ab:'SD',c1:'#2fa8e6',c2:'#ffd447',hl:'#ffffff',off:84,def:64},
+  {city:'Memphis',name:'Blues',ab:'MEM',c1:'#2445a6',c2:'#a8c6ff',hl:'#2445a6',off:62,def:78},
+  {city:'Omaha',name:'Stampede',ab:'OMA',c1:'#6b4226',c2:'#f1e0c5',hl:'#f1e0c5',off:70,def:62},
+  {city:'Pittsburgh',name:'Forge',ab:'PIT',c1:'#1f1f1f',c2:'#ff7a00',hl:'#ff7a00',off:79,def:86}
+];
+var SB_WEEKS=12,SB_RTP={classic:0.95,arcade:1.03},SB_ODDS_RUNS=1000;
+// Seeded random numbers (mulberry32): the same seed always gives the same game
+function sbRng(seed){var a=seed>>>0;return function(){a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function sbGauss(R){var u=R()||1e-9,v=R();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+// A team's strength in a game: its ratings this season ([offense, defense], or the team's usual ones), plus a
+// little for the home crowd and for its recent form
+function sbStrength(g,side){
+  var r=side?g.ra:g.rh,f=(side?g.fa:g.fh)||0,home=side?0:1.6;
+  if(!r){var t=SB_TEAMS[side?g.a:g.h];r=[t.off,t.def];}
+  return {off:r[0]+home+f,def:r[1]+home+f};
+}
+// Play a whole game from a seed. Sides: 0 is the home team (attacking to the right on the broadcast), 1 away.
+// `yl` is where the ball is, in yards from the offense's own goal line. With `full`, every play is kept for the
+// broadcast; without, only the final score (for working out odds).
+function sbSim(g,seed,full){
+  var R=sbRng(seed),S=[sbStrength(g,0),sbStrength(g,1)],sc=[0,0],plays=full?[]:null;
+  var q=1,clock=900,off=R()<0.5?0:1,firstRecv=off,yl=25,down=1,dist=10,ot=false,otPoss=0,over=false,n=0;
+  function rec(p){if(full){p.q=q;p.clock=Math.max(0,Math.round(clock));p.sc=[sc[0],sc[1]];p.r=Math.floor(R()*1e9);plays.push(p);}}
+  function lead(s){return sc[s]-sc[1-s];}
+  // A change of possession: the other team gets the ball at `at` (their own yard line)
+  function turnover(at){off=1-off;yl=Math.max(1,Math.min(99,at));down=1;dist=Math.min(10,100-yl);if(ot)otPoss++;}
+  function kickoff(kicking){
+    var tb=R()<0.55,rtd=!tb&&R()<0.004,start=tb?25:Math.round(17+R()*18+(R()<0.05?R()*25:0));
+    var p={k:'kick',off:kicking,yl0:35,tb:tb,yd:0};
+    clock-=tb?0:6;
+    if(rtd){p.ret=100;p.td=1;rec(p);off=1-kicking;score(6,'Kickoff return touchdown');return;}
+    p.ret=tb?0:start;rec(p);
+    turnover(start);
+  }
+  function score(pts,why){
+    sc[off]+=pts;
+    if(pts===6){var good=R()<0.965;if(good)sc[off]+=1;rec({k:'xp',off:off,yl0:85,good:good});}
+    if(ot){over=true;return;}
+    kickoff(off);
+  }
+  function endQuarter(){
+    q++;clock=900;
+    if(q===3){off=1-firstRecv;kickoff(firstRecv);return;}   // the team that kicked first gets the ball after halftime
+    if(q===5){
+      if(sc[0]!==sc[1]){over=true;return;}
+      ot=true;rec({k:'ot',off:off});off=R()<0.5?0:1;kickoff(1-off);
+    }
+  }
+  kickoff(1-off);
+  while(!over&&n<400){
+    n++;
+    if(!ot&&clock<=0){endQuarter();continue;}
+    // Overtime that goes on and on: the offense starts in field-goal range so it ends
+    if(ot&&otPoss>=8&&yl<62){yl=65;down=1;dist=10;}
+    var o=S[off],d=S[1-off],diff=(o.off-d.def)/40,late=q>=4&&clock<300,lg=lead(off),p={off:off,yl0:yl,down:down,dist:dist};
+    if(down===4){
+      var fgd=117-yl,gamble=(dist<=2&&yl>=45&&R()<0.4)||(late&&lg<0&&!(lg>=-3&&fgd<=50));
+      if(!gamble&&fgd<=53){
+        var pk=Math.max(0.3,Math.min(0.99,0.99-(fgd-25)*0.0115));p.k='fg';p.fgd=fgd;p.good=R()<pk;clock-=5;rec(p);
+        if(p.good){score(3);}else turnover(100-(yl-7));
+        continue;
+      }
+      if(!gamble&&yl<62){
+        var land=yl+Math.round(41+sbGauss(R)*6),pt={k:'punt',off:off,yl0:yl};clock-=8;
+        if(land>=100){pt.tb=1;pt.land=100;rec(pt);turnover(20);continue;}
+        var fair=R()<0.3,ret=fair?0:Math.max(0,Math.round(3+sbGauss(R)*5+(R()<0.04?20+R()*40:0)));
+        pt.land=land;pt.fair=fair;pt.ret=ret;
+        var at=100-land+ret;
+        if(at>=100){pt.td=1;rec(pt);off=1-off;score(6);continue;}
+        rec(pt);turnover(at);continue;
+      }
+    }
+    var passP=0.54+(dist>=8?0.12:0)-(dist<=2?0.18:0)+(late&&lg<0?0.22:0)-(late&&lg>0?0.25:0),y=0,t=34+R()*10;
+    if(R()<passP){
+      p.k='pass';
+      if(R()<0.065-0.025*diff){p.k='sack';y=-Math.round(4+R()*6);}
+      else{
+        var r=R(),depth=r<0.55?0:r<0.88?1:2,air=depth===0?Math.round(1+R()*7):depth===1?Math.round(10+R()*9):Math.round(22+R()*23);
+        air=Math.min(air,100-yl+(depth===2?0:-1));if(air<1)air=1;
+        p.depth=depth;p.air=air;
+        if(R()<0.026-0.012*diff+(depth===2?0.02:0)){
+          p.k='int';var back=Math.max(0,Math.round(sbGauss(R)*6+5+(R()<0.05?40:0)));p.ret=back;
+          var at2=100-(yl+air)+back;clock-=t;
+          if(at2>=100){p.td=1;rec(p);off=1-off;score(6);continue;}
+          rec(p);turnover(Math.max(1,at2));continue;
+        }
+        var cp=[0.74,0.58,0.38][depth]+0.1*diff;
+        if(R()<cp){
+          p.done=1;var yac=depth===0?Math.round(1+R()*R()*9):depth===1?Math.round(R()*R()*8):Math.round(R()*R()*12);
+          if(R()<0.035)yac+=Math.round(12+R()*35);
+          y=air+yac;
+        }else{p.inc=1;y=0;t=6;}
+      }
+    }else{
+      p.k='run';
+      y=Math.round(sbGauss(R)*3.2+3.4+2.2*diff);
+      if(R()<0.055+0.03*diff)y+=Math.round(8+R()*R()*45);
+      else if(R()<0.11-0.04*diff)y=-Math.round(1+R()*3);
+      if(R()<0.011){
+        y=Math.min(y,100-yl-1);p.fum=1;
+        if(R()<0.55){p.lost=1;p.yd=y;clock-=t;rec(p);turnover(100-(yl+y));continue;}
+      }
+    }
+    if(yl+y>=100)y=100-yl;
+    p.yd=y;clock-=t;
+    if(yl+y<=0){p.safety=1;rec(p);sc[1-off]+=2;if(ot){over=true;continue;}off=1-off;kickoff(1-off);continue;}   // safety: 2 points, and the scored-on team kicks
+    yl+=y;
+    if(yl>=100){p.td=1;rec(p);score(6);continue;}
+    if(y>=dist){down=1;dist=Math.min(10,100-yl);p.first=1;}
+    else{down++;dist-=y;}
+    rec(p);
+    if(down>4){turnover(100-yl);}
+  }
+  if(sc[0]===sc[1])sc[R()<0.5?0:1]+=3;   // never happens in practice (overtime ends on a score); a game always has a winner
+  return {h:sc[0],a:sc[1],plays:plays};
+}
+// The home team's chance of winning, from many simulated games
+function sbOdds(g,runs){var w=0,N=runs||SB_ODDS_RUNS,base=Math.floor(Math.random()*1e9);for(var i=0;i<N;i++){var r=sbSim(g,base+i*7919,false);if(r.h>r.a)w++;}return w/N;}
+// Play a game for real: draw the winner at the shown chance, then find a seed whose game ends that way
+function sbPickSeed(g){
+  var homeWins=Math.random()<g.p,base=Math.floor(Math.random()*1e9);
+  for(var i=0;i<400;i++){var s=(base+i*104729)>>>0,r=sbSim(g,s,false);if((r.h>r.a)===homeWins)return s;}
+  return base;
+}
+// ═══ SB CUTSCENE: the pixel-art broadcast ═══
+// The field is drawn once per game onto a long offscreen canvas (sbFieldArt) and the camera slides along it.
+// Each play from sbSim becomes a scene (sbScene): every player gets a path of timed waypoints, and the ball is
+// held, thrown, kicked or bounced along a list of segments, so the drawing loop (sbCastFrame) only has to look
+// up where everyone is at the current time. Routes, cuts, which receiver is open, how the defense chases and
+// who makes the tackle all come from the play's own seed, so no two plays look the same, but a replay matches.
+// The canvas is 320x180 and scaled up with crisp pixels; the field shows 40 yards across (8px a yard) and its
+// full width top to bottom, squashed like the old 16-bit games (2.74px a yard).
+var SBC_W=320,SBC_H=180,SBC_PX=8,SBC_PY=2.7375,SBC_TOP=24,SBC_FX0=-14,SBC_FX1=114,SBC_HASH=[23.6,29.7];
+// A tiny pixel font, 3x5: each glyph is its rows top to bottom
+var SBC_FONT=(function(){
+  var g={'0':'111101101101111','1':'010110010010111','2':'111001111100111','3':'111001111001111','4':'101101111001001','5':'111100111001111','6':'111100111101111',
+    '7':'111001001010010','8':'111101111101111','9':'111101111001111','A':'010101111101101','B':'110101110101110','C':'011100100100011','D':'110101101101110',
+    'E':'111100110100111','F':'111100110100100','G':'011100101101011','H':'101101111101101','I':'111010010010111','J':'001001001101010','K':'101101110101101',
+    'L':'100100100100111','M':'101111111101101','N':'110101101101101','O':'010101101101010','P':'110101110100100','Q':'010101101110011','R':'110101110101101',
+    'S':'011100010001110','T':'111010010010010','U':'101101101101111','V':'101101101101010','W':'101101111111101','X':'101101010101101','Y':'101101010010010',
+    'Z':'111001010100111','&':'010101010101011','.':'000000000000010','!':'010010010000010','-':'000000111000000',':':'000010000010000',"'":'010010000000000','/':'001001010100100',' ':'000000000000000'};
+  return g;
+})();
+function sbcText(ctx,s,x,y,sc,col,shadow){
+  s=String(s).toUpperCase();sc=sc||1;
+  if(shadow){sbcText(ctx,s,x+sc,y+sc,sc,shadow);}
+  ctx.fillStyle=col;
+  for(var i=0;i<s.length;i++){var g=SBC_FONT[s[i]]||SBC_FONT[' '];for(var r=0;r<5;r++)for(var c=0;c<3;c++)if(g[r*3+c]==='1')ctx.fillRect(x+(i*4+c)*sc,y+r*sc,sc,sc);}
+}
+function sbcTextW(s,sc){return (String(s).length*4-1)*(sc||1);}
+function sbcLum(hex){var n=parseInt(hex.slice(1),16);return (0.299*(n>>16)+0.587*(n>>8&255)+0.114*(n&255))/255;}
+// What each side wears: the home team in its colours; the away team in white, unless home is already light
+function sbcKits(g){
+  var H=SB_TEAMS[g.h],A=SB_TEAMS[g.a],awayWhite=sbcLum(H.c1)<0.72;
+  return [{jersey:H.c1,trim:H.c2,pants:H.c2,helmet:H.hl,mask:'#c9ccd4'},
+          awayWhite?{jersey:'#f4f4f0',trim:A.c1,pants:A.c1,helmet:A.hl===('#ffffff')||sbcLum(A.hl)>0.85?A.c1:A.hl,mask:'#9aa0aa'}:{jersey:A.c1,trim:A.c2,pants:A.c2,helmet:A.hl,mask:'#c9ccd4'}];
+}
+// The whole field for a game, with both end zones in team colours and a crowd in the stands
+function sbFieldArt(g){
+  var W=(SBC_FX1-SBC_FX0)*SBC_PX,c=document.createElement('canvas');c.width=W;c.height=SBC_H;
+  var x=c.getContext('2d'),R=sbRng(g.seed||7),H=SB_TEAMS[g.h],A=SB_TEAMS[g.a];
+  function X(yd){return Math.round((yd-SBC_FX0)*SBC_PX);}function Y(yd){return Math.round(SBC_TOP+yd*SBC_PY);}
+  // Stands and crowd
+  x.fillStyle='#161a26';x.fillRect(0,0,W,SBC_TOP);
+  var fans=[H.c1,H.c2,A.c1,A.c2,'#e6c9a8','#8a5a3c','#d9d9d9','#3a3f52','#c94f4f','#4f7fc9'];
+  for(var row=0;row<3;row++)for(var fx=row*2;fx<W;fx+=4){if(R()<0.86){x.fillStyle=fans[Math.floor(R()*fans.length)];x.fillRect(fx,3+row*5,2,2);x.fillStyle='rgba(0,0,0,0.35)';x.fillRect(fx,5+row*5,2,2);}}
+  x.fillStyle='#9aa3b5';x.fillRect(0,SBC_TOP-5,W,1);x.fillStyle='#2b6b2e';x.fillRect(0,SBC_TOP-4,W,4);
+  // Grass in 5-yard stripes, with a little texture
+  var top=Y(0),bot=Y(53.33);
+  for(var s=-15;s<115;s+=5){x.fillStyle=((s/5)&1)?'#3f8f3c':'#47993f';x.fillRect(X(s),top,5*SBC_PX,bot-top);}
+  for(var i=0;i<W*0.6;i++){x.fillStyle=R()<0.5?'rgba(0,0,0,0.07)':'rgba(255,255,255,0.05)';x.fillRect(Math.floor(R()*W),top+Math.floor(R()*(bot-top)),1,1);}
+  x.fillStyle='#2b6b2e';x.fillRect(0,bot,W,SBC_H-bot);
+  // End zones: home's on the left (home attacks right), striped, with the team's letters down the middle
+  [[ -10,H],[100,A]].forEach(function(e){
+    var x0=X(e[0]),w=10*SBC_PX;x.fillStyle=e[1].c1;x.fillRect(x0,top,w,bot-top);
+    x.fillStyle='rgba(255,255,255,0.08)';for(var k=-200;k<w+200;k+=10){x.beginPath();x.moveTo(x0+k,top);x.lineTo(x0+k+6,top);x.lineTo(x0+k+6-(bot-top)*0.4,bot);x.lineTo(x0+k-(bot-top)*0.4,bot);x.closePath();x.save();x.rect(x0,top,w,bot-top);x.clip();x.fill();x.restore();}
+    var ab=e[1].ab,sc=4,lw=3*sc,gap=8,th=ab.length*(5*sc+gap)-gap,ty=Math.round((top+bot)/2-th/2);
+    for(var j=0;j<ab.length;j++)sbcText(x,ab[j],x0+w/2-lw/2,ty+j*(5*sc+gap),sc,sbcLum(e[1].c1)>0.7?'#222':'#fff','rgba(0,0,0,0.35)');
+  });
+  // Lines: sidelines, goal lines, every 5 yards, hash marks, numbers every 10
+  x.fillStyle='#f4f4f4';
+  x.fillRect(X(-10),top-1,120*SBC_PX,2);x.fillRect(X(-10),bot-1,120*SBC_PX,2);
+  x.fillRect(X(-10)-1,top,2,bot-top);x.fillRect(X(110)-1,top,2,bot-top);
+  for(var yl=0;yl<=100;yl+=5){x.fillStyle=yl%10?'rgba(255,255,255,0.7)':'#f4f4f4';x.fillRect(X(yl),top,yl===0||yl===100?2:1,bot-top);}
+  x.fillStyle='rgba(255,255,255,0.75)';
+  for(var hy=1;hy<100;hy++)if(hy%5){[1.5,SBC_HASH[0],SBC_HASH[1],51.8].forEach(function(h){x.fillRect(X(hy),Y(h),1,1);});}
+  for(var n=10;n<=90;n+=10){var lab=String(n<=50?n:100-n);[9,42].forEach(function(ny){sbcText(x,lab,X(n)-sbcTextW(lab,2)/2,Y(ny)-5,2,'rgba(255,255,255,0.85)');});}
+  // Goal posts at the back of each end zone (seen from above: the crossbar is a short yellow bar)
+  [-10,110].forEach(function(px){x.fillStyle='rgba(0,0,0,0.25)';x.fillRect(X(px)+2,Y(23.2)+2,2,Y(30.1)-Y(23.2));x.fillStyle='#ffd23d';x.fillRect(X(px)-1,Y(23.2),3,Y(30.1)-Y(23.2));x.fillRect(X(px)-2,Y(23.2)-1,5,2);x.fillRect(X(px)-2,Y(30.1)-1,5,2);});
+  return c;
+}
+// ── Paths: a list of [time, x, y] in seconds and yards ──
+function sbcAt(p,t){
+  if(t<=p[0][0])return [p[0][1],p[0][2]];
+  for(var i=1;i<p.length;i++)if(t<=p[i][0]){var a=p[i-1],b=p[i],u=(t-a[0])/((b[0]-a[0])||1);return [a[1]+(b[1]-a[1])*u,a[2]+(b[2]-a[2])*u];}
+  var l=p[p.length-1];return [l[1],l[2]];
+}
+function sbcEnd(p){return p[p.length-1];}
+function sbcGo(p,x,y,v){var l=sbcEnd(p),d=Math.hypot(x-l[1],y-l[2]),t=l[0]+d/Math.max(0.2,v);p.push([t,x,y]);return t;}
+function sbcHold(p,t){var l=sbcEnd(p);if(t>l[0]+1e-6)p.push([t,l[1],l[2]]);}
+function sbcTo(p,t,x,y){var l=sbcEnd(p);if(t<=l[0]+1e-6)t=l[0]+0.01;p.push([t,x,y]);}
+// Run at `target` (a function of time) from t0 to t1, stopping `gap` yards short
+function sbcChase(p,target,t0,t1,v,lead,gap){
+  sbcHold(p,t0);var q=sbcAt(p,t0),dt=0.1;
+  for(var t=t0;t<t1-1e-6;t+=dt){var tg=target(Math.min(t1,t+lead)),dx=tg[0]-q[0],dy=tg[1]-q[1],d=Math.hypot(dx,dy),st=Math.min(v*dt,Math.max(0,d-gap));if(d>1e-6)q=[q[0]+dx/d*st,q[1]+dy/d*st];p.push([Math.min(t1,t+dt),q[0],q[1]]);}
+}
+function sbcClampY(y){return Math.max(1.2,Math.min(52.1,y));}
+// A ball carrier's run from where they are to (x1,y1), with a cut or two on the way
+function sbcRun(p,R,x1,y1,v,cuts){
+  var l=sbcEnd(p),x0=l[1],y0=l[2];
+  for(var k=1;k<=cuts;k++){var u=k/(cuts+1),jx=x0+(x1-x0)*u,jy=sbcClampY(y0+(y1-y0)*u+(R()*2-1)*(2+R()*3));sbcGo(p,jx,jy,v);}
+  return sbcGo(p,x1,sbcClampY(y1),v);
+}
+// Build one play's scene. `cast` carries the running state (which side of the field the ball is spotted on).
+function sbScene(cast,p){
+  var R=sbRng(p.r||1),g=cast.g,dir=p.off===0?1:-1,X=function(yl){return p.off===0?yl:100-yl;},x0=X(p.yl0);
+  var c=SBC_HASH[0]+R()*(SBC_HASH[1]-SBC_HASH[0]),snap=0.6,sc={dur:0,ps:[],ball:[],ev:[],los:x0,fd:null,dir:dir,off:p.off,p:p};
+  var O=[],D=[];  // offense and defense players
+  function pl(side,x,y,role){var o={side:side,role:role,path:[[0,x,sbcClampY(y)]],down:null,cele:null};sc.ps.push(o);return o;}
+  function o(x,y,r){var q=pl(p.off,x,y,r);O.push(q);return q;}
+  function d(x,y,r){var q=pl(1-p.off,x,y,r);D.push(q);return q;}
+  function ev(t,txt,big){sc.ev.push([t,txt,big||0]);}
+  function hold(t0,t1,who){sc.ball.push({t0:t0,t1:t1,k:'hold',who:who});}
+  function fly(t0,t1,a,b,h){sc.ball.push({t0:t0,t1:t1,k:'fly',a:a,b:b,h:h});}
+  function tackle(carrier,tEnd,chasers){
+    // whoever is closest when the carrier is brought down makes the tackle, and both go down
+    var end=sbcEnd(carrier.path),best=null,bd=1e9;
+    chasers.forEach(function(q){var at=sbcAt(q.path,tEnd),dd=Math.hypot(at[0]-end[1],at[1]-end[2]);if(dd<bd){bd=dd;best=q;}});
+    if(best){var bp=best.path;while(bp.length>1&&sbcEnd(bp)[0]>tEnd-0.45)bp.pop();var side=R()<0.5?-1:1;sbcTo(bp,tEnd,end[1]+dir*0.7,end[2]+side*0.4);best.down=tEnd+0.05;}
+    carrier.down=tEnd;
+  }
+  function chaseAll(list,carrier,t0,t1){list.forEach(function(q,i){sbcChase(q.path,function(t){return sbcAt(carrier.path,t);},t0+(i%3)*0.05,t1,5.8+R()*1.6,0.25,0.4);});}
+  var first=p.yl0+p.dist;if(p.k==='run'||p.k==='pass'||p.k==='sack'||p.k==='int')sc.fd=first>=100?null:X(first);
+  // ── Kickoffs ──
+  if(p.k==='kick'){
+    var kdir=p.off===0?1:-1,kx=p.off===0?35:65,recv=1-p.off;sc.los=null;sc.fd=null;
+    var kicker=o(kx-kdir*6,26.6,'K');for(var i=0;i<10;i++){var cy=5+i*(43/9);if(i>=5)cy+=1.5;o(kx-kdir*1,cy,'cov');}
+    var landX=p.tb?(kdir>0?104:-4):(kdir>0?98+R()*4:2-R()*4),landY=18+R()*17;
+    var ret=d(landX+kdir*2,26.6+(R()*6-3),'KR');for(var j=0;j<10;j++){var front=j<5;d(front?kx+kdir*(15+R()*4):kx+kdir*(40+R()*10),5+j*(43/9),'blk');}
+    var tK=sbcGo(kicker.path,kx-kdir*0.5,26.6,4.5)+0.05,tL=tK+3.3;
+    sc.ev.push([0,'KICKOFF',0]);
+    hold(0,tK,null);sc.ball[0].fixed=[kx,26.6,0];
+    fly(tK,tL,[kx,26.6],[landX,landY],20);
+    O.forEach(function(q,i){if(i)sbcHold(q.path,tK-0.2);});
+    sbcTo(ret.path,tL-0.15,landX,landY);sbcHold(ret.path,tL);
+    if(p.tb){sbcHold(ret.path,tL+0.6);ev(tL,'TOUCHBACK');sc.ball.push({t0:tL,t1:tL+0.8,k:'fly',a:[landX,landY],b:[landX+kdir*2,landY],h:1});
+      O.forEach(function(q,i){if(i)sbcGo(q.path,kx+kdir*(25+R()*15),sbcEnd(q.path)[2],6.5);});D.forEach(function(q){if(q!==ret)sbcHold(q.path,tL+0.6);});sc.dur=tL+1.4;return sc;}
+    hold(tL,99,ret);
+    var endX=p.td?(recv===0?103:-3):(recv===0?p.ret:100-p.ret);
+    var tE=sbcRun(ret.path,R,endX,26.6+(R()*20-10),7.6,2);
+    O.forEach(function(q,i){if(i)sbcChase(q.path,function(t){return sbcAt(ret.path,t);},tK,tE,6.4+R()*1.2,0.3,0.5);});
+    D.forEach(function(q){if(q!==ret)sbcChase(q.path,function(t){var a=sbcAt(ret.path,t);return [a[0]-kdir*4,a[1]+(R()<0.5?-3:3)];},tL,tE,5.5,0.2,1.2);});
+    if(p.td){ev(tE,'TOUCHDOWN!',1);ret.cele=tE;sc.dur=tE+1.8;}else{tackle(ret,tE,O.slice(1));sc.dur=tE+0.9;}
+    sc.endY=sbcEnd(ret.path)[2];return sc;
+  }
+  // ── Extra points and field goals ──
+  if(p.k==='xp'||p.k==='fg'){
+    sc.fd=null;var hx=x0-dir*7,kx2=x0-dir*9.6;
+    for(var a=0;a<5;a++)o(x0-dir*0.5,c+(a-2)*1.3,'OL');o(x0-dir*0.6,c-4,'TE');o(x0-dir*0.6,c+4,'TE');
+    var holder=o(hx,c,'H'),kick=o(kx2,c-1.5,'K'),ls=O[0];o(x0-dir*1.2,c-5.4,'W');o(x0-dir*1.2,c+5.4,'W');
+    for(var b2=0;b2<9;b2++)d(x0+dir*1,c+(b2-4)*1.3,'rush');d(x0+dir*8,c-6,'S');d(x0+dir*8,c+6,'S');
+    var tH=snap+0.3,tKk=snap+1.05,goalX=dir>0?110:-10,tA=tKk+1.25+Math.abs(goalX-x0)*0.012;
+    fly(snap,tH,[x0,c],[hx,c],1);hold(tH,tKk,holder);
+    sbcHold(kick.path,snap+0.5);sbcTo(kick.path,tKk,hx-dir*0.6,c-0.3);sbcGo(kick.path,hx+dir*1,c,3);
+    var miss=!p.good,my=c+(miss?(R()<0.5?-1:1)*(4.2+R()*2.5):(R()*2-1)*1.5);
+    if(miss&&R()<0.3)my=c+(R()*2-1);
+    var shortX=miss&&Math.abs(goalX-x0)>48&&R()<0.5?goalX-dir*(4+R()*6):goalX;
+    fly(tKk,tA,[hx,c],[shortX,my],p.k==='xp'?9:14);
+    sc.ball.push({t0:tA,t1:tA+0.7,k:'fly',a:[shortX,my],b:[shortX+dir*3,my],h:0.6});
+    D.forEach(function(q,i){if(i<9)sbcGo(q.path,x0+dir*(0.2),sbcEnd(q.path)[2]+(R()*2-1)*0.6,2);});
+    ev(tA,p.good?(p.k==='xp'?'EXTRA POINT GOOD':"IT'S GOOD!"):(p.k==='xp'?'EXTRA POINT NO GOOD':'NO GOOD!'),p.k==='fg'?1:0);
+    sc.cam=function(t){return t>tKk?sbcBallAt(sc,t)[0]:x0;};
+    sc.dur=tA+1.4;sc.endY=c;return sc;
+  }
+  // ── Punts ──
+  if(p.k==='punt'){
+    sc.fd=null;var px=x0-dir*14;
+    for(var e=0;e<5;e++)o(x0-dir*0.5,c+(e-2)*1.3,'OL');o(x0-dir*0.6,c-4,'W');o(x0-dir*0.6,c+4,'W');
+    var gun1=o(x0-dir*0.5,4,'G'),gun2=o(x0-dir*0.5,49.3,'G'),punter=o(px,c,'P'),pp=o(x0-dir*5,c+1.5,'PP');
+    for(var f=0;f<8;f++)d(x0+dir*1,c+(f-3.5)*1.6,'rush');
+    var landX2=X(Math.min(p.land,104)),landY2=sbcClampY(c+(R()*16-8)),pr=d(landX2+dir*3,landY2,'PR');d(landX2-dir*10,landY2-9,'S');d(landX2-dir*10,landY2+9,'S');
+    var tS=snap+0.4,tKp=snap+1.25,tLp=tKp+3.6;
+    fly(snap,tS,[x0,c],[px,c],1.2);hold(tS,tKp,punter);fly(tKp,tLp,[px+dir*1,c],[landX2,landY2],24);
+    O.forEach(function(q){if(q!==punter)sbcHold(q.path,snap+0.5);});
+    [gun1,gun2].forEach(function(q){sbcGo(q.path,landX2-dir*6,sbcEnd(q.path)[2]*0.6+landY2*0.4,7.4);});
+    O.forEach(function(q){if(q!==punter&&q!==gun1&&q!==gun2)sbcGo(q.path,x0+dir*(12+R()*14),sbcEnd(q.path)[2]+(R()*6-3),6.2);});
+    sbcTo(pr.path,tLp-0.1,landX2,landY2);sbcHold(pr.path,tLp);
+    if(p.tb){ev(tLp,'TOUCHBACK');sc.ball.push({t0:tLp,t1:tLp+0.9,k:'fly',a:[landX2,landY2],b:[landX2+dir*4,landY2],h:2});sc.dur=tLp+1.4;sc.endY=c;sc.cam=function(t){return t>tKp?sbcBallAt(sc,t)[0]:x0;};return sc;}
+    hold(tLp,99,pr);
+    if(p.fair){ev(tLp,'FAIR CATCH');sbcHold(pr.path,tLp+0.8);D.forEach(function(q){if(q!==pr)sbcHold(q.path,tLp+0.8);});sc.dur=tLp+1.3;sc.endY=landY2;return sc;}
+    var endX2=p.td?(dir>0?-3:103):landX2-dir*p.ret,tE2=sbcRun(pr.path,R,endX2,landY2+(R()*14-7),7.6,p.ret>10?2:1);
+    O.forEach(function(q){if(q!==punter)sbcChase(q.path,function(t){return sbcAt(pr.path,t);},tLp-0.5,tE2,6.3+R()*1.3,0.25,0.5);});
+    if(p.td){ev(tE2,'TOUCHDOWN!',1);pr.cele=tE2;sc.dur=tE2+1.8;}else{tackle(pr,tE2,O.filter(function(q){return q!==punter;}));sc.dur=tE2+0.9;}
+    sc.endY=sbcEnd(pr.path)[2];return sc;
+  }
+  if(p.k==='ot'){sc.los=null;sc.fd=null;ev(0.1,'OVERTIME',1);sc.dur=2.2;sc.empty=1;return sc;}
+  // ── Scrimmage plays: formation ──
+  var shot=p.k!=='run'&&R()<0.7||p.k==='run'&&R()<0.25,teSide=R()<0.5?-1:1;
+  var C=o(x0-dir*0.6,c,'C');o(x0-dir*0.6,c-1.3,'G');o(x0-dir*0.6,c+1.3,'G');o(x0-dir*0.6,c-2.6,'T');o(x0-dir*0.6,c+2.6,'T');
+  var QB=o(x0-dir*(shot?4.6:1.2),c,'QB'),RB=o(x0-dir*(shot?4.6:6),c+(shot?teSide*-1.6:R()*2-1),'RB'),TE=o(x0-dir*0.8,c+teSide*4,'TE');
+  var WR1=o(x0-dir*0.8,Math.max(3,c-17-R()*3),'WR'),WR2=o(x0-dir*0.8,Math.min(50.3,c+17+R()*3),'WR'),WR3=o(x0-dir*1.6,c-teSide*(8+R()*3),'WR');
+  var OL=O.slice(0,5);
+  var DL=[d(x0+dir*1,c-2.4,'DL'),d(x0+dir*1,c-0.7,'DL'),d(x0+dir*1,c+0.7,'DL'),d(x0+dir*1,c+2.4,'DL')];
+  var LB=[d(x0+dir*4.6,c-3.6,'LB'),d(x0+dir*4.8,c,'LB'),d(x0+dir*4.6,c+3.6,'LB')];
+  var CB1=d(x0+dir*6,sbcEnd(WR1.path)[2]+1,'CB'),CB2=d(x0+dir*6,sbcEnd(WR2.path)[2]-1,'CB'),S1=d(x0+dir*12.5,c-8,'S'),S2=d(x0+dir*12.5,c+8,'S');
+  var DB=[CB1,CB2,S1,S2],ALLD=D.slice();
+  var ballHeld=function(t0,t1,who){hold(t0,t1,who);};
+  var endT;
+  // ── Runs ──
+  if(p.k==='run'){
+    var side=R()<0.5?-1:1,lane=side*(0.6+R()*3.5),tH2=snap+(shot?0.35:0.5),hx2=x0-dir*(shot?3.6:3),hy=c+side*0.4;
+    fly(snap,snap+0.25,[x0,c],[sbcEnd(QB.path)[1],c],0.8);
+    if(shot){sbcHold(QB.path,snap+0.25);}else{sbcHold(QB.path,snap+0.1);sbcGo(QB.path,x0-dir*2.6,c-side*0.5,4);}
+    ballHeld(snap+0.25,tH2,QB);
+    sbcTo(RB.path,tH2,hx2,hy);
+    var yds=p.yd||0,fx=x0+dir*yds,fy=c+lane+(R()*2-1)*(2+Math.abs(yds)*0.15);
+    if(p.td)fx=dir>0?102:-2;
+    if(yds<=0){sbcGo(RB.path,x0-dir*0.2,c+lane,6);endT=sbcGo(RB.path,fx-dir*0.3,c+lane+(R()*2-1),2.5);}
+    else{sbcGo(RB.path,x0+dir*0.4,c+lane,7);endT=sbcRun(RB.path,R,fx,fy,yds>12?7.9:7.2,yds>12?2:yds>4?1:0);}
+    ballHeld(tH2,99,RB);
+    OL.forEach(function(q,i){sbcGo(q.path,x0+dir*(0.8+R()*1.2),sbcEnd(q.path)[2]+(R()*2-1)*0.5,2.2);});
+    [TE,WR1,WR2,WR3].forEach(function(q){sbcGo(q.path,sbcEnd(q.path)[1]+dir*(3+R()*6),sbcEnd(q.path)[2]+(R()*2-1)*2,5.5);});
+    DL.forEach(function(q){sbcGo(q.path,x0+dir*0.1,sbcEnd(q.path)[2]+(R()*2-1)*0.8,1.6);});
+    chaseAll(ALLD,RB,snap+0.3,endT);
+    if(p.fum){ev(endT,'FUMBLE!',1);}
+  }
+  // ── Passes and sacks ──
+  else{
+    var drop=shot?2:5.5,qx=x0-dir*(shot?4.6+drop:1.2+drop),qy=c+(R()*2-1)*0.8;
+    fly(snap,snap+(shot?0.3:0.12),[x0,c],[sbcEnd(QB.path)[1],c],shot?0.8:0.3);
+    sbcHold(QB.path,snap+0.15);var tDrop=sbcGo(QB.path,qx,qy,4.2);
+    // Routes for everyone; then the ball goes to one of them
+    var recs=[WR1,WR2,WR3,TE,RB],depth=p.depth||0,air=p.air||5;
+    var routes=recs.map(function(q,i){
+      var st=sbcEnd(q.path),ry=st[2],toMid=ry<26.6?1:-1,dep=i===4?1+R()*3:i===3?5+R()*8:6+R()*18,kind=R();
+      var pts=[];
+      if(i===4){pts=[[st[1]+dir*1,ry+(R()<0.5?-1:1)*(5+R()*4)]];}
+      else if(kind<0.3)pts=[[st[1]+dir*dep,ry]];
+      else if(kind<0.55)pts=[[st[1]+dir*dep*0.6,ry],[st[1]+dir*dep,ry+toMid*(4+R()*5)]];
+      else if(kind<0.8)pts=[[st[1]+dir*dep*0.7,ry],[st[1]+dir*dep*0.75,ry-toMid*(4+R()*4)]];
+      else pts=[[st[1]+dir*(dep+2),ry],[st[1]+dir*dep,ry+toMid*1]];
+      return pts;
+    });
+    var tgt=depth===0?[4,3,2,0,1][Math.floor(R()*5)]:depth===1?[0,1,2,3][Math.floor(R()*4)]:[0,1][Math.floor(R()*2)];
+    if(p.k==='sack'){
+      recs.forEach(function(q,i){sbcHold(q.path,snap+0.1);routes[i].forEach(function(pt){sbcGo(q.path,pt[0],sbcClampY(pt[1]),6.2);});});
+      var rusher=DL[Math.floor(R()*4)],tSk=Math.max(tDrop+0.3,snap+1.6+R()*0.9);
+      sbcHold(QB.path,tSk-0.4);sbcGo(QB.path,sbcAt(QB.path,tSk-0.4)[0]+(R()*2-1)*0.6,qy+(R()*2-1)*1.5,3);
+      sbcTo(rusher.path,tSk,sbcEnd(QB.path)[1]+dir*0.6,sbcEnd(QB.path)[2]);QB.down=tSk;rusher.down=tSk+0.05;
+      DL.forEach(function(q){if(q!==rusher)sbcTo(q.path,tSk,x0-dir*(1.5+R()*2),sbcEnd(q.path)[2]+(R()*2-1));});
+      OL.forEach(function(q){sbcTo(q.path,tSk,x0-dir*(1.6+R()*1.5),sbcEnd(q.path)[2]);});
+      ballHeld(snap+0.12,99,QB);ev(tSk,'SACK!',1);endT=tSk;
+      DB.forEach(function(q,i){sbcGo(q.path,sbcEnd(q.path)[1]+dir*(2+R()*4),sbcEnd(q.path)[2],4.5);});
+      LB.forEach(function(q){sbcGo(q.path,x0+dir*1,sbcEnd(q.path)[2],4);});
+    }else{
+      var rcv=recs[tgt],rst=sbcEnd(rcv.path),cx=x0+dir*air,toM=rst[2]<26.6?1:-1;
+      var cy2=sbcClampY(tgt===4?rst[2]+(R()<0.5?-1:1)*(4+R()*4):rst[2]+(depth===2?(R()<0.5?toM:-toM)*(R()*7):toM*(R()*6)));
+      var tT=Math.max(tDrop,snap+1.0+depth*0.35+R()*0.45),tF=0.32+air*0.027,tC=tT+tF;
+      ballHeld(snap+0.12,tT,QB);
+      recs.forEach(function(q,i){if(i===tgt)return;sbcHold(q.path,snap+0.1);routes[i].forEach(function(pt){sbcGo(q.path,pt[0],sbcClampY(pt[1]),6.4+R());});});
+      // the target reaches the catch spot just as the ball does
+      sbcHold(rcv.path,snap+0.1);var mid=[rst[1]+(cx-rst[1])*0.65,rst[2]+(cy2-rst[2])*0.25],dl=Math.hypot(mid[0]-rst[1],mid[1]-rst[2])+Math.hypot(cx-mid[0],cy2-mid[1]),need=dl/Math.max(0.6,tC-snap-0.1);
+      if(need>8.6){sbcGo(rcv.path,mid[0],mid[1],8.6);sbcTo(rcv.path,tC,cx,cy2);}else{var v0=Math.max(need,5.5);sbcGo(rcv.path,mid[0],mid[1],v0);sbcGo(rcv.path,cx,cy2,v0);sbcHold(rcv.path,tC);}
+      var throwFrom=sbcAt(QB.path,tT);
+      // Coverage: corners trail their receivers, safeties sit deep then close on the ball
+      [[CB1,WR1],[CB2,WR2]].forEach(function(m){var cb=m[0],w=m[1];sbcHold(cb.path,snap+0.2);sbcChase(cb.path,function(t){var a=sbcAt(w.path,t);return [a[0]+dir*1.3,a[1]+(a[1]<26.6?0.8:-0.8)];},snap+0.2,tC+0.1,7.6,0.05,0.2);});
+      [S1,S2].forEach(function(s){sbcHold(s.path,snap+0.3);sbcGo(s.path,x0+dir*(14+R()*4),sbcEnd(s.path)[2]+(R()*2-1)*2,3);sbcChase(s.path,function(){return [cx+dir*1,cy2];},tT,tC+0.1,6.6,0,1.2);});
+      LB.forEach(function(q){sbcHold(q.path,snap+0.2);sbcGo(q.path,x0+dir*(4+R()*3),sbcEnd(q.path)[2]+(R()*2-1)*2,3.5);sbcChase(q.path,function(){return [cx,cy2];},tT,tC+0.1,6,0,2.5);});
+      DL.forEach(function(q){sbcGo(q.path,throwFrom[0]+dir*(1.2+R()*1.6),sbcEnd(q.path)[2]*0.6+throwFrom[1]*0.4,2.6);});
+      OL.forEach(function(q){sbcGo(q.path,throwFrom[0]+dir*(1.6+R()*0.6),sbcEnd(q.path)[2],2.4);});
+      if(p.k==='int'){
+        var picker=depth===2?(R()<0.5?S1:S2):(tgt===0?CB1:tgt===1?CB2:(R()<0.5?S1:S2)),pk=picker.path;
+        while(pk.length>1&&sbcEnd(pk)[0]>tC-0.35)pk.pop();sbcTo(pk,tC,cx+dir*0.5,cy2);
+        fly(tT,tC,throwFrom,[cx+dir*0.5,cy2],1.2+air*0.11);hold(tC,99,picker);ev(tC,'INTERCEPTED!',1);
+        var rx=p.td?(dir>0?-3:103):cx+dir*0.5-dir*(p.ret||0);
+        endT=sbcRun(pk,R,rx,cy2+(R()*10-5),7.4,(p.ret||0)>8?2:0);
+        O.forEach(function(q){sbcChase(q.path,function(t){return sbcAt(pk,t);},tC+0.1,endT,6.2+R()*1.2,0.2,0.5);});
+        if(p.td){ev(endT,'PICK SIX!',1);picker.cele=endT;sc.dur=endT+1.8;sc.endY=c;sc.carrierEnd=picker;return sc;}
+        tackle(picker,endT,O);sc.dur=endT+0.9;sc.endY=sbcClampY(sbcEnd(pk)[2]);return sc;
+      }
+      if(p.inc){
+        var ox=cx+dir*(1+R()*2.5),oy=cy2+(R()*2-1)*1.6;
+        fly(tT,tC,throwFrom,[ox,oy],1.2+air*0.11);sc.ball.push({t0:tC,t1:tC+0.55,k:'fly',a:[ox,oy],b:[ox+dir*1.5,oy+(R()*2-1)],h:0.7});
+        rcv.down=tC+0.05;ev(tC+0.1,'INCOMPLETE');endT=tC+0.4;
+        sc.ps.forEach(function(q){if(q!==rcv)sbcHold(q.path,tC+0.6);});
+      }else{
+        fly(tT,tC,throwFrom,[cx,cy2],1.2+air*0.11);hold(tC,99,rcv);
+        var yac=(p.yd||0)-air,ex=p.td?(dir>0?102:-2):cx+dir*Math.max(0,yac);
+        endT=yac>0||p.td?sbcRun(rcv.path,R,ex,cy2+(R()*2-1)*Math.min(8,1+yac*0.5),yac>10?7.9:7.3,yac>10?2:yac>3?1:0):tC+0.25;
+        if(endT===tC+0.25)sbcHold(rcv.path,endT);
+        chaseAll(ALLD.filter(function(q){return q!==CB1&&q!==CB2;}),rcv,tC,endT);
+        [CB1,CB2].forEach(function(q){sbcChase(q.path,function(t){return sbcAt(rcv.path,t);},tC+0.1,endT,7.2,0.2,0.4);});
+      }
+      sc.carrierEnd=rcv;
+    }
+  }
+  // Wrap up: a touchdown, or the tackle
+  var car=p.k==='run'?RB:p.k==='sack'?QB:sc.carrierEnd||RB;
+  if(p.k!=='sack'&&!p.inc){
+    if(p.td){ev(endT,'TOUCHDOWN!',1);car.cele=endT;sc.dur=endT+1.9;}
+    else if(p.safety){tackle(car,endT,ALLD);ev(endT,'SAFETY!',1);sc.dur=endT+1.6;}
+    else{tackle(car,endT,ALLD);sc.dur=endT+0.9;
+      if(p.fum&&p.lost)ev(endT+0.2,'TURNOVER!',1);
+      else if(p.first&&p.yl0+p.yd<100)ev(endT+0.1,'FIRST DOWN');}
+  }else if(p.k==='sack'){sc.dur=endT+1.1;}
+  else{sc.dur=endT+0.8;}
+  if(p.down===4&&!p.first&&!p.td&&(p.k==='run'||p.k==='pass'||p.k==='sack'))ev(sc.dur-0.5,'TURNOVER ON DOWNS',1);
+  sc.endY=sbcClampY(sbcEnd(car.path)[2]);
+  return sc;
+}
+// Where the ball is at time t: [x, y, height]
+function sbcBallAt(sc,t){
+  var segs=sc.ball,s=null;
+  for(var i=0;i<segs.length;i++){if(t>=segs[i].t0&&t<segs[i].t1){s=segs[i];break;}}
+  if(!s){s=segs[segs.length-1];if(!s)return [sc.los||50,26.6,0];if(t<s.t0)s=segs[0];}
+  if(s.fixed)return s.fixed;
+  if(s.k==='hold'){if(!s.who)return [sc.los||50,26.6,0];var a=sbcAt(s.who.path,t),f=s.who.side===0?1:-1;return [a[0]+f*0.5,a[1]+0.2,0.9];}
+  var u=Math.max(0,Math.min(1,(t-s.t0)/((s.t1-s.t0)||1)));
+  return [s.a[0]+(s.b[0]-s.a[0])*u,s.a[1]+(s.b[1]-s.a[1])*u,0.4+s.h*4*u*(1-u)];
+}
+// Who has the ball at time t (for the star over their head)
+function sbcHolder(sc,t){for(var i=0;i<sc.ball.length;i++){var s=sc.ball[i];if(t>=s.t0&&t<s.t1)return s.k==='hold'?s.who:null;}return null;}
+// One player, 7x10 pixels, feet at (sx, sy). Legs move while running; a tackled player lies flat.
+function sbcPlayer(ctx,sx,sy,kit,face,frame,state){
+  sx=Math.round(sx);sy=Math.round(sy);
+  ctx.fillStyle='rgba(0,0,0,0.28)';ctx.fillRect(sx-3,sy-1,7,2);
+  if(state==='down'){
+    var hx=face>0?sx+2:sx-5;
+    ctx.fillStyle=kit.pants;ctx.fillRect(sx-3,sy-4,3,3);ctx.fillStyle=kit.jersey;ctx.fillRect(face>0?sx-1:sx-2,sy-5,4,4);
+    ctx.fillStyle=kit.helmet;ctx.fillRect(hx,sy-5,3,3);ctx.fillStyle='#222';ctx.fillRect(face>0?sx-5:sx+3,sy-3,2,2);return;
+  }
+  var lift=state==='cele'?(frame?-3:0):0;sy+=lift;
+  // legs
+  ctx.fillStyle='#1d1d22';
+  if(frame&&state!=='stand'){ctx.fillRect(sx-2,sy-3,1,3);ctx.fillRect(sx+1,sy-2,1,2);ctx.fillRect(sx-3,sy-1,2,1);ctx.fillRect(sx+1,sy-1,2,1);}
+  else{ctx.fillRect(sx-1,sy-3,1,3);ctx.fillRect(sx+1,sy-3,1,3);ctx.fillRect(sx-2,sy-1,2,1);ctx.fillRect(sx+1,sy-1,2,1);}
+  ctx.fillStyle=kit.pants;ctx.fillRect(sx-2,sy-5,5,2);
+  ctx.fillStyle=kit.jersey;ctx.fillRect(sx-3,sy-8,7,3);ctx.fillRect(sx-2,sy-9,5,1);
+  ctx.fillStyle=kit.trim;ctx.fillRect(sx-3,sy-7,1,1);ctx.fillRect(sx+3,sy-7,1,1);ctx.fillRect(sx-1,sy-7,3,1);
+  ctx.fillStyle='#c98b5e';if(state==='cele'){ctx.fillRect(sx-4,sy-11,1,2);ctx.fillRect(sx+4,sy-11,1,2);}else{ctx.fillRect(sx-4,sy-7,1,2);ctx.fillRect(sx+4,sy-7,1,2);}
+  ctx.fillStyle=kit.helmet;ctx.fillRect(sx-2,sy-12,4,3);ctx.fillRect(sx-1,sy-13,3,1);
+  ctx.fillStyle=kit.mask;ctx.fillRect(face>0?sx+2:sx-3,sy-11,1,2);
+}
+// ── The broadcast: the scenes one after another, with the scoreboard, banners and play-by-play ──
+// Highlights skips the routine plays (their lines still go in the play-by-play, and the score keeps up) and
+// shows scores, turnovers, big gains, kicks, fourth downs and the last two minutes of each half.
+var sbCast=null;
+function sbcHighlight(p,i){
+  return i===0||p.td||p.k==='int'||p.k==='fg'||p.k==='xp'||p.k==='ot'||p.safety||(p.fum&&p.lost)||Math.abs(p.yd||0)>=15||
+    (p.down===4&&p.k!=='punt')||(p.k==='sack'&&p.down===3)||((p.q===2||p.q>=4)&&p.clock<=120&&p.k!=='kick');
+}
+function sbcOrd(n){return n+(n===1?'st':n===2?'nd':n===3?'rd':'th');}
+function sbcClock(s,q){if(q>4)return 'OT';s=Math.max(0,Math.round(s));return Math.floor(s/60)+':'+('0'+s%60).slice(-2);}
+function sbcDown(p){return p.down?sbcOrd(p.down)+' & '+(p.yl0+p.dist>=100?'Goal':p.dist):'';}
+// One line of play-by-play
+function sbcDesc(g,p){
+  var T=SB_TEAMS[p.off?g.a:g.h].ab,D=SB_TEAMS[p.off?g.h:g.a].ab,y=p.yd||0,yds=function(n){return n+' yard'+(n===1?'':'s');};
+  var spot=function(yl,own,opp){return yl===50?'midfield':yl<50?own+' '+yl:opp+' '+(100-yl);};
+  switch(p.k){
+    case 'kick':return T+' kicks off'+(p.td?': returned all the way for a TOUCHDOWN!':p.tb?': touchback':', returned to the '+spot(p.ret,D,T));
+    case 'xp':return 'Extra point '+(p.good?'is good':'is NO GOOD');
+    case 'fg':return T+' '+p.fgd+'-yard field goal '+(p.good?'is GOOD':'is NO GOOD');
+    case 'punt':return T+' punts'+(p.td?': returned for a TOUCHDOWN!':p.tb?': touchback':p.fair?': fair catch':', returned '+yds(p.ret));
+    case 'ot':return 'Overtime! The next score wins.';
+    case 'sack':return T+' quarterback SACKED for a loss of '+yds(-y)+(p.safety?': SAFETY!':'');
+    case 'int':return T+' pass INTERCEPTED by '+D+(p.td?', returned for a TOUCHDOWN!':p.ret?', returned '+yds(p.ret):'');
+    case 'run':return T+' run '+(y>0?'for '+yds(y):y<0?'for a loss of '+yds(-y):'for no gain')+(p.td?': TOUCHDOWN!':p.fum?(p.lost?': FUMBLE, '+D+' recovers!':': fumble, recovered by '+T):p.safety?': SAFETY!':p.first?': first down':'');
+    default:return T+(p.depth===2?' deep pass':' pass')+(p.inc?' incomplete':' complete for '+yds(y))+(p.td?': TOUCHDOWN!':p.first?': first down':'');
+  }
+}
+// Start a broadcast on `canvas`. o: speed, hl (highlights), onScore(board), onPlay(line, skipped), banner(text, big), onEnd(score)
+function sbCastStart(g,canvas,o){
+  sbCastStop();
+  canvas.width=SBC_W;canvas.height=SBC_H;
+  var sim=sbSim(g,g.seed,true);
+  sbCast={g:g,plays:sim.plays,final:[sim.h,sim.a],i:-1,sc:null,t:0,evI:0,speed:o.speed||2,hl:!!o.hl,camX:50,field:sbFieldArt(g),kits:sbcKits(g),
+    cv:canvas,ctx:canvas.getContext('2d'),o:o,sb:{sc:[0,0],q:1,clock:900,down:0,dist:0,yl0:25,off:0,txt:''},last:performance.now(),real:0,done:false};
+  sbCast.ctx.imageSmoothingEnabled=false;
+  o.onScore(sbCast.sb);
+  sbCastNext();
+  sbCast.raf=requestAnimationFrame(sbCastFrame);
+}
+function sbCastStop(){if(sbCast){cancelAnimationFrame(sbCast.raf);sbCast.stopped=true;}sbCast=null;}
+function sbCastNext(){
+  var C=sbCast,p,labels={1:'END OF 1ST QUARTER',2:'HALFTIME',3:'END OF 3RD QUARTER',4:'END OF REGULATION'};
+  for(;;){
+    C.i++;
+    if(C.i>=C.plays.length){sbCastFinish();return;}
+    p=C.plays[C.i];
+    // A break between quarters
+    if(p.q!==C.sb.q){
+      var last=C.sb.q;C.sb.q=p.q;C.sb.clock=900;C.i--;
+      C.sc={empty:1,dur:last===2?2.8:1.9,ev:[[0.05,labels[last]||'',1]],ps:[],ball:[],p:null};C.t=0;C.evI=0;C.sb.down=0;C.sb.txt='';C.o.onScore(C.sb);return;
+    }
+    if(C.hl&&!sbcHighlight(p,C.i)){C.sb.sc=p.sc.slice();C.sb.clock=p.clock;C.o.onPlay(sbcDesc(C.g,p),true);continue;}
+    break;
+  }
+  C.sb.down=p.down||0;C.sb.dist=p.dist;C.sb.yl0=p.yl0;C.sb.off=p.off;C.sb.txt=sbcDown(p);C.o.onScore(C.sb);
+  C.sc=sbScene(C,p);C.t=0;C.evI=0;
+  var bx=sbcBallAt(C.sc,0)[0];if(Math.abs(bx-C.camX)>22)C.camX=bx;
+}
+function sbCastPlayDone(){
+  var C=sbCast,p=C.sc&&C.sc.p;
+  if(p){C.sb.sc=p.sc.slice();C.sb.clock=p.clock;C.o.onPlay(sbcDesc(C.g,p),false);C.o.onScore(C.sb);}
+  sbCastNext();
+}
+function sbCastFinish(){
+  var C=sbCast;C.done=true;C.sb.sc=C.final.slice();C.sb.down=0;C.sb.txt='';C.sb.over=1;C.o.onScore(C.sb);
+  C.sc={empty:1,dur:1e9,ev:[[0,'FINAL',1]],ps:[],ball:[],p:null};C.t=0;C.evI=0;
+  C.o.onEnd(C.final);
+}
+// Jump to the end: everything that's left goes in the play-by-play at once
+function sbCastSkip(){
+  var C=sbCast;if(!C||C.done)return;
+  for(var i=Math.max(0,C.i);i<C.plays.length;i++)if(i>C.i||!C.sc||C.sc.p)C.o.onPlay(sbcDesc(C.g,C.plays[i]),true);
+  C.i=C.plays.length;sbCastFinish();
+}
+function sbCastFrame(now){
+  var C=sbCast;if(!C||C.stopped)return;
+  var real=Math.min(0.1,(now-C.last)/1000);C.last=now;C.real=real;
+  if(C.o.paused&&C.o.paused()){C.raf=requestAnimationFrame(sbCastFrame);return;}
+  if(!C.done){
+    C.t+=real*C.speed;
+    while(C.sc&&C.evI<C.sc.ev.length&&C.sc.ev[C.evI][0]<=C.t){var e=C.sc.ev[C.evI++];if(e[1])C.o.banner(e[1],e[2]);}
+    if(C.sc&&C.t>=C.sc.dur){sbCastPlayDone();if(sbCast!==C)return;}
+  }else if(C.evI<C.sc.ev.length){var f=C.sc.ev[C.evI++];C.o.banner(f[1],f[2]);}
+  sbCastDraw();
+  C.raf=requestAnimationFrame(sbCastFrame);
+}
+function sbCastDraw(){
+  var C=sbCast,ctx=C.ctx,sc=C.sc,t=C.t,half=SBC_W/SBC_PX/2;
+  // The camera follows the ball, a few yards ahead of it
+  if(sc&&!sc.empty){var tg=sc.cam?sc.cam(t):sbcBallAt(sc,t)[0]+sc.dir*3;C.camX+=(tg-C.camX)*Math.min(1,C.real*3.2);}
+  C.camX=Math.max(SBC_FX0+half,Math.min(SBC_FX1-half,C.camX));
+  var sx0=Math.round((C.camX-half-SBC_FX0)*SBC_PX);
+  ctx.drawImage(C.field,sx0,0,SBC_W,SBC_H,0,0,SBC_W,SBC_H);
+  if(!sc||sc.empty)return;
+  function SX(x){return Math.round((x-C.camX)*SBC_PX+SBC_W/2);}function SY(y){return Math.round(SBC_TOP+y*SBC_PY);}
+  var fT=SY(0),fB=SY(53.33);
+  // Line of scrimmage (blue) and the line to gain (yellow), until the whistle
+  if(sc.los!=null){ctx.fillStyle='rgba(80,160,255,0.9)';ctx.fillRect(SX(sc.los),fT,1,fB-fT);}
+  if(sc.fd!=null){ctx.fillStyle='rgba(255,225,77,0.9)';ctx.fillRect(SX(sc.fd),fT,1,fB-fT);}
+  // Players, back to front
+  var list=sc.ps.map(function(q){return {q:q,a:sbcAt(q.path,t),b:sbcAt(q.path,t-0.06)};}).sort(function(m,n){return m.a[1]-n.a[1];});
+  list.forEach(function(m){
+    var sx=SX(m.a[0]),sy=SY(m.a[1]);if(sx<-8||sx>SBC_W+8)return;
+    var dx=m.a[0]-m.b[0],mv=Math.hypot(dx,m.a[1]-m.b[1])>0.015,face=Math.abs(dx)>0.008?(dx>0?1:-1):(m.q.side===sc.off?sc.dir:-sc.dir);
+    var st=m.q.down!=null&&t>=m.q.down?'down':m.q.cele!=null&&t>=m.q.cele?'cele':mv?'run':'stand';
+    sbcPlayer(ctx,sx,sy,C.kits[m.q.side],face,st==='cele'?Math.floor(t*4)%2:Math.floor(t*9)%2,st);
+  });
+  // The ball (with its shadow when it's in the air), and a star over whoever has it
+  var b=sbcBallAt(sc,t),bx=SX(b[0]),by=SY(b[1]),hz=Math.round(b[2]*2.6);
+  if(hz>4){ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(bx-1,by-1,3,1);}
+  ctx.fillStyle='#7a3f17';ctx.fillRect(bx-1,by-4-hz,3,2);ctx.fillStyle='#f4f4f4';ctx.fillRect(bx,by-4-hz,1,1);
+  var h=sbcHolder(sc,t);
+  if(h&&t>0.7&&h.down==null){var ha=sbcAt(h.path,t),hx=SX(ha[0]),hy=SY(ha[1])-17;ctx.fillStyle='#ffe14d';ctx.fillRect(hx-1,hy,3,1);ctx.fillRect(hx,hy-1,1,3);}
+  // Down and distance, by the line before the snap
+  if(t<0.6&&sc.p&&sc.p.down&&sc.los!=null){
+    var lab=sbcDown(sc.p).toUpperCase(),w=sbcTextW(lab,1)+6,lx=Math.max(2,Math.min(SBC_W-w-2,SX(sc.los)-w/2)),ly=fB-13;
+    ctx.fillStyle='rgba(0,0,0,0.85)';ctx.fillRect(lx,ly,w,9);sbcText(ctx,lab,lx+3,ly+2,1,'#fff');
+  }
+}
+// ── The league: seasons, weekly matchups, records, and your bets ──
+// `sb` is the league for the floor you're on (Classic and Arcade each have their own, saved with their chips):
+//   season, week   the week being played (1 to SB_WEEKS)
+//   rat[t]         team t's [offense, defense] this season: its usual ratings, drifting a little each season
+//   rec[t]         this season: {w, l, pf, pa, g: [[week, opponent, home 1/0, us, them], ...]}
+//   last[t]        [w, l] last season (null in the first)
+//   games          this week: {h, a, rh, ra, fh, fa, p, st, seed, hs, as}. p is the home side's chance; st is
+//                  'open' (taking bets), 'live' (kicked off, so the result is already fixed) or 'final'
+//   bets           {id, season, wk, gi, side 0 home/1 away, amt, mult, st 'open'|'won'|'lost', paid}
+//   champs         [[season, team, w, l], ...]
+var sb=null,sbView={tab:'games',main:'game',gi:0,ti:null},sbCastOpts={hl:true,speed:1},sbAway=0;  // sbAway: chips won by games that finished while the page was closed
+function sbClamp(v,a,b){return Math.max(a,Math.min(b,v));}
+function sbNewSeason(prev){
+  var s={season:prev?prev.season+1:1,week:1,rat:[],rec:[],last:[],games:[],champs:prev?prev.champs.slice(-20):[],nextId:prev?prev.nextId:1,
+    bets:prev?prev.bets.filter(function(b){return b.st!=='open';}).slice(-30):[]};
+  SB_TEAMS.forEach(function(t,i){
+    var o=t.off,d=t.def;
+    if(prev){o=prev.rat[i][0]*0.6+t.off*0.4+(Math.random()*10-5);d=prev.rat[i][1]*0.6+t.def*0.4+(Math.random()*10-5);}
+    s.rat.push([Math.round(sbClamp(o,55,95)),Math.round(sbClamp(d,55,95))]);
+    s.rec.push({w:0,l:0,pf:0,pa:0,g:[]});
+    s.last.push(prev?[prev.rec[i].w,prev.rec[i].l]:null);
+  });
+  return s;
+}
+// Recent form: a little better after wins, a little worse after losses (the last three games)
+function sbForm(t){var f=0;sb.rec[t].g.slice(-3).forEach(function(x){f+=x[3]>x[4]?1.2:-1.2;});return f;}
+function sbMakeWeek(runs){
+  var last={},order,tries=0;
+  sb.rec.forEach(function(r,t){var l=r.g[r.g.length-1];if(l)last[t]=l[1];});
+  do{order=SB_TEAMS.map(function(_,i){return i;});for(var i=order.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),x=order[i];order[i]=order[j];order[j]=x;}
+    var ok=true;for(var k=0;k<16;k+=2)if(last[order[k]]===order[k+1])ok=false;
+  }while(!ok&&++tries<40);
+  sb.games=[];
+  for(var m=0;m<16;m+=2){
+    var h=order[m],a=order[m+1];
+    var g={h:h,a:a,rh:sb.rat[h].slice(),ra:sb.rat[a].slice(),fh:sbForm(h),fa:sbForm(a),st:'open'};
+    g.p=Math.round(sbClamp(sbOdds(g,runs),0.03,0.97)*1000)/1000;sb.games.push(g);
+  }
+}
+// What a bet pays back per chip, from the chance of that side winning
+function sbMult(p){return Math.max(1.01,Math.floor(SB_RTP[gameMode]/p*100)/100);}
+function sbSideP(g,side){return side?1-g.p:g.p;}
+// Fix a game's result (its winner drawn at the shown chance) without showing it yet
+function sbLock(g){if(g.st!=='open')return;g.seed=sbPickSeed(g);var r=sbSim(g,g.seed,false);g.hs=r.h;g.as=r.a;g.st='live';}
+// A finished game goes in both teams' records, and its bets are paid. Returns the chips won.
+function sbSettle(gi){
+  var g=sb.games[gi];if(!g||g.st==='final')return 0;
+  sbLock(g);g.st='final';
+  [[g.h,g.a,1,g.hs,g.as],[g.a,g.h,0,g.as,g.hs]].forEach(function(x){var r=sb.rec[x[0]];r.g.push([sb.week,x[1],x[2],x[3],x[4]]);r.pf+=x[3];r.pa+=x[4];if(x[3]>x[4])r.w++;else r.l++;});
+  var won=0,homeWon=g.hs>g.as;
+  sb.bets.forEach(function(b){
+    if(b.st!=='open'||b.season!==sb.season||b.wk!==sb.week||b.gi!==gi)return;
+    if((b.side===0)===homeWon){b.st='won';b.paid=Math.floor(b.amt*b.mult);balance+=b.paid;won+=b.paid;}else{b.st='lost';b.paid=0;}
+  });
+  if(won)updateBalance();
+  return won;
+}
+// The league for this floor, started a few weeks into its first season so every team already has a history
+function sbEnsure(){
+  if(sb)return;
+  sb=sbNewSeason(null);
+  for(var w=0;w<3;w++){sbMakeWeek(150);for(var i=0;i<sb.games.length;i++)sbSettle(i);sb.week++;}
+  sbMakeWeek();saveGame();
+}
+// After loading: a game that was kicked off before the page closed finishes now, the same way it would have
+function sbResume(){
+  if(!sb)return 0;var won=0;
+  sb.games.forEach(function(g,i){if(g.st==='live')won+=sbSettle(i);});
+  return won;
+}
+// A saved league, checked over (anything that doesn't look right starts a fresh one)
+function sbFromSave(s){
+  if(!s||typeof s!=='object'||!Array.isArray(s.rec)||s.rec.length!==SB_TEAMS.length||!Array.isArray(s.games)||!Array.isArray(s.rat))return null;
+  if(!Array.isArray(s.bets))s.bets=[];if(!Array.isArray(s.champs))s.champs=[];if(!Array.isArray(s.last))s.last=SB_TEAMS.map(function(){return null;});
+  return s;
+}
+function sbNextWeek(){
+  if(!sb||sb.games.some(function(g){return g.st!=='final';}))return;
+  sb.week++;
+  if(sb.week>SB_WEEKS){
+    var best=sbStandings()[0],r=sb.rec[best];sb.champs.push([sb.season,best,r.w,r.l]);
+    sbSay('Season '+sb.season+' is over: the '+SB_TEAMS[best].city+' '+SB_TEAMS[best].name+' are champions at '+r.w+'-'+r.l+'! 🏆 On to season '+(sb.season+1)+'.');
+    sb=sbNewSeason(sb);
+  }else sbSay('Week '+sb.week+"'s lines are up! 🏈");
+  sbMakeWeek();sbView.main='game';sbView.gi=0;saveGame();sbRender();
+}
+// Play out every game still to come this week at once
+function sbSimRest(){
+  if(!sb)return;var won=0,n=0,watching=sbCast&&!sbCast.done?sbCast.g:null;
+  sb.games.forEach(function(g,i){if(g.st!=='final'&&g!==watching){won+=sbSettle(i);n++;}});
+  saveGame();
+  if(n)sbSay(won?'All in! Your bets paid '+fmtChips(won)+' chips. 💰':'The rest of the week is in the books. 📋');
+  sbRender();
+}
+function sbStandings(){
+  return SB_TEAMS.map(function(_,i){return i;}).sort(function(x,y){var a=sb.rec[x],b=sb.rec[y];return b.w-a.w||(b.pf-b.pa)-(a.pf-a.pa)||b.pf-a.pf;});
+}
+function sbStreak(t){var g=sb.rec[t].g,n=0,w=null;for(var i=g.length-1;i>=0;i--){var won=g[i][3]>g[i][4];if(w===null)w=won;if(won!==w)break;n++;}return n?(w?'W':'L')+n:'—';}
+function sbSay(t){setPeccySpeech('sports-peccy-speech',t);}
+function sbBetOn(gi){return sb.bets.filter(function(b){return b.season===sb.season&&b.wk===sb.week&&b.gi===gi;});}
+// ── Placing bets ──
+function sbBetAmt(){return Math.max(1,Math.floor(+document.getElementById('sb-amt').value||0));}
+function sbBetScale(f){var el=document.getElementById('sb-amt');el.value=Math.max(1,Math.min(Math.max(1,Math.floor(balance)),Math.floor(sbBetAmt()*f)));sbSlipUI();}
+function sbPick(side){sbView.pick=side;sbSlipUI();}
+function sbSlipUI(){
+  var g=sb&&sb.games[sbView.gi],el=document.getElementById('sb-towin');if(!g||!el)return;
+  [0,1].forEach(function(s){var b=document.getElementById('sb-pick-'+s);if(b)b.classList.toggle('on',sbView.pick===s);});
+  el.textContent=sbView.pick==null?'Pick a team':'To win '+fmtChips(Math.floor(sbBetAmt()*sbMult(sbSideP(g,sbView.pick))))+' chips';
+}
+function sbPlaceBet(){
+  var gi=sbView.gi,g=sb.games[gi],side=sbView.pick,amt=sbBetAmt();
+  if(!g||g.st!=='open'){sbSay('Betting on that one has closed! 🔒');return;}
+  if(side==null){sbSay('Pick a team first! 👆');return;}
+  if(amt>balance){sbSay("You don't have that many chips! 😬");return;}
+  balance-=amt;updateBalance();barRound();
+  var mult=sbMult(sbSideP(g,side)),t=SB_TEAMS[side?g.a:g.h];
+  sb.bets.push({id:sb.nextId++,season:sb.season,wk:sb.week,gi:gi,side:side,t:side?g.a:g.h,o:side?g.h:g.a,amt:amt,mult:mult,st:'open',paid:0});
+  if(sb.bets.length>60)sb.bets=sb.bets.filter(function(b,i){return b.st==='open'||i>=sb.bets.length-50;});
+  saveGame();
+  sbSay(fmtChips(amt)+' on the '+t.name+' at ×'+mult.toFixed(2)+'. '+(sbSideP(g,side)<0.35?'Going for the upset! 🔥':'Good luck! 🍀'));
+  sbRender();
+}
+// ── Watching ──
+function sbWatch(gi){
+  var g=sb.games[gi];if(!g)return;
+  if(sbCast&&!sbCast.done&&sbCast.g!==g){sbSay('Finish this game first (or skip to the end)! 📺');return;}
+  if(g.st==='open'){sbLock(g);saveGame();}
+  sbView.main='cast';sbView.gi=gi;sbRender();
+  var cv=document.getElementById('sb-cv');
+  document.getElementById('sb-pbp').innerHTML='';
+  sbCastStart(g,cv,{speed:sbCastOpts.speed,hl:sbCastOpts.hl,onScore:sbBoard,onPlay:sbPbp,banner:sbBanner,onEnd:function(){sbCastEnded(gi);},
+    paused:function(){return !document.getElementById('game-sports').classList.contains('active');}});  // the game waits while you're on another tab
+  sbFitCast();
+}
+function sbCastEnded(gi){
+  var g=sb.games[gi],fresh=g.st!=='final',won=fresh?sbSettle(gi):0;
+  if(fresh)saveGame();
+  var H=SB_TEAMS[g.h],A=SB_TEAMS[g.a],winner=g.hs>g.as?H:A,mine=sbBetOn(gi),res=document.getElementById('sb-result');
+  var lines=mine.map(function(b){var t=SB_TEAMS[b.side?g.a:g.h];return b.st==='won'?'<span class="won">✔ '+fmtChips(b.amt)+' on '+t.ab+' won '+fmtChips(b.paid)+'</span>':'<span class="lost">✘ '+fmtChips(b.amt)+' on '+t.ab+' lost</span>';}).join('');
+  if(res){res.innerHTML='<b>Final: '+A.ab+' '+g.as+', '+H.ab+' '+g.hs+'</b><div>'+(lines||'No bets on this game.')+'</div>'+
+    '<div class="sb-res-btns"><button class="rl-small-btn" onclick="sbWatch('+gi+')">↺ Replay</button><button class="btn btn-primary" onclick="sbBack()">Back to the board</button></div>';res.classList.add('show');}
+  if(fresh)sbSay(won?'Cha-ching! The '+winner.name+' came through and paid you '+fmtChips(won)+' chips! 🤑':mine.length?'Tough loss. The '+winner.name+' took it. 😬':'The '+winner.name+' win it! 🏈');
+  sbRenderSide();
+}
+function sbBack(){sbCastStop();sbView.main='game';sbRender();}
+function sbSetSpeed(v){sbCastOpts.speed=v;if(sbCast)sbCast.speed=v;sbCtrlUI();}
+function sbSetHl(on){sbCastOpts.hl=on;if(sbCast)sbCast.hl=on;sbCtrlUI();}
+function sbSkip(){sbCastSkip();}
+function sbCtrlUI(){
+  [1,2,4].forEach(function(v){var b=document.getElementById('sb-sp-'+v);if(b)b.classList.toggle('on',sbCastOpts.speed===v);});
+  var a=document.getElementById('sb-hl-1'),b2=document.getElementById('sb-hl-0');if(a){a.classList.toggle('on',sbCastOpts.hl);b2.classList.toggle('on',!sbCastOpts.hl);}
+}
+// The scoreboard over the field, broadcast style
+function sbBoard(b){
+  var el=document.getElementById('sb-board');if(!el||!sbCast)return;
+  var g=sbCast.g,H=SB_TEAMS[g.h],A=SB_TEAMS[g.a],q=b.over?'FINAL':b.q>4?'OT':sbcOrd(b.q)+' QTR '+sbcClock(b.clock,b.q);
+  el.innerHTML='<span class="sbb-t'+(b.off===1&&b.down?' pos':'')+'" style="--t1:'+A.c1+'">'+A.ab+' <b>'+b.sc[1]+'</b></span><span class="sbb-t'+(b.off===0&&b.down?' pos':'')+'" style="--t1:'+H.c1+'">'+H.ab+' <b>'+b.sc[0]+'</b></span>'+
+    '<span class="sbb-q">'+q+'</span><span class="sbb-d">'+(b.txt||'')+'</span>';
+}
+function sbPbp(line,skipped){
+  var el=document.getElementById('sb-pbp');if(!el)return;
+  var d=document.createElement('div');d.textContent=line;if(skipped)d.className='skip';
+  el.insertBefore(d,el.firstChild);while(el.children.length>40)el.removeChild(el.lastChild);
+}
+function sbBanner(t,big){
+  var el=document.getElementById('sb-banner');if(!el)return;
+  el.textContent=t;el.className='sb-banner show'+(big?' big':'');clearTimeout(sbBanner.t);
+  sbBanner.t=setTimeout(function(){el.className='sb-banner';},big?1700:1100);
+}
+// ── Screens ──
+function sbBadge(t,big){var T=SB_TEAMS[t];return '<span class="sb-badge'+(big?' big':'')+'" style="--t1:'+T.c1+';--t2:'+T.c2+';color:'+(sbcLum(T.c1)>0.65?'#15161c':'#fff')+'">'+T.ab+'</span>';}
+function sbRecord(t){var r=sb.rec[t];return r.w+'-'+r.l;}
+function sbTab(t){sbView.tab=t;sbRenderSide();}
+function sbOpenGame(gi){if(sbCast&&!sbCast.done){sbSay('Finish this game first (or skip to the end)! 📺');return;}sbCastStop();sbView.main='game';sbView.gi=gi;sbView.pick=null;sbRender();}
+function sbOpenTeam(t){if(sbCast&&!sbCast.done){sbSay('Finish this game first (or skip to the end)! 📺');return;}sbCastStop();sbView.main='team';sbView.ti=t;sbRender();}
+// (a game being broadcast keeps its screen: coming back to the tab doesn't rebuild it)
+function sbRender(){if(!sb)return;sbRenderSide();if(!(sbView.main==='cast'&&sbCast&&document.getElementById('sb-cv')===sbCast.cv))sbRenderMain();sbLayout();}
+function sbRenderSide(){
+  if(!sb)return;
+  document.getElementById('sb-week').textContent='Season '+sb.season+' · Week '+sb.week+' of '+SB_WEEKS;
+  ['games','table','bets'].forEach(function(t){document.getElementById('sbt-'+t).classList.toggle('on',sbView.tab===t);});
+  var el=document.getElementById('sb-list'),h='';
+  if(sbView.tab==='games'){
+    sb.games.forEach(function(g,i){
+      var bets=sbBetOn(i),st=g.st==='final'?'Final '+SB_TEAMS[g.a].ab+' '+g.as+'–'+g.hs+' '+SB_TEAMS[g.h].ab:g.st==='live'?'🔴 Kicked off':'Open for bets';
+      function row(t,side){var p=sbSideP(g,side),won=g.st==='final'&&((side===0)===(g.hs>g.as));
+        return '<div class="sb-row'+(won?' won':'')+'">'+sbBadge(t)+'<span class="sb-tn">'+SB_TEAMS[t].name+'<small>'+sbRecord(t)+'</small></span><b class="sb-pct">'+Math.round(p*100)+'%</b><span class="sb-mult">×'+sbMult(p).toFixed(2)+'</span></div>';}
+      h+='<div class="sb-game'+(sbView.main!=='team'&&sbView.gi===i?' on':'')+'" onclick="sbOpenGame('+i+')">'+row(g.a,1)+row(g.h,0)+
+        '<div class="sb-gst">'+st+(bets.length?' · <b>your bet'+(bets.length>1?'s':'')+': '+bets.map(function(b){return fmtChips(b.amt)+' '+SB_TEAMS[b.side?g.a:g.h].ab+(b.st==='won'?' ✔':b.st==='lost'?' ✘':'');}).join(', ')+'</b>':'')+'</div></div>';
+    });
+  }else if(sbView.tab==='table'){
+    h='<table class="sb-table"><tr><th></th><th>Team</th><th>W-L</th><th>PF</th><th>PA</th><th>Strk</th></tr>'+sbStandings().map(function(t,i){var r=sb.rec[t];
+      return '<tr onclick="sbOpenTeam('+t+')"'+(sbView.main==='team'&&sbView.ti===t?' class="on"':'')+'><td>'+(i+1)+'</td><td>'+sbBadge(t)+' '+SB_TEAMS[t].name+'</td><td>'+r.w+'-'+r.l+'</td><td>'+r.pf+'</td><td>'+r.pa+'</td><td>'+sbStreak(t)+'</td></tr>';}).join('')+'</table>';
+  }else{
+    var mine=sb.bets.slice().reverse();
+    h=mine.length?mine.map(function(b){return '<div class="sb-bet '+b.st+'">'+sbBadge(b.t)+'<span>'+fmtChips(b.amt)+' on '+SB_TEAMS[b.t].name+' vs '+SB_TEAMS[b.o].ab+' at ×'+b.mult.toFixed(2)+
+      '<small>Season '+b.season+', week '+b.wk+'</small></span><b>'+(b.st==='open'?'Pending':b.st==='won'?'+'+fmtChips(b.paid):'Lost')+'</b></div>';}).join('')
+      :'<div class="sb-empty">No bets yet. Pick a game and back a team!</div>';
+  }
+  el.innerHTML=h;
+  var open=sb.games.filter(function(g){return g.st!=='final';}).length,f=document.getElementById('sb-foot');
+  f.innerHTML=open?'<button class="rl-small-btn" onclick="sbSimRest()">⏩ Sim the rest of the week ('+open+')</button>':'<button class="btn btn-primary" onclick="sbNextWeek()">'+(sb.week>=SB_WEEKS?'Finish the season 🏆':'Next week ▶')+'</button>';
+}
+function sbLast5(t){
+  var g=sb.rec[t].g.slice(-5).reverse();
+  return g.length?g.map(function(x){var w=x[3]>x[4];return '<div class="sb-l5"><i class="'+(w?'w':'l')+'">'+(w?'W':'L')+'</i>'+x[3]+'–'+x[4]+' '+(x[2]?'vs':'@')+' '+sbBadge(x[1])+'<small>Wk '+x[0]+'</small></div>';}).join(''):'<div class="sb-empty">No games yet this season</div>';
+}
+function sbRatingBars(t){
+  var r=sb.rat[t];function bar(lab,v){return '<div class="sb-rbar"><span>'+lab+'</span><div><i style="width:'+Math.round((v-50)/45*100)+'%"></i></div><b>'+v+'</b></div>';}
+  return bar('Offense',r[0])+bar('Defense',r[1]);
+}
+function sbTeamBlurb(t){
+  var r=sb.rec[t],n=r.g.length,T=SB_TEAMS[t],last=sb.last[t];
+  return '<div class="sb-tline">'+sbRecord(t)+' · '+(n?(r.pf/n).toFixed(1)+' scored, '+(r.pa/n).toFixed(1)+' allowed a game':'no games yet')+' · streak '+sbStreak(t)+(last?' · last season '+last[0]+'-'+last[1]:'')+'</div>';
+}
+function sbRenderMain(){
+  var el=document.getElementById('sb-main');
+  if(sbView.main==='cast'){
+    var g=sb.games[sbView.gi];
+    el.innerHTML='<div class="sb-cast"><div class="sb-board" id="sb-board"></div><div class="sb-screen" id="sb-screen"><canvas id="sb-cv" width="320" height="180"></canvas><div class="sb-banner" id="sb-banner"></div>'+
+      '<div class="sb-result" id="sb-result"></div></div><div class="sb-ctrl"><div class="sb-seg"><button id="sb-hl-1" onclick="sbSetHl(true)">Highlights</button><button id="sb-hl-0" onclick="sbSetHl(false)">Every play</button></div>'+
+      '<div class="sb-seg"><button id="sb-sp-1" onclick="sbSetSpeed(1)">1×</button><button id="sb-sp-2" onclick="sbSetSpeed(2)">2×</button><button id="sb-sp-4" onclick="sbSetSpeed(4)">4×</button></div>'+
+      '<button class="rl-small-btn" onclick="sbSkip()">⏭ Skip to the end</button></div><div class="sb-pbp" id="sb-pbp"></div></div>';
+    sbCtrlUI();return;
+  }
+  if(sbView.main==='team'){
+    var t=sbView.ti,T=SB_TEAMS[t],r=sb.rec[t];
+    el.innerHTML='<div class="sb-team-head">'+sbBadge(t,true)+'<div><h2>'+T.city+' '+T.name+'</h2>'+sbTeamBlurb(t)+'</div></div>'+
+      '<div class="sb-cols"><div class="sb-col"><h3>Ratings this season</h3>'+sbRatingBars(t)+'<h3>Titles</h3><div class="sb-tline">'+(sb.champs.filter(function(c){return c[1]===t;}).map(function(c){return '🏆 Season '+c[0]+' ('+c[2]+'-'+c[3]+')';}).join('<br>')||'None yet')+'</div></div>'+
+      '<div class="sb-col"><h3>This season</h3>'+(r.g.length?r.g.slice().reverse().map(function(x){var w=x[3]>x[4];return '<div class="sb-l5"><i class="'+(w?'w':'l')+'">'+(w?'W':'L')+'</i>'+x[3]+'–'+x[4]+' '+(x[2]?'vs':'@')+' '+sbBadge(x[1])+' '+SB_TEAMS[x[1]].name+'<small>Wk '+x[0]+'</small></div>';}).join(''):'<div class="sb-empty">No games yet</div>')+'</div></div>';
+    return;
+  }
+  var gi=sbView.gi,g=sb.games[gi];if(!g){el.innerHTML='';return;}
+  var H=SB_TEAMS[g.h],A=SB_TEAMS[g.a],pa=Math.round((1-g.p)*100),ph=100-pa;
+  var h2h=sb.rec[g.h].g.filter(function(x){return x[1]===g.a;}),hw=h2h.filter(function(x){return x[3]>x[4];}).length;
+  function side(t,s){var p=sbSideP(g,s);return '<div class="sb-mteam" onclick="sbOpenTeam('+t+')">'+sbBadge(t,true)+'<div><b>'+SB_TEAMS[t].city+' '+SB_TEAMS[t].name+'</b><small>'+sbRecord(t)+(s?' · away':' · home')+' · streak '+sbStreak(t)+'</small></div></div>';}
+  var mine=sbBetOn(gi),open=g.st==='open';
+  var html='<div class="sb-match">'+side(g.a,1)+'<span class="sb-at">@</span>'+side(g.h,0)+'</div>'+
+    '<div class="sb-odds"><div class="sb-obar"><i style="width:'+pa+'%;background:'+A.c1+'"></i><i style="width:'+ph+'%;background:'+H.c1+'"></i></div><div class="sb-olab"><span>'+A.ab+' '+pa+'% to win</span><span>Projected odds</span><span>'+H.ab+' '+ph+'% to win</span></div></div>';
+  if(open){
+    html+='<div class="sb-slip"><div class="sb-picks"><button id="sb-pick-1" onclick="sbPick(1)">'+sbBadge(g.a)+' '+A.name+'<b>×'+sbMult(1-g.p).toFixed(2)+'</b></button><button id="sb-pick-0" onclick="sbPick(0)">'+sbBadge(g.h)+' '+H.name+'<b>×'+sbMult(g.p).toFixed(2)+'</b></button></div>'+
+      '<div class="sb-amtrow"><div class="pk-amount"><input id="sb-amt" type="number" min="1" step="1" value="'+(sbView.amt||25)+'" inputmode="numeric" oninput="sbView.amt=this.value;sbSlipUI()"><button onclick="sbBetScale(0.5)">½</button><button onclick="sbBetScale(2)">2×</button></div>'+
+      '<span id="sb-towin" class="sb-towin"></span><button class="btn btn-gold" onclick="sbPlaceBet()">Place bet</button></div></div>';
+  }
+  if(mine.length)html+='<div class="sb-mine">'+mine.map(function(b){var t=SB_TEAMS[b.side?g.a:g.h];return '<span class="'+b.st+'">'+(b.st==='won'?'✔ ':b.st==='lost'?'✘ ':'🎟 ')+fmtChips(b.amt)+' on '+t.ab+' at ×'+b.mult.toFixed(2)+(b.st==='won'?': won '+fmtChips(b.paid):b.st==='lost'?': lost':': pays '+fmtChips(Math.floor(b.amt*b.mult)))+'</span>';}).join('')+'</div>';
+  html+='<div class="sb-go"><button class="btn btn-primary" onclick="sbWatch('+gi+')">'+(g.st==='final'?'↺ Watch the replay':g.st==='live'?'▶ Watch the game':'🏈 Kick off and watch')+'</button>'+
+    (g.st==='final'?'<span class="sb-final">Final: '+A.ab+' '+g.as+', '+H.ab+' '+g.hs+'</span>':'')+'</div>';
+  html+='<div class="sb-cols"><div class="sb-col"><h3>'+sbBadge(g.a)+' '+A.name+'</h3>'+sbTeamBlurb(g.a)+sbRatingBars(g.a)+'<h4>Last 5</h4>'+sbLast5(g.a)+'</div>'+
+    '<div class="sb-col"><h3>'+sbBadge(g.h)+' '+H.name+'</h3>'+sbTeamBlurb(g.h)+sbRatingBars(g.h)+'<h4>Last 5</h4>'+sbLast5(g.h)+'</div></div>'+
+    (h2h.length?'<div class="sb-tline">Head to head this season: '+H.ab+' '+hw+'-'+(h2h.length-hw)+'</div>':'');
+  el.innerHTML=html;
+  if(open){if(sbView.pick==null&&mine.length)sbView.pick=mine[mine.length-1].side;sbSlipUI();}
+}
+// The sportsbook fills the window like the other games; the broadcast screen keeps 16:9 and fits what's left
+function sbLayout(){
+  var w=document.getElementById('sb-wrap');if(!w||!w.offsetParent)return;
+  w.style.height=innerWidth>900?Math.max(420,roomBelow(w))+'px':'';
+  sbFitCast();
+}
+function sbFitCast(){
+  var scr=document.getElementById('sb-screen'),main=document.getElementById('sb-main'),cast=main&&main.querySelector('.sb-cast');if(!scr||!cast)return;
+  if(innerWidth<=900){cast.style.removeProperty('--castw');scr.style.width='';scr.style.height='';return;}
+  var used=0,cs=getComputedStyle(main);[].forEach.call(cast.querySelectorAll('.sb-board,.sb-ctrl'),function(e){used+=e.offsetHeight+8;});
+  var inH=main.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom),inW=main.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  var w=Math.floor(Math.max(240,Math.min(inW,(inH-used-70)*16/9)));   // leave room for a few lines of play-by-play
+  cast.style.setProperty('--castw',w+'px');scr.style.width=w+'px';scr.style.height=Math.floor(w*9/16)+'px';
+}
+window.addEventListener('resize',function(){if(document.getElementById('game-sports').classList.contains('active'))sbLayout();});
+// Opening the tab: set the league up the first time (a second or so of simulating), and settle anything left over
+function sbOpen(){
+  if(!sb){
+    document.getElementById('sb-main').innerHTML='<div class="sb-loading">Setting up the league… 🏈</div>';
+    setTimeout(function(){sbEnsure();sbRender();sbSay('Welcome to the sportsbook! Week '+sb.week+"'s lines are up. Tap a game to see the odds. 🏈");},30);return;
+  }
+  var won=sbResume()+sbAway;sbAway=0;if(won){saveGame();sbSay('While you were away, your bets paid '+fmtChips(won)+' chips! 💰');}
+  sbRender();
+}
+
 // ═══ INIT ═══
 // Chips and shop items saved from last time, then the equipped items go on the tables (shopApply dresses Peccy and draws the wheel)
 loadGame();modeApply();updateBalance();
@@ -5642,7 +6813,7 @@ slBuildHub();
 slSelect('classic');
 shopApply();
 // Refit a table when its contents change height (a split hand, a long result) and once the page settles
-if(window.ResizeObserver)document.querySelectorAll('.table-fit').forEach(function(el){new ResizeObserver(function(){fitTables();}).observe(el);});
+if(window.ResizeObserver)document.querySelectorAll('.table-fit').forEach(function(el){new ResizeObserver(function(){fitTables(true);}).observe(el);});
 fitTables();setTimeout(fitTables,500);
 </script>
 
