@@ -1375,8 +1375,8 @@
     .pk-history span { font-size: 10.5px; padding: 4px 0; }
   }
   @media (max-width: 640px) {
-    /* Seven or eight tabs on a phone: two rows of four, without the icons */
-    .game-nav { display: grid; grid-template-columns: repeat(4, 1fr); border-radius: 18px; }
+    /* Nine or ten tabs on a phone: two rows of five, without the icons */
+    .game-nav { display: grid; grid-template-columns: repeat(5, 1fr); border-radius: 18px; }
     .game-tab .tab-ico { display: none; }
     .game-tab { padding: 8px 3px; font-size: 12px; }
   }
@@ -1643,6 +1643,269 @@
     .sb-pbp { max-height: 150px; }
     .sb-match { flex-wrap: wrap; }
   }
+
+  /* ═══ HOLD'EM ═══ Two games: Ultimate Texas Hold'em on the blackjack-style felt, and a poker table */
+  #game-holdem { position: relative; }
+  #game-holdem.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  .he-view { display: none; }
+  .he-view.active { display: flow-root; }  /* so the scaled table's negative margin shrinks this box instead of hanging out of it */
+  /* Which game: sits on the wood wall, top left, in both */
+  .he-switch { position: absolute; top: 24px; left: 30px; z-index: 30; background: rgba(12,10,8,0.88); }
+  .he-switch button { padding: 7px 13px; font-size: 12.5px; }
+  #he-uth .table-fit { max-width: 980px; margin: 0 auto; }
+  /* Ultimate Texas Hold'em: the same room and felt as blackjack */
+  .uth-felt { padding-top: 40px; }
+  .uth-felt .hand-label .score { text-transform: none; letter-spacing: 0; }
+  .uth-hand { min-height: 108px; }
+  .uth-hand.folded .card { opacity: 0.4; }
+  .uth-board { position: relative; z-index: 2; display: flex; justify-content: center; gap: 8px; min-height: 104px; margin: 6px 0 2px; }
+  .he-slot { flex: none; width: 74px; height: 104px; border-radius: 9px; border: 1.5px dashed rgba(242,199,92,0.38); }
+  .card.best { box-shadow: 0 0 0 2px var(--gold), -2px 4px 12px rgba(0,0,0,0.45); }
+  .card.dim { filter: brightness(0.62) saturate(0.7); }
+  .uth-mid { height: 64px; }
+  .uth-mid .bj-arc { top: -6px; }
+  .bj-message.lost { color: var(--loss); border-color: rgba(255,143,133,0.4); }
+  .bj-play .btn.tip { box-shadow: inset 0 -2px 0 #b5a88f, 0 0 0 3px var(--aws-orange), 0 3px 8px rgba(0,0,0,0.35); }
+  .bj-play .btn:disabled { opacity: 0.45; }
+  /* The pay tables, printed on the felt either side of the board */
+  .uth-pay { position: absolute; top: 132px; z-index: 1; display: flex; flex-direction: column; gap: 1px; width: 168px; font: 600 10.5px var(--serif); letter-spacing: 0.6px; text-transform: uppercase; color: rgba(242,199,92,0.72); }
+  .uth-pay b { margin-bottom: 3px; font: 700 12px var(--serif); letter-spacing: 1.5px; color: rgba(242,199,92,0.9); }
+  .uth-pay span { display: flex; justify-content: space-between; gap: 6px; }
+  .uth-pay em { font-style: normal; color: rgba(255,255,255,0.55); }
+  .uth-pay-l { left: 5%; }
+  .uth-pay-r { right: 5%; }
+  /* The bet spots: Trips, Ante = Blind, Play */
+  .uth-spots { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 14px; margin: 8px auto 0; }
+  .uth-spot { position: relative; flex: none; width: 76px; height: 76px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer;
+    border: 2px solid rgba(242,199,92,0.6); box-shadow: inset 0 0 0 5px rgba(0,0,0,0.12), inset 0 0 16px rgba(0,0,0,0.3); transition: box-shadow 0.2s; }
+  .uth-spot.play { width: 96px; height: 70px; border-radius: 14px; cursor: default; }
+  .uth-spot.sel { box-shadow: inset 0 0 0 5px rgba(0,0,0,0.12), 0 0 0 3px var(--sel); }
+  .uth-spot.won { box-shadow: inset 0 0 0 5px rgba(0,0,0,0.12), 0 0 0 3px rgba(242,199,92,0.7); }
+  .uth-spot.lost .uth-stack { opacity: 0.25; }
+  .uth-spot-label { font: 700 11px var(--serif); letter-spacing: 2px; text-transform: uppercase; color: rgba(242,199,92,0.65); }
+  .uth-stack { position: absolute; left: 50%; top: 50%; width: 40px; height: 40px; margin: -24px 0 0 -20px; }
+  .uth-spot .uth-spot-label { position: absolute; top: -17px; left: 0; right: 0; text-align: center; }
+  .uth-amt { bottom: -20px; }
+  .uth-out { position: absolute; top: -8px; right: -14px; padding: 1px 7px; border-radius: 999px; font: 700 11.5px var(--display); white-space: nowrap; background: rgba(0,0,0,0.75); color: var(--muted); }
+  .uth-spot.won .uth-out { color: var(--win); }
+  .uth-spot.lost .uth-out { color: var(--loss); }
+  .uth-eq { font: 700 22px var(--serif); color: rgba(242,199,92,0.6); }
+  .bet-controls.off { opacity: 0.4; pointer-events: none; }
+  /* A small on/off switch with its label */
+  .pt-tog { display: inline-flex; align-items: center; gap: 8px; padding: 6px 10px 6px 6px; border-radius: 999px; border: 1px solid var(--line-2); background: transparent;
+    color: var(--muted); font: 500 12px 'Inter', sans-serif; cursor: pointer; white-space: nowrap; }
+  .pt-tog i { position: relative; width: 28px; height: 16px; flex: none; border-radius: 999px; background: var(--active); transition: background 0.15s; }
+  .pt-tog i::after { content: ''; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--muted); transition: transform 0.15s, background 0.15s; }
+  .pt-tog.on { color: var(--text); }
+  .pt-tog.on i { background: var(--aws-orange); }
+  .pt-tog.on i::after { transform: translateX(12px); background: #1d1203; }
+
+  /* The poker table: the room and the table are drawn at 1000x600 and scaled to fit (heLayout) */
+  .pt-wrap { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 12px; height: 640px; }
+  .pt-main { display: flex; flex-direction: column; gap: 8px; min-width: 0; min-height: 0; }
+  .pt-stage { position: relative; flex: 1; min-height: 0; overflow: hidden; border-radius: 22px;
+    background: radial-gradient(60% 55% at 50% 0%, rgba(255,205,140,0.22), transparent 70%), repeating-linear-gradient(90deg, rgba(0,0,0,0.22) 0 2px, transparent 2px 110px), linear-gradient(180deg, #2a1910 0%, #170e09 60%, #0d0806 100%); }
+  .pt-fit { position: absolute; top: 0; left: 0; width: 1000px; height: 600px; transform-origin: 0 0; }
+  .pt-dealer { position: absolute; left: 50%; top: 6px; z-index: 1; transform: translateX(-50%); display: flex; align-items: flex-start; }
+  .pt-dealer .peccy-dealer-svg { width: 118px; height: 139px; }
+  .pt-dealer .peccy-dealer-svg.has-hat { height: calc(139px * 286 / 240); margin-top: -26px; }
+  /* Peccy talks from the top of the felt, between the two top seats */
+  .pt-say { position: absolute; left: 50%; top: 150px; z-index: 5; width: max-content; max-width: 330px; transform: translateX(-50%); font-size: 13px; text-align: center; }
+  .pt-say::before { left: 50%; top: -6px; margin-left: -6px; }
+  .pt-say.say { animation: none; }
+  .pt-table { position: absolute; left: 90px; top: 122px; width: 820px; height: 360px; z-index: 2; padding: 18px; border-radius: 180px;
+    background: var(--rail, linear-gradient(180deg, #7a4320 0%, #4c2711 45%, #2d1608 100%));
+    box-shadow: inset 0 2px 0 rgba(255,220,170,0.25), inset 0 -3px 0 rgba(0,0,0,0.4), 0 20px 40px rgba(0,0,0,0.5); }
+  .pt-felt { position: relative; height: 100%; border-radius: 162px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    background: radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1.2px) 0 0 / 5px 5px, radial-gradient(85% 80% at 50% 40%, var(--felt-hi) 0%, var(--felt) 45%, var(--felt-lo) 85%, var(--felt-edge) 100%);
+    box-shadow: inset 0 14px 30px rgba(0,0,0,0.45), inset 0 -12px 30px rgba(0,0,0,0.4); }
+  .pt-print { order: 3; text-align: center; pointer-events: none; }
+  .pt-print b { display: block; font: 700 17px var(--serif); letter-spacing: 3px; color: rgba(242,199,92,0.55); }
+  .pt-print small { display: block; margin-top: 2px; font: 600 10.5px var(--serif); letter-spacing: 2px; color: rgba(255,255,255,0.35); }
+  .pt-board { position: relative; display: flex; gap: 7px; margin-top: 8px; }
+  .pt-board .card, .pt-board .he-slot { width: 66px; height: 92px; }
+  .pt-pot { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 34px; font: 600 13px 'Inter', sans-serif; color: rgba(255,255,255,0.85); }
+  .pt-pot b { font: 700 15px var(--display); color: var(--gold-2); font-variant-numeric: tabular-nums; }
+  .pt-pot span { padding: 3px 10px; border-radius: 999px; background: rgba(0,0,0,0.45); }
+  .pt-pot .rake { color: rgba(255,255,255,0.6); }
+  .pt-pile { position: relative; width: var(--s); height: var(--s); flex: none; }
+  /* Seats round the table, clockwise from you at the bottom */
+  .pt-seat { position: absolute; z-index: 4; display: flex; flex-direction: column; align-items: center; width: 190px; transition: opacity 0.2s; }
+  .pt-seat.s-you { left: 405px; top: 438px; }
+  .pt-seat.s-l { left: 0; top: 236px; }
+  .pt-seat.s-r { right: 0; top: 236px; }
+  .pt-seat.s-tl { left: 200px; top: 30px; }
+  .pt-seat.s-tr { right: 200px; top: 30px; }
+  .pt-seat.empty { opacity: 0.35; }
+  .pt-seat.folded .pt-cards, .pt-seat.folded .pt-plate { opacity: 0.45; }
+  .pt-cards { display: flex; justify-content: center; min-height: 67px; }
+  .pt-cards .card + .card { margin-left: -16px; }
+  .pt-seat.s-you .pt-cards { min-height: 92px; }
+  .pt-seat:not(.s-you) .pt-cards .card { width: 48px; height: 67px; border-radius: 6px; }
+  .pt-seat.s-you .pt-cards .card { width: 66px; height: 92px; }
+  .pt-cards .card + .card { margin-left: -12px; }
+  .pt-seat:not(.s-you) .card .c-rank, .pt-board .card .c-rank { font-size: 14px; }
+  .pt-seat:not(.s-you) .card .c-suit { font-size: 10px; }
+  .pt-seat:not(.s-you) .card .c-pip { font-size: 25px; }
+  .pt-seat:not(.s-you) .card .c-big { font-size: 24px; }
+  .pt-seat:not(.s-you) .card .c-face { inset: 15px 10px; }
+  .pt-seat:not(.s-you) .card .c-letter { font-size: 17px; }
+  .pt-seat:not(.s-you) .card .c-corner.tl { top: 4px; left: 4px; }
+  .pt-seat:not(.s-you) .card .c-corner.br { bottom: 4px; right: 4px; }
+  .pt-seat:not(.s-you) .card-back svg { width: 20px; height: 24px; }
+  .pt-board .card .c-pip { font-size: 33px; }
+  .pt-plate { position: relative; display: flex; align-items: center; gap: 8px; width: 100%; margin-top: -10px; padding: 6px 10px 6px 6px; border-radius: 14px;
+    background: rgba(12,10,8,0.92); border: 1px solid var(--line-2); }
+  .pt-seat.acting .pt-plate { border-color: var(--sel); box-shadow: 0 0 0 1px var(--sel); }
+  .pt-seat.won .pt-plate { border-color: rgba(242,199,92,0.8); box-shadow: 0 0 0 1px rgba(242,199,92,0.8); }
+  .pt-av { flex: none; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font: 700 14px var(--display);
+    color: hsl(var(--h, 30) 70% 86%); background: hsl(var(--h, 30) 38% 30%); }
+  .pt-seat.s-you .pt-av { color: #1d1203; background: var(--aws-orange); }
+  .pt-who { flex: 1; min-width: 0; line-height: 1.2; }
+  .pt-who b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 13px 'Inter', sans-serif; color: var(--text); }
+  .pt-who small { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 11px; color: var(--faint); }
+  .pt-stack { flex: none; font: 700 14px var(--display); color: var(--gold-2); font-variant-numeric: tabular-nums; }
+  .pt-act { min-height: 22px; margin-top: 4px; padding: 2px 9px; border-radius: 999px; font: 600 12px 'Inter', sans-serif; color: var(--text); white-space: nowrap; }
+  .pt-act.on { background: rgba(12,10,8,0.85); }
+  .pt-act.win { background: var(--gold); color: #2a1a00; }
+  /* Chips bet this street sit in front of the seat, toward the middle */
+  .pt-bet { position: absolute; display: flex; align-items: center; gap: 6px; font: 700 13px var(--display); color: #fff; white-space: nowrap; }
+  .pt-bet span { padding: 1px 7px; border-radius: 999px; background: rgba(0,0,0,0.6); }
+  .s-you .pt-bet { top: -44px; left: 50%; transform: translateX(-50%); }
+  .s-l .pt-bet { top: 40px; left: calc(100% + 6px); }
+  .s-r .pt-bet { top: 40px; right: calc(100% + 6px); flex-direction: row-reverse; }
+  .s-tl .pt-bet, .s-tr .pt-bet { top: calc(100% + 4px); left: 50%; transform: translateX(-50%); }
+  .pt-dbtn { position: absolute; width: 24px; height: 24px; border-radius: 50%; display: none; align-items: center; justify-content: center; font: 800 12px var(--display);
+    color: #1d1812; background: #f2ece1; box-shadow: 0 2px 0 #b5a88f, 0 3px 6px rgba(0,0,0,0.4); z-index: 2; }
+  .s-you .pt-dbtn { top: 30px; left: calc(100% + 8px); }
+  .s-l .pt-dbtn { top: 90px; left: calc(100% + 10px); }
+  .s-r .pt-dbtn { top: 90px; right: calc(100% + 10px); }
+  .s-tl .pt-dbtn, .s-tr .pt-dbtn { top: calc(100% + 8px); left: 14px; }
+  /* Before you sit down: the lobby over the table */
+  .pt-lobby { position: absolute; left: 50%; top: 168px; z-index: 6; width: 470px; transform: translateX(-50%); display: flex; flex-direction: column; gap: 12px; padding: 18px 20px 20px;
+    border-radius: 16px; background: var(--surface); border: 1px solid var(--line-2); box-shadow: 0 24px 60px rgba(0,0,0,0.6); }
+  .pt-lob-title { font: 700 20px var(--display); }
+  .pt-lob-row > small { display: block; margin-bottom: 6px; font: 500 12px 'Inter', sans-serif; color: var(--muted); }
+  .pt-stakes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .pt-stakes button { padding: 8px 4px; border-radius: 10px; border: 1px solid var(--line-2); background: transparent; color: var(--text); cursor: pointer; text-align: center; }
+  .pt-stakes button b { display: block; font: 700 15px var(--display); font-variant-numeric: tabular-nums; }
+  .pt-stakes button small { display: block; margin-top: 2px; font-size: 11px; color: var(--faint); }
+  .pt-stakes button.on { border-color: var(--sel); background: var(--active); box-shadow: 0 0 0 1px var(--sel); }
+  .pt-stakes button.short b { color: var(--faint); }
+  .pt-nbots { display: inline-flex; background: var(--well); }
+  .pt-nbots button { min-width: 44px; }
+  .pt-buy { display: flex; align-items: center; gap: 12px; }
+  .pt-buy input { flex: 1; accent-color: var(--aws-orange); }
+  .pt-buy b { min-width: 72px; text-align: right; font: 700 18px var(--display); color: var(--gold-2); font-variant-numeric: tabular-nums; }
+  #he-pt.seated .pt-lobby { display: none; }
+  /* Your moves */
+  .pt-console { flex: none; display: flex; flex-direction: column; gap: 6px; min-height: 64px; padding: 10px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .pt-console:empty { display: none; }
+  .pt-moves { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .pt-moves .btn { padding: 10px 18px; }
+  .pt-raise { display: flex; align-items: center; gap: 10px; flex: 1; min-width: 0; justify-content: flex-end; flex-wrap: wrap; }
+  .pt-raise input { flex: 1; min-width: 120px; max-width: 260px; accent-color: var(--aws-orange); }
+  .pt-presets { display: flex; gap: 4px; }
+  .pt-presets button { padding: 6px 9px; border-radius: 999px; border: 1px solid var(--line-2); background: transparent; color: var(--muted); font: 500 12px 'Inter', sans-serif; cursor: pointer; }
+  .pt-presets button:hover { color: var(--text); background: rgba(255,240,220,0.06); }
+  .pt-info { display: flex; flex-wrap: wrap; gap: 4px 18px; font-size: 12.5px; color: var(--muted); }
+  .pt-info:empty { display: none; }
+  .pt-odds { color: var(--text); font-weight: 600; }
+  .pt-odds small { font-weight: 400; color: var(--faint); }
+  .pt-wait { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; min-height: 42px; font-size: 13.5px; color: var(--muted); }
+  /* The side panel: your session, settings and the hand log */
+  .pt-side { display: flex; flex-direction: column; gap: 12px; min-height: 0; padding: 14px; padding-top: 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+  .pt-side-head b { display: block; font: 700 18px var(--display); }
+  .pt-side-head small { display: block; margin-top: 2px; font-size: 12px; color: var(--muted); }
+  .pt-me { display: grid; grid-template-columns: repeat(3, 1fr); padding-top: 10px; border-top: 1px solid var(--line); }
+  .pt-me div { padding: 0 8px; }
+  .pt-me div:first-child { padding-left: 2px; }
+  .pt-me div + div { border-left: 1px solid var(--line); }
+  .pt-me small { display: block; font-size: 11px; color: var(--muted); }
+  .pt-me b { font: 700 16px var(--display); color: var(--gold-2); font-variant-numeric: tabular-nums; }
+  .pt-me b.up { color: var(--win); } .pt-me b.down { color: var(--loss); }
+  .pt-side-btns, .pt-toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .pt-log { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: 3px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 12px; line-height: 1.4; color: var(--muted); }
+  .pt-log b { margin: 6px 0 2px; font: 500 12px 'Inter', sans-serif; color: var(--faint); }
+  .pt-log b:first-child { margin-top: 0; }
+  .pt-log span.up em { color: var(--win); font-style: normal; } .pt-log span.down em { color: var(--loss); font-style: normal; }
+  .pt-how { display: flex; flex-direction: column; gap: 8px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 13px; line-height: 1.5; color: var(--muted); }
+  .uth-rules { display: none; }
+  @media (max-height: 820px) and (min-width: 761px) {
+    #game-holdem.active { padding-top: 8px; padding-bottom: 8px; } .he-switch { top: 18px; }
+    /* Short laptop screens: Ultimate's felt has a whole extra row of cards over blackjack's, so it tightens up */
+    #he-uth .uth-felt { padding-top: 30px; }
+    #he-uth .card, #he-uth .he-slot { width: 64px; height: 90px; }
+    #he-uth .card .c-pip { font-size: 32px; } #he-uth .card .c-big { font-size: 30px; } #he-uth .card .c-face { inset: 19px 13px; } #he-uth .card .c-letter { font-size: 22px; }
+    #he-uth .uth-hand { min-height: 92px; }
+    #he-uth .hand-area .card + .card { margin-left: -22px; }
+    #he-uth .uth-board { min-height: 90px; margin: 2px 0 0; }
+    #he-uth .uth-mid { height: 54px; }
+    #he-uth .uth-spot { width: 64px; height: 64px; }
+    #he-uth .uth-spot.play { width: 84px; height: 60px; }
+    #he-uth .uth-spots { margin-top: 16px; }
+    #he-uth .uth-pay { top: 112px; }
+  }
+  /* Phones: the switch above the game; Ultimate keeps its felt with small board cards and its pay tables
+     under the console; the poker table becomes a column: Peccy, the bots two by two, the board, then you */
+  @media (max-width: 760px) {
+    .he-switch { position: static; display: flex; width: max-content; margin: 0 auto 10px; }
+    .uth-felt .uth-pay { display: none; }
+    .uth-rules { display: block; margin-top: 10px; padding: 10px 14px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
+    .uth-rules summary { cursor: pointer; font: 600 13px 'Inter', sans-serif; color: var(--muted); }
+    #uth-rules-body { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 10px; }
+    #uth-rules-body .uth-pay { position: static; width: auto; font-family: 'Inter', sans-serif; text-transform: none; letter-spacing: 0; font-size: 12px; color: var(--muted); }
+    #uth-rules-body .uth-pay b { font: 600 12.5px 'Inter', sans-serif; letter-spacing: 0; color: var(--text); }
+    #uth-rules-body .uth-pay em { color: var(--faint); }
+    .uth-board { gap: 5px; min-height: 67px; }
+    .uth-board .card, .uth-board .he-slot { width: 48px; height: 67px; border-radius: 6px; }
+    .uth-board .card .c-rank { font-size: 14px; } .uth-board .card .c-suit { font-size: 10px; } .uth-board .card .c-pip { font-size: 25px; } .uth-board .card .c-big { font-size: 24px; }
+    .uth-board .card .c-face { inset: 15px 10px; } .uth-board .card .c-letter { font-size: 17px; }
+    .uth-board .card .c-corner.tl { top: 4px; left: 4px; } .uth-board .card .c-corner.br { bottom: 4px; right: 4px; }
+    .uth-spots { gap: 6px; margin-top: 20px; }
+    .uth-spot { width: 54px; height: 54px; }
+    .uth-spot.play { width: 64px; height: 50px; }
+    .uth-spot .uth-stack { transform: scale(0.75); }
+    .uth-spot-label { font-size: 11px; letter-spacing: 1px; }
+    .uth-eq { font-size: 16px; }
+    .uth-out { right: -10px; font-size: 11px; }
+    .pt-wrap { grid-template-columns: 1fr; height: auto !important; }
+    .pt-stage { overflow: visible; padding: 10px; border-radius: 18px; }
+    .pt-fit { position: static; width: auto; height: auto; transform: none !important; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;
+      grid-template-areas: "peccy peccy" "tl tr" "l r" "table table" "you you" "lobby lobby"; }
+    .pt-dealer { position: static; grid-area: peccy; justify-self: start; transform: none; }
+    .pt-dealer .peccy-dealer-svg { width: 64px; height: 75px; }
+    .pt-dealer .peccy-dealer-svg.has-hat { height: calc(75px * 286 / 240); margin-top: 0; }
+    .pt-say { position: relative; left: auto; top: auto; grid-area: peccy; align-self: center; margin-left: 78px; width: auto; max-width: none; transform: none; text-align: left; font-size: 12.5px; }
+    .pt-say::before { left: -6px; top: 50%; margin: -6px 0 0; }
+    .pt-seats { display: contents; }
+    .pt-seat { position: relative; width: auto; min-width: 0; }
+    .pt-seat.s-l, .pt-seat.s-r, .pt-seat.s-tl, .pt-seat.s-tr, .pt-seat.s-you { left: auto; right: auto; top: auto; }
+    .pt-seat.s-l { grid-area: l; } .pt-seat.s-r { grid-area: r; } .pt-seat.s-tl { grid-area: tl; } .pt-seat.s-tr { grid-area: tr; } .pt-seat.s-you { grid-area: you; justify-self: center; width: 230px; }
+    .pt-seat:not(.s-you) .pt-cards { min-height: 56px; }
+    .pt-seat:not(.s-you) .pt-cards .card { width: 40px; height: 56px; }
+    .pt-plate { padding: 5px 8px 5px 5px; }
+    .pt-av { width: 28px; height: 28px; font-size: 13px; }
+    .pt-who b { font-size: 12.5px; }
+    .pt-seat .pt-bet, .s-l .pt-bet, .s-r .pt-bet, .s-tl .pt-bet, .s-tr .pt-bet, .s-you .pt-bet { position: static; transform: none; justify-content: center; flex-direction: row; min-height: 0; margin-top: 4px; order: 9; }
+    .pt-seat .pt-dbtn, .s-l .pt-dbtn, .s-r .pt-dbtn, .s-tl .pt-dbtn, .s-tr .pt-dbtn, .s-you .pt-dbtn { top: 0; right: 0; left: auto; width: 20px; height: 20px; font-size: 11px; }
+    .pt-table { position: static; grid-area: table; width: auto; height: auto; padding: 10px; border-radius: 28px; }
+    .pt-felt { border-radius: 20px; padding: 14px 8px 12px; }
+    .pt-print { order: 3; }
+    .pt-print b { font-size: 13px; letter-spacing: 2px; }
+    .pt-board { margin-top: 0; gap: 5px; }
+    .pt-board .card, .pt-board .he-slot { width: 48px; height: 67px; border-radius: 6px; }
+    .pt-board .card .c-rank { font-size: 14px; } .pt-board .card .c-pip { font-size: 25px; } .pt-board .card .c-suit { font-size: 10px; }
+    .pt-board .card .c-face { inset: 15px 10px; } .pt-board .card .c-letter { font-size: 17px; }
+    .pt-board .card .c-corner.tl { top: 4px; left: 4px; } .pt-board .card .c-corner.br { bottom: 4px; right: 4px; }
+    .pt-lobby { position: static; grid-area: lobby; width: auto; transform: none; padding: 14px; }
+    .pt-stakes { grid-template-columns: repeat(3, 1fr); }
+    .pt-raise { justify-content: flex-start; }
+    .pt-raise input { max-width: none; }
+    .pt-side { max-height: none; }
+    .pt-log { max-height: 260px; }
+  }
+  @media (max-width: 1100px) and (min-width: 761px) { .pt-wrap { grid-template-columns: minmax(0, 1fr) 250px; } }
   /* ═══ CONFETTI ═══ */
   /* One quiet line under the games */
   .site-foot { position: relative; z-index: 1; padding: 0 16px 10px; text-align: center; font-size: 11px; line-height: 1.4; color: var(--faint); }
@@ -1814,6 +2077,7 @@
     <button class="game-tab active" onclick="switchGame('blackjack')" id="tab-blackjack"><span class="tab-ico">♠</span> Blackjack</button>
     <button class="game-tab" onclick="switchGame('slots')" id="tab-slots"><span class="tab-ico">7</span> Slots</button>
     <button class="game-tab" onclick="switchGame('roulette')" id="tab-roulette"><i class="tab-ico fa-solid fa-dharmachakra"></i> Roulette</button>
+    <button class="game-tab" onclick="switchGame('holdem')" id="tab-holdem"><i class="tab-ico fa-solid fa-diamond"></i> Hold'em</button>
     <button class="game-tab" onclick="switchGame('plinko')" id="tab-plinko"><i class="tab-ico fa-solid fa-circle-dot"></i> Plinko</button>
     <button class="game-tab" onclick="switchGame('coin')" id="tab-coin"><i class="tab-ico fa-solid fa-coins"></i> Coin Flip</button>
     <button class="game-tab" onclick="switchGame('sports')" id="tab-sports"><i class="tab-ico fa-solid fa-football"></i> Sports</button>
@@ -2037,6 +2301,98 @@
   </div>
 </div>
 
+
+<!-- ═══ HOLD'EM ═══ Ultimate Texas Hold'em against Peccy, or a poker table with bots -->
+<div class="game-area" id="game-holdem">
+  <div class="sb-seg he-switch" role="tablist"><button id="hes-uth" class="on" onclick="heShow('uth')">Vs the dealer</button><button id="hes-pt" onclick="heShow('pt')">Poker table</button></div>
+  <div class="he-view active" id="he-uth">
+    <div class="table-fit">
+    <div class="bj-scene uth-scene">
+      <div class="bj-dealer">
+        <svg class="peccy-dealer-svg peccy-dealer" data-outfit="holdem" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="peccy-speech" id="uth-say">Ante up for Ultimate Texas Hold'em! Your hand against mine. 🃏</div>
+      </div>
+      <div class="bj-table">
+        <div class="bj-felt uth-felt">
+          <div class="uth-pay uth-pay-l"><b>Blind pays</b><span><em>Royal flush</em>500 to 1</span><span><em>Straight flush</em>50 to 1</span><span><em>Four of a kind</em>10 to 1</span><span><em>Full house</em>3 to 1</span><span><em>Flush</em>3 to 2</span><span><em>Straight</em>1 to 1</span><span><em>Anything less</em>push</span></div>
+          <div class="uth-pay uth-pay-r" id="uth-trips-table"></div>
+          <div class="bj-zone">
+            <div class="hand-label">Peccy <span class="score" id="uth-d-name"></span></div>
+            <div class="hand-area uth-hand" id="uth-dealer"></div>
+          </div>
+          <div class="uth-board" id="uth-board"></div>
+          <div class="bj-mid uth-mid">
+            <svg class="bj-arc" viewBox="0 0 700 120" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
+              <defs>
+                <path id="uth-arc-1" d="M 95 22 Q 350 128 605 22"></path>
+                <path id="uth-arc-2" d="M 150 52 Q 350 142 550 52"></path>
+              </defs>
+              <text class="arc-main"><textPath href="#uth-arc-1" startOffset="50%" text-anchor="middle">ULTIMATE TEXAS HOLD'EM</textPath></text>
+              <text class="arc-sub"><textPath id="uth-arc-sub" href="#uth-arc-2" startOffset="50%" text-anchor="middle">PECCY NEEDS A PAIR TO OPEN</textPath></text>
+            </svg>
+            <div class="bj-message" id="uth-message"></div>
+            <div class="bj-play" id="uth-play-btns"></div>
+          </div>
+          <div class="bj-zone">
+            <div class="hand-area uth-hand" id="uth-player"></div>
+            <div class="hand-label">You <span class="score" id="uth-p-name"></span></div>
+          </div>
+          <div class="uth-spots">
+            <div class="uth-spot" id="uth-trips" onclick="uthTarget('trips')" title="Trips: a side bet on your own hand"></div>
+            <div class="uth-spot" id="uth-ante" onclick="uthTarget('ante')" title="Ante"></div>
+            <span class="uth-eq">=</span>
+            <div class="uth-spot" id="uth-blind" onclick="uthTarget('ante')" title="Blind: always the same as the Ante"></div>
+            <div class="uth-spot play" id="uth-play" title="Play: your 1x to 4x bet"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bj-console uth-console">
+      <div class="bet-controls" id="uth-bet-controls">
+        <div class="bet-chip c5" onclick="uthBet(5)">5</div>
+        <div class="bet-chip c10" onclick="uthBet(10)">10</div>
+        <div class="bet-chip c25" onclick="uthBet(25)">25</div>
+        <div class="bet-chip c50" onclick="uthBet(50)">50</div>
+        <div class="bet-chip c100" onclick="uthBet(100)">100</div>
+        <div class="bet-chip c500" onclick="uthBet(500)">500</div>
+        <div class="bet-chip c1000" onclick="uthBet(1000)">1000</div>
+        <div class="current-bet">On the felt <span id="uth-total">0</span></div>
+        <button class="clear-bet" onclick="uthClear()">Clear</button>
+      </div>
+      <div class="bj-actions">
+        <button class="pt-tog" id="uth-tips" onclick="uthTips()" title="Peccy suggests the best move for each decision"><i></i>Peccy's tips</button>
+        <button class="btn btn-primary" id="uth-deal-btn" onclick="uthDeal()"><i class="fa-solid fa-layer-group"></i> Deal</button>
+      </div>
+    </div>
+    <!-- On a phone the pay tables come off the felt and wait under the console -->
+    <details class="uth-rules"><summary>Pay tables</summary><div id="uth-rules-body"></div></details>
+    </div>
+  </div>
+  <div class="he-view" id="he-pt">
+    <div class="pt-wrap" id="pt-wrap">
+      <div class="pt-main">
+        <div class="pt-stage" id="pt-stage">
+          <div class="pt-fit" id="pt-fit">
+            <div class="pt-dealer">
+              <svg class="peccy-dealer-svg peccy-dealer" data-outfit="holdem" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+            </div>
+            <div class="peccy-speech pt-say" id="pt-say">Pull up a chair! Pick your stakes and take a seat. 🃏</div>
+            <div class="pt-table"><div class="pt-felt">
+              <div class="pt-print"><b>PECCY'S POKER ROOM</b><small id="pt-felt-sub">RAKE 5%, UP TO 3 BIG BLINDS</small></div>
+              <div class="pt-board" id="pt-board"></div>
+              <div class="pt-pot" id="pt-pot"></div>
+            </div></div>
+            <div class="pt-seats" id="pt-seats"></div>
+            <div class="pt-lobby" id="pt-lobby"></div>
+          </div>
+        </div>
+        <div class="pt-console" id="pt-console"></div>
+      </div>
+      <div class="pt-side" id="pt-side"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ PLINKO ═══ -->
 <div class="game-area" id="game-plinko">
   <div class="pk-wrap" id="pk-wrap">
@@ -2237,9 +2593,10 @@ function updateBalance() {
 }
 function resetBank() {
   // Now that chips are saved, a reset with a fortune on the line asks first. Each mode resets only its own stack.
-  var start = MODE_START[gameMode];
-  if (balance > start && !confirm('Reset your ' + (gameMode === 'arcade' ? 'arcade ' : '') + 'chips to ' + fmtChips(start) + '? You have ' + fmtChips(balance) + ' right now. Anything you bought in the shop stays yours.')) return;
+  var start = MODE_START[gameMode], held = balance + heHeld();
+  if (held > start && !confirm('Reset your ' + (gameMode === 'arcade' ? 'arcade ' : '') + 'chips to ' + fmtChips(start) + '? You have ' + fmtChips(held) + ' right now' + (held > balance ? ', counting what\'s on the Hold\'em tables' : '') + '. Anything you bought in the shop stays yours.')) return;
   balance = start;
+  heResetTables();
   if (gameMode === 'arcade') { if (mx.on) mxClose(); bar.drinks = []; bar.buzz = 0; barRender(); }
   updateBalance();
   bjBetAmount = 0; slState.auto = 0; slUI();
@@ -2260,6 +2617,7 @@ function switchGame(g) {
   if(g==='plinko')pkLayout();
   if(g==='coin'){cfUI();cfLayout();}
   if(g==='sports')sbOpen();
+  if(g==='holdem')heOpen();
   if(g==='bar'){barRender();barLayout();if(mx.on)mxRender();}
   else if(mx.on){mxPourStop();mxMixStop();}  // let go of the bottle (or shaker) on the way out
   // The Slots tab opens on the machine picker, unless a spin is still playing out
@@ -2468,7 +2826,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!
 var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
-function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
+function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
@@ -2500,6 +2858,8 @@ function modeRestore(m){
   // The sportsbook league (set up the first time the Sports tab opens); a game kicked off before the page
   // closed is settled now, the way it was always going to end
   sb=sbFromSave(s.sb);sbAway+=sbResume();
+  // Hold'em: a hand in progress (either game) picks up where it was
+  heRestore(s.he);
 }
 function loadGame(){
   var s=readSave(SAVE_KEY);
@@ -2521,7 +2881,7 @@ function shopPrice(it){return it.price*(gameMode==='arcade'?ARCADE_PRICE_X:1);}
 function shopApply(){
   var e=shopState.eq,bj=document.getElementById('game-blackjack'),rl=document.getElementById('game-roulette');
   function swap(el,prefix,id){el.className=el.className.split(/\s+/).filter(function(c){return c.indexOf(prefix)!==0;}).join(' ')+' '+prefix+id;}
-  swap(bj,'deck-',e.cards);swap(bj,'bjt-',e.bjtable);swap(rl,'rlt-',e.rltable);
+  swap(bj,'deck-',e.cards);swap(bj,'bjt-',e.bjtable);swap(rl,'rlt-',e.rltable);swap(document.getElementById('game-holdem'),'deck-',e.cards);
   peccyDressAll();
   drawRouletteWheel(curWheelRot,{a:curWheelRot+rlBallRel,r:RL_POCKET_R},-1);
 }
@@ -2601,6 +2961,897 @@ function shopDrawBall(cv,B){
   var trail=[];if(B.trail)for(var i=0;i<7;i++)trail.push([84-(7-i)*9,64+(7-i)*1.6,20*(0.6+0.05*i)]);
   rlDrawBall(ctx,[84,64,20],B,trail);
 }
+// ═══ HOLD'EM: CARDS AND HANDS ═══
+// A card is a number 0-51: rank*4 + suit, rank 0-12 for 2..A, suit in the order of `suits` (spades, hearts, diamonds, clubs).
+// heScore rates the best five of up to seven cards as one number, so the higher number always wins:
+// category (0 high card .. 8 straight flush) in bits 20+, then up to five tiebreak ranks, four bits each.
+var HE_RANKS=['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
+var HE_ONE=['Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Jack','Queen','King','Ace'];
+var HE_MANY=['Twos','Threes','Fours','Fives','Sixes','Sevens','Eights','Nines','Tens','Jacks','Queens','Kings','Aces'];
+var HE_CATS=['High card','Pair','Two pair','Three of a kind','Straight','Flush','Full house','Four of a kind','Straight flush','Royal flush'];
+function heCard(c){return {rank:HE_RANKS[c>>2],suit:suits[c&3]};}
+function heDeck(){var d=[],i,j,t;for(i=0;i<52;i++)d.push(i);for(i=51;i>0;i--){j=Math.floor(Math.random()*(i+1));t=d[i];d[i]=d[j];d[j]=t;}return d;}
+var heCnt=new Int8Array(13),heSM=new Int32Array(4),heSN=new Int8Array(4);
+// The top card of a straight in a 13-bit rank mask, or -1 (the wheel, A-2-3-4-5, is five high)
+function heStraight(m){for(var h=12;h>=4;h--)if(((m>>(h-4))&31)===31)return h;return (m&0x100F)===0x100F?3:-1;}
+function heScore(cs,n){
+  if(n==null)n=cs.length;
+  heCnt.fill(0);heSM.fill(0);heSN.fill(0);
+  var m=0,i,r,s,k;
+  for(i=0;i<n;i++){r=cs[i]>>2;s=cs[i]&3;heCnt[r]++;heSM[s]|=1<<r;heSN[s]++;m|=1<<r;}
+  // A flush can't share seven cards with four of a kind or a full house, so it only loses to a straight flush
+  for(s=0;s<4;s++)if(heSN[s]>=5){
+    var fm=heSM[s],sh=heStraight(fm);if(sh>=0)return (8<<20)|(sh<<16);
+    var sc=5<<20;k=0;for(r=12;r>=0&&k<5;r--)if(fm>>r&1){sc|=r<<(16-4*k);k++;}
+    return sc;
+  }
+  var q=-1,t1=-1,t2=-1,p1=-1,p2=-1;
+  for(r=12;r>=0;r--){k=heCnt[r];if(k===4)q=r;else if(k===3){if(t1<0)t1=r;else if(t2<0)t2=r;}else if(k===2){if(p1<0)p1=r;else if(p2<0)p2=r;}}
+  // The highest ranks left over once `a` and `b` are used, as kickers
+  function kick(a,b,want,shift){var v=0,got=0;for(var x=12;x>=0&&got<want;x--)if(heCnt[x]&&x!==a&&x!==b){v|=x<<(shift-4*got);got++;}return v;}
+  if(q>=0)return (7<<20)|(q<<16)|kick(q,-1,1,12);
+  if(t1>=0&&(t2>=0||p1>=0))return (6<<20)|(t1<<16)|(Math.max(t2,p1)<<12);
+  var st=heStraight(m);if(st>=0)return (4<<20)|(st<<16);
+  if(t1>=0)return (3<<20)|(t1<<16)|kick(t1,-1,2,12);
+  if(p2>=0)return (2<<20)|(p1<<16)|(p2<<12)|kick(p1,p2,1,8);
+  if(p1>=0)return (1<<20)|(p1<<16)|kick(p1,-1,3,12);
+  return kick(-1,-1,5,16);
+}
+function heCat(sc){var c=sc>>20;return c===8&&((sc>>16)&15)===12?9:c;}
+// "Pair of Kings", "Full house, Queens full of Sevens"...
+function heName(sc){
+  var c=heCat(sc),a=(sc>>16)&15,b=(sc>>12)&15;
+  switch(c){
+    case 9:return 'Royal flush';
+    case 8:return 'Straight flush, '+HE_ONE[a].toLowerCase()+' high';
+    case 7:return 'Four '+HE_MANY[a];
+    case 6:return 'Full house, '+HE_MANY[a]+' full of '+HE_MANY[b];
+    case 5:return 'Flush, '+HE_ONE[a].toLowerCase()+' high';
+    case 4:return 'Straight, '+HE_ONE[a].toLowerCase()+' high';
+    case 3:return 'Three '+HE_MANY[a];
+    case 2:return 'Two pair, '+HE_MANY[a]+' and '+HE_MANY[b];
+    case 1:return 'Pair of '+HE_MANY[a];
+    default:return HE_ONE[a]+' high';
+  }
+}
+// The five cards that make the hand, to light them up at the showdown
+function heBest5(cs){
+  var best=-1,pick=null,n=cs.length,a,b,c,d,e,h=[0,0,0,0,0];
+  for(a=0;a<n;a++)for(b=a+1;b<n;b++)for(c=b+1;c<n;c++)for(d=c+1;d<n;d++)for(e=d+1;e<n;e++){
+    h[0]=cs[a];h[1]=cs[b];h[2]=cs[c];h[3]=cs[d];h[4]=cs[e];var s=heScore(h,5);if(s>best){best=s;pick=h.slice();}
+  }
+  return pick||cs.slice();
+}
+// Starting hands come in 169 kinds (AA, AKs, AKo...). heClass gives a kind's index: pairs on the diagonal,
+// suited above it, offsuit below, so the index is hi*13+lo for suited and lo*13+hi for offsuit.
+function heClass(c1,c2){var r1=c1>>2,r2=c2>>2,hi=Math.max(r1,r2),lo=Math.min(r1,r2);return (c1&3)===(c2&3)&&r1!==r2?hi*13+lo:lo*13+hi;}
+function heClassName(i){var a=Math.floor(i/13),b=i%13,R='23456789TJQKA';if(a===b)return R[a]+R[a];return a>b?R[a]+R[b]+'s':R[b]+R[a]+'o';}
+// How good each kind of starting hand is: the share of all 1,326 starting hands as good or better (0.005 is
+// aces, the top 0.5%), ranked by its chance against one random hand (150,000 run-outs each, measured once)
+var HE_PF_PCT=[481,1000,991,973,982,964,916,855,771,677,599,474,327,946,356,955,934,943,925,903,831,744,650,554,446,282,906,858,252,867,888,876,846,798,710,626,526,401,261,891,837,783,139,822,813,780,735,695,590,496,377,229,894,834,786,725,83,759,719,686,638,575,456,339,208,879,804,762,701,653,42,662,617,566,505,425,318,184,801,789,747,668,608,557,32,544,514,437,365,273,151,750,722,698,629,578,529,465,27,416,386,309,217,125,665,641,605,602,532,462,404,345,23,300,247,169,95,581,535,517,487,477,407,351,291,235,18,199,134,75,484,459,428,392,368,342,288,220,172,142,14,113,66,389,348,330,285,264,232,187,157,104,98,78,9,51,238,190,175,160,154,116,101,86,57,54,38,35,5].map(function(v){return v/1000;});
+// Your chance against `opp` other hands at random (or from `ranges`: the share of starting hands, 0-1,
+// each opponent would still be holding), by playing the rest of the hand out `iters` times.
+// Returns {win, tie, eq}: eq counts a tie as a share of the pot.
+var heEqBuf=new Int32Array(52);
+function heEquity(hole,board,opp,iters,ranges){
+  var used=new Uint8Array(52),deck=heEqBuf,n=0,i,j,t,it;
+  hole.concat(board).forEach(function(c){used[c]=1;});
+  for(i=0;i<52;i++)if(!used[i])deck[n++]=i;
+  var me=new Array(7),them=new Array(7),need=5-board.length,win=0,tie=0,share=0;
+  for(i=0;i<board.length;i++){me[2+i]=board[i];them[2+i]=board[i];}
+  me[0]=hole[0];me[1]=hole[1];
+  for(it=0;it<iters;it++){
+    var top=0;
+    // Deal from the top of a reshuffled stub: a partial Fisher-Yates, only as far as this run needs
+    function draw(){j=top+Math.floor(Math.random()*(n-top));t=deck[top];deck[top]=deck[j];deck[j]=t;return deck[top++];}
+    var hands=[];
+    for(var o=0;o<opp;o++){
+      var a=draw(),b=draw(),lim=ranges&&ranges[o]<1?ranges[o]:1,tries=0;
+      // Opponents who'd have folded this hand get another one, up to a few tries
+      while(lim<1&&HE_PF_PCT[heClass(a,b)]>lim&&tries<6){top-=2;a=draw();b=draw();tries++;}
+      hands.push(a,b);
+    }
+    for(i=0;i<need;i++){var c=draw();me[2+board.length+i]=c;them[2+board.length+i]=c;}
+    var mine=heScore(me,7),bestO=-1,ties=0;
+    for(o=0;o<opp;o++){them[0]=hands[2*o];them[1]=hands[2*o+1];var s=heScore(them,7);if(s>bestO){bestO=s;ties=0;}if(s===bestO&&s===mine)ties++;}
+    if(mine>bestO)win++;else if(mine===bestO){tie++;share+=1/(ties+1);}
+  }
+  return {win:win/iters,tie:tie/iters,eq:(win+share)/iters};
+}
+// ═══ ULTIMATE TEXAS HOLD'EM: RULES ═══
+// The casino version of Hold'em: your two cards and the five on the board against Peccy's two. Ante and Blind
+// go in together (equal), and Trips is an optional side bet. Bet 3x or 4x the Ante before the flop, 2x after
+// it, or 1x at the river; checking waits, but at the river it's bet or fold. Peccy needs a pair to open: if
+// not, the Ante is handed back. A win pays the Play and Ante 1 to 1 and the Blind from its table (a straight
+// or better; anything less hands it back). Trips pays on your own hand, whatever Peccy holds, even if you fold.
+// Paytables by heCat (9 royal .. 3 trips). Classic is the usual Shuffle Master game: with the tips below it
+// pays back 99.3% of everything bet (a million hands), Trips 98.1%.
+// Arcade: Peccy always opens, so the Ante pays on every win (about 102.5%), and Trips pays 10 to 1 on a full house (103.3%).
+var UTH_BLIND={9:500,8:50,7:10,6:3,5:1.5,4:1};
+var UTH_TRIPS={classic:{9:50,8:40,7:30,6:8,5:6,4:5,3:3},arcade:{9:50,8:40,7:30,6:10,5:6,4:5,3:3}};
+// Settle a hand. h: {p:[2], d:[2], board:[5], ante, trips, play, fold}. Returns each bet's result in chips
+// (a profit, 0 for a push, minus for a loss) and both hands' scores, for the felt to show.
+function uthSettle(h,arcade){
+  var ps=heScore(h.p.concat(h.board)),ds=heScore(h.d.concat(h.board)),pc=heCat(ps),
+      qual=arcade||ds>=1<<20,r={ps:ps,ds:ds,qual:qual},tt=UTH_TRIPS[arcade?'arcade':'classic'];
+  r.trips=h.trips?(tt[pc]?h.trips*tt[pc]:-h.trips):0;
+  if(h.fold){r.out='fold';r.ante=-h.ante;r.blind=-h.ante;r.play=0;}
+  else if(ps>ds){r.out='win';r.play=h.play;r.ante=qual?h.ante:0;r.blind=h.ante*(UTH_BLIND[pc]||0);}
+  else if(ps<ds){r.out='lose';r.play=-h.play;r.ante=qual?-h.ante:0;r.blind=-h.ante;}
+  else{r.out='tie';r.play=0;r.ante=0;r.blind=0;}
+  return r;
+}
+// Peccy's tips: a close-to-best strategy. Before the flop, bet 4x with any ace, any pair but deuces, a suited
+// king, K5+, Q6+ suited or Q8+, J8+ suited or JT
+function uthTipPre(p){
+  var a=p[0]>>2,b=p[1]>>2,hi=Math.max(a,b),lo=Math.min(a,b),s=(p[0]&3)===(p[1]&3);
+  if(hi===lo)return hi>=1;
+  if(hi===12)return true;
+  if(hi===11)return s||lo>=3;
+  if(hi===10)return s?lo>=4:lo>=6;
+  if(hi===9)return s?lo>=6:lo>=8;
+  return false;
+}
+// On the flop, bet 2x with two pair or better that uses your cards, a pair with one of your cards (not
+// pocket deuces), or four to a flush holding a ten or better of the suit
+function uthTipFlop(p,f){
+  var all=p.concat(f),cat=heScore(all)>>20,bc=heScore(f)>>20,a=p[0]>>2,b=p[1]>>2;
+  if(cat>=2&&cat>bc)return true;
+  if(a===b&&a>0)return true;
+  for(var i=0;i<3;i++)if((f[i]>>2)===a||(f[i]>>2)===b)return true;
+  for(var s=0;s<4;s++){
+    var n=all.filter(function(c){return (c&3)===s;}).length;
+    if(n>=4&&p.some(function(c){return (c&3)===s&&(c>>2)>=8;}))return true;
+  }
+  return false;
+}
+// At the river the tip is exact: it tries all 990 hands Peccy could hold and compares betting 1x with folding
+function uthTipRiver(p,board,arcade){
+  var used={},left=[],i,j,sum=0,n=0,ps=heScore(p.concat(board)),bp=UTH_BLIND[heCat(ps)]||0,d=[0,0].concat(board);
+  p.concat(board).forEach(function(c){used[c]=1;});
+  for(i=0;i<52;i++)if(!used[i])left.push(i);
+  for(i=0;i<left.length;i++)for(j=i+1;j<left.length;j++){
+    d[0]=left[i];d[1]=left[j];var ds=heScore(d,7),q=arcade||ds>=1<<20?1:0;
+    if(ps>ds)sum+=1+q+bp;else if(ps<ds)sum-=2+q;
+    n++;
+  }
+  return sum/n>-2;
+}
+// ═══ POKER TABLE: THE GAME ═══
+// No-limit Hold'em at a table of you and up to four bots, Peccy dealing. A table T is
+// {seats:[{name, stack, bot (an id from PT_BOTS, or null for you)}], btn, stakes, hand}; seat 0 is always you,
+// and the seats run clockwise, the way the action goes. The rules are the real ones: blinds (heads-up the
+// button posts the small blind and acts first before the flop), a raise at least as big as the last one, an
+// all-in for less than a full raise doesn't let players who already acted raise again, side pots for
+// short all-ins, and an uncalled bet goes back. Classic takes a 5% rake from pots that see a flop, up to
+// 3 big blinds (no flop, no rake); Arcade takes none.
+var PT_STAKES=[
+  {sb:1,bb:2,min:40,max:200},
+  {sb:5,bb:10,min:200,max:1000},
+  {sb:25,bb:50,min:1000,max:5000},
+  {sb:100,bb:200,min:4000,max:20000},
+  {sb:500,bb:1000,min:20000,max:100000}
+];
+var PT_RAKE=0.05,PT_RAKE_CAP=3;
+// Who's in the hand and can still bet
+function ptLive(h,i){var p=h.ps[i];return p.in&&!p.folded;}
+function ptCanBet(h,i){var p=h.ps[i];return p.in&&!p.folded&&!p.allin;}
+function ptNext(h,i,test){var n=h.ps.length;for(var k=1;k<=n;k++){var j=(i+k)%n;if(test(h,j))return j;}return -1;}
+function ptPot(h){return h.ps.reduce(function(s,p){return s+p.total;},0);}
+// Move chips from a seat's stack into its bet
+function ptPut(T,i,amt){var p=T.hand.ps[i],s=T.seats[i];amt=Math.min(amt,s.stack);s.stack-=amt;p.bet+=amt;p.total+=amt;if(!s.stack)p.allin=true;return amt;}
+function ptLog(h,t){h.log.push(t);}
+// The verb for seat i: you fold, Rita folds
+function ptV(T,i,you,them){return T.seats[i].bot?them:you;}
+// Deal a new hand (the button has already moved). Returns null if fewer than two players have chips.
+function ptDeal(T){
+  var st=PT_STAKES[T.stakes],n=T.seats.length,dealt=T.seats.map(function(s){return s.stack>0;});
+  if(dealt.filter(Boolean).length<2)return null;
+  var h=T.hand={no:(T.handNo=(T.handNo||0)+1),deck:heDeck(),di:0,board:[],street:0,sb:st.sb,bb:st.bb,btn:T.btn,
+    ps:T.seats.map(function(s,i){return {in:dealt[i],hole:[],bet:0,total:0,folded:false,allin:false,acted:false,canRaise:true,last:'',range:1};}),
+    cur:-1,curBet:0,minRaise:st.bb,aggr:-1,pfAggr:-1,raises:0,log:[],over:false,res:null,shown:[]};
+  var live=dealt.filter(Boolean).length,sbS,bbS;
+  if(live===2){sbS=dealt[T.btn]?T.btn:ptNext(h,T.btn,ptLive);bbS=ptNext(h,sbS,ptLive);}
+  else{sbS=ptNext(h,T.btn,ptLive);bbS=ptNext(h,sbS,ptLive);}
+  h.sbSeat=sbS;h.bbSeat=bbS;
+  ptPut(T,sbS,st.sb);h.ps[sbS].last='Small blind';
+  ptPut(T,bbS,st.bb);h.ps[bbS].last='Big blind';
+  h.curBet=st.bb;
+  // Two cards each, one at a time round the table starting left of the button
+  for(var r=0;r<2;r++){var j=T.btn;for(var k=0;k<n;k++){j=(j+1)%n;if(dealt[j])h.ps[j].hole.push(h.deck[h.di++]);}}
+  ptLog(h,'Hand #'+h.no+': '+T.seats[sbS].name+ptV(T,sbS,' post ',' posts ')+st.sb+', '+T.seats[bbS].name+ptV(T,bbS,' post ',' posts ')+st.bb);
+  h.cur=ptNext(h,bbS,ptCanBet);
+  // Everyone all in on the blinds alone: nobody left to act
+  if(ptStreetDone(T))h.cur=-1;
+  return h;
+}
+// What seat i may do now
+function ptLegal(T,i){
+  var h=T.hand,p=h.ps[i],s=T.seats[i],toCall=Math.max(0,h.curBet-p.bet),call=Math.min(toCall,s.stack),max=p.bet+s.stack;
+  var minTo=h.curBet?h.curBet+h.minRaise:h.bb;
+  var canRaise=p.canRaise&&s.stack>toCall&&ptOthersCanAct(h,i);
+  return {toCall:toCall,call:call,canCheck:toCall===0,canRaise:canRaise,minTo:Math.min(minTo,max),maxTo:max,allinOnly:max<=minTo,bet:h.curBet===0};
+}
+// Is anyone else still able to call a raise? (No point raising into players who are all in.)
+function ptOthersCanAct(h,i){for(var j=0;j<h.ps.length;j++)if(j!==i&&ptCanBet(h,j))return true;return false;}
+// act: 'fold', 'check', 'call', or 'raise' to a total of `to` this street (a bet when nothing's been bet)
+function ptApply(T,i,act,to){
+  var h=T.hand,p=h.ps[i],s=T.seats[i],L=ptLegal(T,i),nm=s.name;
+  if(act==='check'&&!L.canCheck)act='call';
+  if(act==='call'&&L.canCheck)act='check';
+  if(act==='raise'&&!L.canRaise)act=L.canCheck?'check':'call';
+  if(act==='fold'){p.folded=true;p.last='Fold';ptLog(h,nm+ptV(T,i,' fold',' folds'));}
+  else if(act==='check'){p.last='Check';ptLog(h,nm+ptV(T,i,' check',' checks'));}
+  else if(act==='call'){
+    ptPut(T,i,L.call);p.last=p.allin?'All in '+fmtChips(p.bet):'Call '+fmtChips(p.bet);ptLog(h,nm+(p.allin?ptV(T,i,' call all in for ',' calls all in for '):ptV(T,i,' call ',' calls '))+fmtChips(L.call));
+    if(h.street===0)p.range=Math.min(p.range,h.raises?0.4:0.55);
+  }else{
+    to=Math.max(L.minTo,Math.min(L.maxTo,Math.round(to)));
+    var inc=to-h.curBet,bet=h.curBet===0;
+    ptPut(T,i,to-p.bet);
+    var full=inc>=h.minRaise;
+    if(full){h.minRaise=inc;h.raises++;}
+    h.curBet=Math.max(h.curBet,p.bet);h.aggr=i;
+    if(h.street===0){h.pfAggr=i;p.range=Math.min(p.range,h.raises>=2?0.08:0.22);}
+    // Everyone else who's still in has to answer it; after a short all-in, those who already acted may only call
+    h.ps.forEach(function(q,j){if(j===i||!ptCanBet(h,j))return;if(!full&&q.acted)q.canRaise=false;else if(full)q.canRaise=true;q.acted=false;});
+    p.last=(p.allin?'All in ':bet?'Bet ':'Raise to ')+fmtChips(p.bet);
+    ptLog(h,nm+(p.allin?ptV(T,i,' go all in for ',' goes all in for '):bet?ptV(T,i,' bet ',' bets '):ptV(T,i,' raise to ',' raises to '))+fmtChips(p.bet));
+  }
+  p.acted=true;
+  ptAdvance(T);
+}
+function ptStreetDone(T){
+  var h=T.hand,live=0,canBet=0,open=false;
+  h.ps.forEach(function(p,i){if(!ptLive(h,i))return;live++;if(!p.allin){canBet++;if(!p.acted||p.bet<h.curBet)open=true;}});
+  if(live<=1)return true;
+  // One player left with chips who has matched the bet: nothing left to decide
+  if(canBet<=1&&!h.ps.some(function(p,i){return ptCanBet(h,i)&&p.bet<h.curBet;}))return true;
+  return !open;
+}
+// After each action: the next player, or the next street, or the end of the hand
+function ptAdvance(T){
+  var h=T.hand,live=h.ps.filter(function(p,i){return ptLive(h,i);}).length;
+  if(live<=1){ptEnd(T);return;}
+  if(!ptStreetDone(T)){h.cur=ptNext(h,h.cur,function(hh,j){var q=hh.ps[j];return ptCanBet(hh,j)&&(!q.acted||q.bet<hh.curBet);});return;}
+  // Bets go into the pot, and the next cards come out
+  h.ps.forEach(function(p){p.bet=0;p.acted=false;p.canRaise=true;if(!p.folded&&!p.allin&&p.in)p.last='';});
+  h.curBet=0;h.minRaise=h.bb;h.raises=0;h.aggr=-1;
+  if(h.street===3){ptEnd(T);return;}
+  h.street++;
+  var add=h.street===1?3:1;h.di++;  // burn a card first
+  for(var k=0;k<add;k++)h.board.push(h.deck[h.di++]);
+  ptLog(h,['','Flop','Turn','River'][h.street]+': '+h.board.map(ptCardText).join(' '));
+  var canBet=h.ps.filter(function(p,i){return ptCanBet(h,i);}).length;
+  // Nobody (or only one player) can still bet: run out the rest of the board
+  if(canBet<=1){h.cur=-1;return;}
+  h.cur=ptNext(h,h.btn,ptCanBet);
+}
+function ptCardText(c){return HE_RANKS[c>>2]+['♠','♥','♦','♣'][c&3];}
+// Run out the rest of the board when everyone left is all in
+function ptRunOut(T){var h=T.hand;while(!h.over&&h.cur<0)ptAdvance(T);}
+// The showdown (or a hand won when everyone else folds): side pots, the rake, and who gets what.
+// The pot is layered by what each player put in, smallest first. A layer only one player paid into is their
+// uncalled bet coming back; every other layer goes to the best hand among those still in who reached it.
+function ptEnd(T){
+  var h=T.hand,n=h.ps.length,arc=typeof gameMode!=='undefined'&&gameMode==='arcade',rem=h.ps.map(function(p){return p.total;}),i;
+  var live=[];for(i=0;i<n;i++)if(ptLive(h,i))live.push(i);
+  var showdown=live.length>1,scores={},layers=[],back={};
+  if(showdown){
+    // Any board cards still to come (with their burns), then everyone left shows
+    while(h.board.length<5){h.di++;var add=h.board.length===0?3:1;for(var k=0;k<add;k++)h.board.push(h.deck[h.di++]);}
+    live.forEach(function(j){scores[j]=heScore(h.ps[j].hole.concat(h.board));});
+    h.shown=live.slice();
+  }
+  while(rem.some(function(v){return v>0;})){
+    var who=[];for(i=0;i<n;i++)if(rem[i]>0)who.push(i);
+    var m=Math.min.apply(null,who.map(function(j){return rem[j];})),amt=m*who.length;
+    who.forEach(function(j){rem[j]-=m;});
+    var elig=who.filter(function(j){return live.indexOf(j)>=0;});
+    if(who.length===1)back[who[0]]=(back[who[0]]||0)+amt;
+    else if(!elig.length){who.forEach(function(j){back[j]=(back[j]||0)+m;});}  // can't happen in a legal hand; hand it back
+    else{var last=layers[layers.length-1];if(last&&last.elig.join()===elig.join())last.amount+=amt;else layers.push({amount:amt,elig:elig});}
+  }
+  // Rake: only from pots that saw a flop, 5% of what was contested, up to 3 big blinds, from the main pot first
+  var total=layers.reduce(function(s,p){return s+p.amount;},0),rake=!arc&&h.street>=1?Math.min(Math.floor(total*PT_RAKE),PT_RAKE_CAP*h.bb):0,left=rake;
+  layers.forEach(function(p){var t=Math.min(left,p.amount);p.amount-=t;left-=t;});
+  var won={};
+  layers.forEach(function(p){
+    var best=-1,ws=[];
+    if(!showdown)ws=p.elig.slice();
+    else p.elig.forEach(function(j){if(scores[j]>best){best=scores[j];ws=[j];}else if(scores[j]===best)ws.push(j);});
+    p.winners=ws;p.score=best;
+    var share=Math.floor(p.amount/ws.length),odd=p.amount-share*ws.length;
+    ws.forEach(function(j){won[j]=(won[j]||0)+share;});
+    // An odd chip goes to the first winner left of the button
+    var j=h.btn;for(var k=0;k<n&&odd;k++){j=(j+1)%n;if(ws.indexOf(j)>=0){won[j]+=odd;odd=0;}}
+  });
+  Object.keys(back).forEach(function(j){T.seats[j].stack+=back[j];});
+  Object.keys(won).forEach(function(j){T.seats[j].stack+=won[j];});
+  h.res={pots:layers,won:won,back:back,rake:rake,scores:scores,showdown:showdown};
+  h.over=true;h.cur=-1;
+  layers.forEach(function(p,k){
+    var names=p.winners.map(function(j){return T.seats[j].name;}).join(' and ');
+    ptLog(h,names+(p.winners.length>1?' split ':ptV(T,p.winners[0],' win ',' wins '))+fmtChips(p.amount)+(layers.length>1?(k?' (side pot)':' (main pot)'):'')+(showdown?' with '+heName(p.score).toLowerCase():''));
+  });
+  if(rake)ptLog(h,'Rake '+fmtChips(rake));
+}
+// ═══ POKER TABLE: THE BOTS ═══
+// The regulars. vpip: the share of hands they'll play; pfr: the share they'll raise with; agg: how often they
+// bet and raise with a good hand instead of calling; bluff: how often they bet with nothing; sticky: how much
+// worse a price they'll call at (the calling stations). `style` is the read you get on them at the table.
+var PT_BOTS=[
+  {id:'lou',name:'Lucky Lou',style:'Plays a lot of hands',vpip:0.42,pfr:0.12,agg:0.35,bluff:0.08,sticky:0.10,hue:28},
+  {id:'rita',name:'Rita Rivers',style:'Solid and aggressive',vpip:0.24,pfr:0.18,agg:0.65,bluff:0.12,sticky:0,hue:340},
+  {id:'sam',name:'Big Stack Sam',style:'Loose and pushy',vpip:0.34,pfr:0.26,agg:0.75,bluff:0.2,sticky:0.04,hue:205},
+  {id:'gloria',name:'Grandma Gloria',style:'Only plays the good ones',vpip:0.14,pfr:0.09,agg:0.45,bluff:0.03,sticky:0,hue:150},
+  {id:'tex',name:'Tex',style:'Wild: raises anything',vpip:0.55,pfr:0.38,agg:0.85,bluff:0.3,sticky:0.06,hue:8},
+  {id:'ned',name:'Nervous Ned',style:'Folds unless he has it',vpip:0.12,pfr:0.06,agg:0.25,bluff:0.02,sticky:-0.04,hue:52},
+  {id:'carl',name:'Calling Carl',style:'Calls everything',vpip:0.5,pfr:0.05,agg:0.15,bluff:0.03,sticky:0.2,hue:265},
+  {id:'prof',name:'The Professor',style:'Patient and sharp',vpip:0.22,pfr:0.17,agg:0.6,bluff:0.14,sticky:0.02,hue:185},
+  {id:'mo',name:'Maverick Mo',style:'Loves a big pot',vpip:0.3,pfr:0.22,agg:0.7,bluff:0.18,sticky:0.05,hue:100},
+  {id:'bea',name:'Bluffing Bea',style:'Bluffs more than most',vpip:0.28,pfr:0.2,agg:0.6,bluff:0.3,sticky:0.03,hue:310}
+];
+var PT_BOT={};PT_BOTS.forEach(function(b){PT_BOT[b.id]=b;});
+var PT_BOT_ITERS=300;
+// How many dealt players act after seat i before the flop is dealt: 0 on the button
+function ptBehind(h,i){var n=h.ps.length,k=0,j=i;while(j!==h.btn){j=(j+1)%n;if(h.ps[j].in)k++;if(k>n)break;}return k;}
+// A bot's move: {act, to}
+function ptBotDecide(T,i){
+  var h=T.hand,p=h.ps[i],s=T.seats[i],B=PT_BOT[s.bot]||PT_BOTS[0],L=ptLegal(T,i),pot=ptPot(h),bb=h.bb,R=Math.random;
+  var opps=[];h.ps.forEach(function(q,j){if(j!==i&&ptLive(h,j))opps.push(j);});
+  var n=opps.length,stack=p.bet+s.stack;
+  // A chip amount rounded to the small blind, and kept between the smallest raise and all in.
+  // A raise that would leave less than a third of the stack behind goes all in instead.
+  function to(x){var sb=h.sb||1;x=Math.round(x/sb)*sb;x=Math.max(L.minTo,Math.min(L.maxTo,x));if(x>stack*0.67)x=L.maxTo;return x;}
+  var CHECK={act:L.canCheck?'check':'fold'},CALL={act:'call'},FOLD={act:L.canCheck?'check':'fold'};
+  function RAISE(x){return L.canRaise?{act:'raise',to:to(x)}:(L.canCheck?CHECK:CALL);}
+  if(h.street===0){
+    var pct=HE_PF_PCT[heClass(p.hole[0],p.hole[1])]*(0.85+0.3*R()),live=h.ps.filter(function(q){return q.in;}).length;
+    var behind=ptBehind(h,i),pos=i===h.bbSeat?1:i===h.sbSeat?0.9:behind===0?1.4:behind===1?1.2:behind===2?1:0.8;
+    if(live===2)pos*=1.5;  // heads-up, almost any two cards will do
+    var open=B.pfr*pos,play=B.vpip*pos,price=L.toCall/(pot+L.toCall),short=stack/bb<15;
+    if(h.raises===0){
+      var limpers=h.ps.filter(function(q,j){return j!==h.bbSeat&&j!==h.sbSeat&&q.bet===h.curBet&&q.total>0;}).length;
+      if(pct<=open)return short?RAISE(L.maxTo):RAISE((2.5+0.5*R()+limpers)*bb);
+      if(L.canCheck)return CHECK;
+      if(pct<=play&&(B.agg<0.5||R()<0.35||i===h.sbSeat))return CALL;
+      return FOLD;
+    }
+    if(h.raises===1){
+      var callers=h.ps.filter(function(q,j){return j!==h.aggr&&q.bet===h.curBet;}).length;
+      if(pct<=B.pfr*0.3||(pct<=0.35&&R()<B.bluff*0.25))return RAISE(short?L.maxTo:h.curBet*3+callers*h.curBet);
+      if(pct<=play*0.55*(price<0.25?1.3:1)+B.sticky*0.3)return CALL;
+      return FOLD;
+    }
+    if(pct<=0.025+B.agg*0.02)return RAISE(stack/bb<40?L.maxTo:h.curBet*2.3);
+    if(pct<=0.07+B.sticky*0.3||(price<0.2&&pct<=0.15))return CALL;
+    return FOLD;
+  }
+  // After the flop: the chance to win against what each opponent's play says they hold, a little lower for
+  // every raise this street
+  var eq=heEquity(p.hole,h.board,n,PT_BOT_ITERS,opps.map(function(j){return h.ps[j].range;})).eq;
+  if(L.toCall>0)eq*=Math.pow(0.9,Math.max(0,h.raises-1));
+  var rel=eq*(n+1),odds=L.toCall/(pot+L.toCall);
+  if(L.canCheck){
+    if((rel>1.55||eq>0.62)&&R()<0.55+B.agg*0.45)return RAISE(pot*(0.55+0.3*R()));
+    if(rel>1.15&&R()<B.agg*0.5)return RAISE(pot*(0.4+0.2*R()));
+    if(h.street===1&&h.pfAggr===i&&n<=2&&R()<0.35+B.bluff)return RAISE(pot*(0.35+0.2*R()));
+    if(R()<B.bluff*(n===1?0.8:0.3))return RAISE(pot*(0.5+0.3*R()));
+    return CHECK;
+  }
+  if((rel>2||eq>0.75)&&R()<0.35+B.agg*0.5)return RAISE(h.curBet+(pot+L.toCall)*(0.8+0.4*R()));
+  var need=odds-B.sticky;
+  if(eq>=need+0.03||(eq>=need-0.04&&R()<0.4))return CALL;
+  if(n===1&&R()<B.bluff*0.12)return RAISE(h.curBet+(pot+L.toCall)*0.8);
+  return FOLD;
+}
+// ═══ HOLD'EM TAB ═══
+// Two games under one tab: Ultimate Texas Hold'em against Peccy, or a poker table with bots.
+var he={view:'uth'};
+function heShow(v){
+  if(v===he.view)return;
+  if(v==='uth'&&ptBusy()){ptSay('Finish this hand first, then we can head over to my table! 🃏');return;}
+  if(v==='pt'&&uthBusy()){uthSay('Finish this hand first! Then the poker table is all yours. 🃏');return;}
+  he.view=v;saveGame();heApplyView();
+}
+function heApplyView(){
+  var pt=he.view==='pt';
+  document.getElementById('he-uth').classList.toggle('active',!pt);
+  document.getElementById('he-pt').classList.toggle('active',pt);
+  document.getElementById('hes-uth').classList.toggle('on',!pt);
+  document.getElementById('hes-pt').classList.toggle('on',pt);
+  MODE_SPEECH.holdem=pt?'pt-say':'uth-say';
+  if(pt)ptOpen();else{uthRender();heLayout();}
+}
+function heOpen(){
+  heApplyView();heLayout();setTimeout(heLayout,480);  // again once the tab has slid in
+  // Back to a hand left on the table (after a reload, say): Peccy says so instead of the opening line
+  if(he.view==='uth'&&uthBusy()&&!heOpen.uth){heOpen.uth=1;uthSay("Welcome back! Your hand's still on the felt. "+(uth.tips?uthTipLine():'🃏'));}
+  if(he.view==='pt'&&pt.on&&!heOpen.pt){heOpen.pt=1;ptSay(ptMine()?"Welcome back! It's your move. 🃏":'Welcome back to the table! 🃏');}
+}
+
+// ── Ultimate Texas Hold'em ──
+// st: 'bet' (chips going on), 'pre', 'flop', 'river' (deciding), 'done' (settled, chips still on the felt).
+// c: the nine cards, dealt at the start: yours, Peccy's, then the board.
+var uth={st:'bet',ante:0,trips:0,play:0,fold:false,c:[],res:null,target:'ante',tips:false,last:null};
+var uthScale=1;
+function uthSay(t){setPeccySpeech('uth-say',t);}
+function uthBusy(){return uth.st==='pre'||uth.st==='flop'||uth.st==='river';}
+// What a hand needs up front: the Ante and Blind, Trips, and enough left to make at least a 1x bet at the river
+function uthNeed(ante,trips){return ante*3+trips;}
+function uthTarget(t){if(uthBusy())return;if(uth.st==='done')uthClear(true);uth.target=t;uthRender();}
+function uthBet(a){
+  if(uthBusy())return;
+  if(uth.st==='done')uthClear(true);
+  var ante=uth.ante+(uth.target==='ante'?a:0),trips=uth.trips+(uth.target==='trips'?a:0);
+  if(uthNeed(ante,trips)>balance){uthSay(uth.target==='ante'?"Not enough chips for that: the Ante needs a matching Blind, plus one more for the river bet. 😬":"Not enough chips left for that much Trips! 😬");return;}
+  uth.ante=ante;uth.trips=trips;uthRender();
+}
+function uthClear(keep){
+  if(uthBusy())return;
+  uth.st='bet';uth.c=[];uth.res=null;uth.play=0;uth.fold=false;
+  if(!keep){uth.ante=0;uth.trips=0;}
+  uthRender();saveGame();
+}
+function uthDeal(){
+  if(uthBusy())return;
+  // After a hand, Deal again puts the same bets back out
+  if(uth.st==='done'){uthClear(true);if(uth.last){uth.ante=uth.last.ante;uth.trips=uth.last.trips;}}
+  if(!uth.ante){uthSay('Put some chips on the Ante first! The Blind matches it. 🃏');uthRender();return;}
+  if(uthNeed(uth.ante,uth.trips)>balance){uthSay("You'll need "+fmtChips(uthNeed(uth.ante,uth.trips))+' chips for that: the Ante, the Blind, any Trips, and one more Ante for the river. Try a smaller bet! 😬');uthRender();return;}
+  balance-=uth.ante*2+uth.trips;updateBalance();barRound();
+  uth.last={ante:uth.ante,trips:uth.trips};
+  uth.c=heDeck().slice(0,9);uth.st='pre';uth.play=0;uth.fold=false;uth.res=null;
+  saveGame();uthRender();
+  uthSay(uth.tips?'Your cards! '+uthTipLine():'Check, or bet 3 or 4 times your Ante. 🃏');
+}
+function uthHole(){return uth.c.slice(0,2);}
+function uthBoard(){return uth.c.slice(4,9);}
+function uthShown(){return uth.st==='pre'?0:uth.st==='flop'?3:5;}
+// Peccy's tip for the decision on now
+function uthTipNow(){
+  var p=uthHole(),b=uthBoard();
+  if(uth.st==='pre')return uthTipPre(p)?4:0;
+  if(uth.st==='flop')return uthTipFlop(p,b.slice(0,3))?2:0;
+  if(uth.st==='river')return uthTipRiver(p,b,gameMode==='arcade')?1:-1;
+  return null;
+}
+function uthTipLine(){var t=uthTipNow();return t>0?"Peccy's tip: bet "+t+'×.':t===0?"Peccy's tip: check.":"Peccy's tip: fold this one.";}
+function uthTips(){uth.tips=!uth.tips;saveGame();uthRender();if(uthBusy()&&uth.tips)uthSay(uthTipLine());}
+function uthCheck(){
+  if(uth.st==='pre'){uth.st='flop';saveGame();uthRender();uthSay(uth.tips?'The flop! '+uthTipLine():'The flop! Check again, or bet 2×.');}
+  else if(uth.st==='flop'){uth.st='river';saveGame();uthRender();uthSay(uth.tips?'Turn and river! '+uthTipLine():'Turn and river! Bet 1×, or fold.');}
+}
+function uthPlay(x){
+  if(!uthBusy())return;
+  var amt=uth.ante*x;
+  if(amt>balance){uthSay("You don't have the chips for that one! 😬");return;}
+  balance-=amt;updateBalance();uth.play=amt;uthSettleNow();
+}
+function uthFold(){if(uth.st!=='river')return;uth.fold=true;uthSettleNow();}
+function uthSettleNow(){
+  var arc=gameMode==='arcade',h={p:uthHole(),d:uth.c.slice(2,4),board:uthBoard(),ante:uth.ante,trips:uth.trips,play:uth.play,fold:uth.fold},r=uthSettle(h,arc);
+  // Each bet that didn't lose comes back with its winnings (half chips from a 3 to 2 Blind are rounded down)
+  var back=0;[['ante',uth.ante],['blind',uth.ante],['play',uth.play],['trips',uth.trips]].forEach(function(b){if(b[1]&&r[b[0]]>=0)back+=b[1]+r[b[0]];});
+  back=Math.floor(back);r.back=back;r.net=back-(uth.ante*2+uth.play+uth.trips);
+  uth.res=r;uth.st='done';balance+=back;updateBalance();saveGame();uthRender();
+  var pn=heName(r.ps),dn=heName(r.ds),bigBlind=r.out==='win'&&UTH_BLIND[heCat(r.ps)]>=3,bigTrips=uth.trips&&r.trips>=uth.trips*8;
+  if(r.net>0)peccyHop('#he-uth .peccy-dealer');
+  if(bigBlind||bigTrips)showConfetti();
+  var line=r.out==='fold'?'Folded. My '+dn.toLowerCase()+' would have '+(r.ds>r.ps?'won it anyway. ':'lost to you! ')
+    :r.out==='win'?(r.qual?'You win with '+pn.toLowerCase()+'! ':'You win, but I didn\'t open (no pair), so the Ante comes back. ')
+    :r.out==='lose'?'My '+dn.toLowerCase()+' takes it. ':'A tie! Everything comes back. ';
+  if(uth.trips)line+=r.trips>0?'Trips pays '+fmtChips(r.trips)+'! ':'';
+  uthSay(line+(r.net>0?'🎉':r.net<0?'😅':'🤝'));
+}
+// Cards in a row: new ones are dealt in from Peccy, ones turned over flip. `list` holds card numbers,
+// 'down' for a face-down card, or 'slot' for an empty space waiting for one.
+function heDrawCards(el,list,q,order,best){
+  var sig=list.map(String),old=el._sig||[],keep=0;
+  while(keep<old.length&&keep<sig.length&&old[keep]===sig[keep])keep++;
+  el.innerHTML=list.map(function(c){
+    if(c==='slot')return '<div class="he-slot"></div>';
+    if(c==='down')return renderCard({},true);
+    var h=renderCard(heCard(c));return best&&best.indexOf(c)>=0?h.replace('class="card','class="card best'):best?h.replace('class="card','class="card dim'):h;
+  }).join('');
+  el._sig=sig;
+  for(var i=keep;i<list.length;i++){
+    if(list[i]==='slot')continue;
+    if(old[i]==='down'&&list[i]!=='down'){el.children[i].classList.add('flip');continue;}
+    q.push({el:el.children[i],idx:i,order:order});
+  }
+}
+// Deal the queued cards in from Peccy's hands, one after another
+function heDealQueue(q,from,scale){
+  if(!q.length||!from)return;
+  var r0=from.getBoundingClientRect(),sx=r0.left+r0.width/2,sy=r0.top+r0.height*0.7;
+  q.sort(function(a,b){return a.order-b.order||a.idx-b.idx;});
+  q.forEach(function(it,k){
+    var r=it.el.getBoundingClientRect();
+    it.el.style.setProperty('--dx',Math.round((sx-r.left-r.width/2)/scale)+'px');
+    it.el.style.setProperty('--dy',Math.round((sy-r.top-r.height/2)/scale)+'px');
+    it.el.style.animationDelay=(k*0.14)+'s';it.el.classList.add('deal');
+  });
+}
+// A bet spot: its chips as a pile, the amount under it, and how it came out once the hand is settled
+function uthSpot(id,amt,res,label){
+  var el=document.getElementById(id),st=res==null?'':res>0?'won':res<0?'lost':'push';
+  el.className=el.className.replace(/\s*(won|lost|push|sel)\b/g,'')+(st?' '+st:'');
+  var h='<span class="uth-spot-label">'+label+'</span>';
+  if(amt){
+    var chips=chipsFor(amt);if(chips.length>30)chips=chipsFor(amt,true);
+    h+='<div class="bj-stack uth-stack" style="--s:40px">'+chipPileHTML(chips,{s:40,gap:3.5,per:16})+'</div><div class="bj-stack-amt uth-amt">'+fmtChips(amt)+'</div>';
+    if(st)h+='<div class="uth-out">'+(res>0?'+'+fmtChips(Math.floor(res)):res<0?'Lost':'Push')+'</div>';
+  }
+  el.innerHTML=h;
+}
+function uthRender(){
+  var area=document.getElementById('he-uth');if(!area)return;
+  var busy=uthBusy(),done=uth.st==='done',dealt=uth.c.length===9,q=[],arc=gameMode==='arcade',r=uth.res;
+  var best=done&&r&&!uth.fold?heBest5(uthHole().concat(uthBoard())):null,dBest=done&&r?heBest5(uth.c.slice(2,9)):null;
+  heDrawCards(document.getElementById('uth-dealer'),dealt?(done?uth.c.slice(2,4):['down','down']):[],q,1,null);
+  var shown=dealt?uthShown():0;
+  heDrawCards(document.getElementById('uth-board'),dealt?uthBoard().map(function(c,i){return i<shown?c:'slot';}):['slot','slot','slot','slot','slot'],q,2,best);
+  heDrawCards(document.getElementById('uth-player'),dealt?uthHole():[],q,0,best);
+  document.getElementById('uth-player').classList.toggle('folded',!!uth.fold&&done);
+  // Your hand so far, and Peccy's once it's shown
+  var mine=dealt?heScore(uthHole().concat(uthBoard().slice(0,shown))):null;
+  document.getElementById('uth-p-name').textContent=dealt?heName(mine):'';
+  document.getElementById('uth-d-name').textContent=done&&r?heName(r.ds)+(r.qual?'':', no pair'):'';
+  heDealQueue(q,area.querySelector('.peccy-dealer'),uthScale);
+  // The spots: Trips, Ante = Blind, Play
+  uthSpot('uth-trips',uth.trips,done&&r&&uth.trips?r.trips:null,'Trips');
+  uthSpot('uth-ante',uth.ante,done&&r?r.ante:null,'Ante');
+  uthSpot('uth-blind',uth.ante,done&&r?r.blind:null,'Blind');
+  uthSpot('uth-play',uth.play,done&&r&&uth.play?r.play:null,'Play');
+  if(!busy&&!done){document.getElementById('uth-'+uth.target).classList.add('sel');}
+  // Your moves on the felt
+  var tip=busy&&uth.tips?uthTipNow():null,btns='';
+  function b(label,fn,on,t){return '<button class="btn btn-success'+(tip===t?' tip':'')+'" onclick="'+fn+'"'+(on?'':' disabled')+'>'+label+'</button>';}
+  if(uth.st==='pre')btns=b('Check','uthCheck()',1,0)+b('Bet 3×','uthPlay(3)',uth.ante*3<=balance,3)+b('Bet 4×','uthPlay(4)',uth.ante*4<=balance,4);
+  else if(uth.st==='flop')btns=b('Check','uthCheck()',1,0)+b('Bet 2×','uthPlay(2)',uth.ante*2<=balance,2);
+  else if(uth.st==='river')btns=b('Fold','uthFold()',1,-1)+b('Bet 1×','uthPlay(1)',uth.ante<=balance,1);
+  document.getElementById('uth-play-btns').innerHTML=btns;
+  document.querySelector('#he-uth .bj-mid').classList.toggle('playing',busy);
+  var msg=document.getElementById('uth-message');
+  msg.innerHTML=done&&r?(r.net>0?'You win '+fmtChips(r.net):r.net<0?(uth.fold?'Folded':'Peccy wins')+' <span>'+fmtChips(-r.net)+'</span>':'Push'):'';
+  msg.className='bj-message'+(done&&r&&r.net<0?' lost':'');
+  // The console: chips only between hands
+  document.getElementById('uth-bet-controls').classList.toggle('off',busy);
+  document.getElementById('uth-total').textContent=fmtChips(uth.ante*2+uth.trips+uth.play);
+  var dealBtn=document.getElementById('uth-deal-btn');
+  dealBtn.style.display=busy?'none':'';
+  dealBtn.innerHTML=done?'<i class="fa-solid fa-rotate-right"></i> Deal again':'<i class="fa-solid fa-layer-group"></i> Deal';
+  document.getElementById('uth-tips').classList.toggle('on',uth.tips);
+  document.getElementById('uth-arc-sub').textContent=arc?'PECCY ALWAYS OPENS: THE ANTE PAYS ON EVERY WIN':'PECCY NEEDS A PAIR TO OPEN';
+  var tt=UTH_TRIPS[arc?'arcade':'classic'];
+  var trips='<b>Trips pays</b>'+[[9,'Royal flush'],[8,'Straight flush'],[7,'Four of a kind'],[6,'Full house'],[5,'Flush'],[4,'Straight'],[3,'Three of a kind']].map(function(e){return '<span><em>'+e[1]+'</em>'+tt[e[0]]+' to 1</span>';}).join('');
+  document.getElementById('uth-trips-table').innerHTML=trips;
+  document.getElementById('uth-rules-body').innerHTML='<div class="uth-pay">'+document.querySelector('.uth-pay-l').innerHTML+'</div><div class="uth-pay">'+trips+'</div>';
+}
+// ── The poker table: sitting down, the hand loop, and the screen ──
+// pt is the table (see POKER TABLE: THE GAME) plus your session: what you've bought in for, the last
+// results, and your settings. It's saved whole, a hand in progress included, so a reload carries on mid-hand.
+var pt={on:false,stakes:0,seats:[],btn:0,handNo:0,hand:null,bought:0,results:[],odds:true,fast:false,nBots:4,lobby:{stakes:0,bots:4,buy:0}};
+var ptTimer=0,ptScale=1,ptOddsKey='',ptOddsVal=null,ptWaiting=false,ptRaiseTo=0;
+// Where the bots sit, clockwise from you (bottom middle): left, top left, top right, right
+var PT_SLOTS={1:['tr'],2:['tl','tr'],3:['l','tl','tr'],4:['l','tl','tr','r']};
+function ptSay(t){setPeccySpeech('pt-say',t);}
+function ptBusy(){var h=pt.hand;return !!(pt.on&&h&&!h.over);}
+function ptMine(){var h=pt.hand;return !!(h&&!h.over&&h.cur===0);}
+function ptHere(){return document.getElementById('game-holdem').classList.contains('active')&&he.view==='pt';}
+function ptStake(){return PT_STAKES[pt.stakes];}
+// A regular who isn't at the table already, with 60-140 big blinds
+function ptNewBot(){
+  var at=pt.seats.map(function(s){return s.bot;}),free=PT_BOTS.filter(function(b){return at.indexOf(b.id)<0;}),b=free[Math.floor(Math.random()*free.length)],st=ptStake();
+  return {name:b.name,bot:b.id,stack:Math.round((0.6+0.8*Math.random())*st.max/st.bb/2)*st.bb};
+}
+// ── The lobby ──
+function ptLobbySet(k,v){
+  pt.lobby[k]=v;
+  if(k==='stakes'){var st=PT_STAKES[v];pt.lobby.buy=Math.max(st.min,Math.min(st.max,Math.floor(balance/st.bb)*st.bb));}
+  ptRender();
+}
+function ptSit(){
+  var L=pt.lobby,st=PT_STAKES[L.stakes],buy=Math.round(L.buy);
+  if(balance<st.min){ptSay('You need at least '+fmtChips(st.min)+' chips to sit at this table. 😬');return;}
+  buy=Math.max(st.min,Math.min(st.max,Math.min(balance,buy)));
+  balance-=buy;updateBalance();
+  pt.on=true;pt.stakes=L.stakes;pt.nBots=L.bots;pt.bought=buy;pt.results=[];pt.hand=null;pt.handNo=0;
+  pt.seats=[{name:'You',bot:null,stack:buy}];
+  for(var i=0;i<L.bots;i++)pt.seats.push(ptNewBot());
+  pt.btn=Math.floor(Math.random()*pt.seats.length);
+  saveGame();ptBuild();ptRender();
+  ptSay('Welcome to my table! Blinds are '+st.sb+' and '+st.bb+'. First hand coming up. 🃏');
+  ptQueue(1400);
+}
+function ptQueue(ms){clearTimeout(ptTimer);ptTimer=setTimeout(ptNextHand,ms);}
+// Between hands: busted bots leave (and the odd big winner cashes out), new regulars sit down, the button moves on
+function ptNextHand(){
+  if(!pt.on)return;
+  if(!ptHere()){ptWaiting=true;return;}
+  ptWaiting=false;
+  var st=ptStake(),notes=[];
+  for(var i=1;i<pt.seats.length;i++){
+    var s=pt.seats[i],gone=s.stack<st.bb?' is out of chips':s.stack>st.max*2.5&&Math.random()<0.15?' cashes out '+fmtChips(s.stack):'';
+    if(gone){var nb=ptNewBot();notes.push(s.name+gone+'. '+nb.name+' sits down.');pt.seats[i]=nb;}
+  }
+  if(pt.seats[0].stack<=0){ptRender();ptSay("You're out of chips at this table! Top up to keep playing, or leave. 😅");return;}
+  var n=pt.seats.length;
+  do{pt.btn=(pt.btn+1)%n;}while(pt.seats[pt.btn].stack<=0);
+  if(notes.length)ptBuild();
+  var h=ptDeal(pt);if(!h)return;
+  barRound();saveGame();ptRender();
+  ptSay(notes.length?notes.join(' '):slRand(['Shuffle up and deal! 🃏','New hand! Good luck. 🍀','Cards coming your way! 🃏','Here we go again! 🎲']));
+  ptStep();
+}
+// Run the hand: bots think for a moment, you get as long as you like, and an all-in board comes out a street at a time
+function ptStep(){
+  clearTimeout(ptTimer);
+  var h=pt.hand;if(!pt.on||!h)return;
+  if(h.over){ptFinish();return;}
+  var out=!ptLive(h,0),quick=pt.fast||out;
+  if(h.cur<0){ptTimer=setTimeout(function(){ptAdvance(pt);saveGame();ptRender();ptStep();},quick?500:1000);return;}
+  if(h.cur===0){ptRender();return;}
+  var who=h.cur;
+  ptTimer=setTimeout(function(){
+    if(!pt.hand||pt.hand!==h||h.cur!==who)return;
+    var d=ptBotDecide(pt,who);ptApply(pt,who,d.act,d.to);
+    var p=h.ps[who];if(p.last&&!out)ptSay(pt.seats[who].name+': '+p.last.toLowerCase()+'.');
+    saveGame();ptRender();ptStep();
+  },quick?220+Math.random()*200:650+Math.random()*700);
+}
+function ptYou(act,to){
+  if(!ptMine())return;
+  if(act==='raise'&&to==null)to=ptRaiseTo;
+  ptApply(pt,0,act,to);saveGame();ptRender();ptStep();
+}
+function ptFinish(){
+  var h=pt.hand,res=h.res,me=(res.won[0]||0)+(res.back[0]||0)-h.ps[0].total;
+  var line=h.log.filter(function(t){return / wins? | split /.test(t);}).join('. ');
+  // Results already logged (a hand resumed after a reload) aren't added twice
+  if(!pt.results.length||pt.results[0].no!==h.no){pt.results.unshift({no:h.no,text:line,me:me});pt.results=pt.results.slice(0,30);}
+  saveGame();ptRender();
+  if(me>0){peccyHop('#he-pt .peccy-dealer');if(res.showdown&&heCat(res.pots[0].score)>=6)showConfetti();}
+  ptSay(line+'.'+(me>0?' 🎉':''));
+  ptQueue(pt.fast?1800:3400);
+}
+// Leaving cashes your stack back into your chips. Mid-hand you'll have to fold first.
+function ptLeave(){
+  var h=pt.hand;
+  if(h&&!h.over&&ptLive(h,0)){ptSay('Fold or finish this hand first, then you can cash out. 🃏');return;}
+  clearTimeout(ptTimer);
+  var s=pt.seats[0].stack,net=s-pt.bought;
+  balance+=s;updateBalance();
+  pt.on=false;pt.hand=null;pt.seats=[];
+  saveGame();ptRender();
+  ptSay(net>0?'You leave '+fmtChips(net)+' up. Nicely played! 💰':net<0?'You leave '+fmtChips(-net)+' down. Come back any time! 🃏':'You leave even. See you next time! 🃏');
+}
+function ptTopUp(){
+  var h=pt.hand,st=ptStake(),s=pt.seats[0];
+  if(h&&!h.over&&ptLive(h,0)){ptSay('You can top up between hands. 🃏');return;}
+  var add=Math.min(st.max-s.stack,balance);
+  if(add<=0){ptSay(s.stack>=st.max?"You're already at the most you can sit with here.":"You don't have any chips left to top up with. 😅");return;}
+  balance-=add;s.stack+=add;pt.bought+=add;updateBalance();saveGame();ptRender();
+  ptSay('Topped up '+fmtChips(add)+'. 💰');
+  if(!h||h.over)ptQueue(900);
+}
+function ptToggle(k){pt[k]=!pt[k];saveGame();ptRender();}
+function ptOpen(){
+  ptBuild();ptRender();heLayout();
+  if(!pt.on)return;
+  if(pt.hand&&!pt.hand.over)ptStep();
+  else if(ptWaiting||!pt.hand||pt.hand.over)ptQueue(900);
+}
+// Put a raise amount on the slider (presets are fractions of the pot, or 'min' and 'max')
+function ptPreset(k){
+  var h=pt.hand;if(!ptMine())return;
+  var L=ptLegal(pt,0),pot=ptPot(h);
+  var v=k==='min'?L.minTo:k==='max'?L.maxTo:h.curBet+Math.round((pot+L.toCall)*k);
+  ptSetRaise(v);
+}
+// Dragging the slider only relabels the button, so the slider isn't rebuilt under your finger
+function ptSetRaise(v){
+  if(!ptMine())return;
+  var L=ptLegal(pt,0),sb=pt.hand.sb||1;
+  v=Math.round(+v/sb)*sb;ptRaiseTo=Math.max(L.minTo,Math.min(L.maxTo,isFinite(v)?v:L.minTo));
+  var sl=document.getElementById('pt-slider'),b=document.getElementById('pt-raise-btn');
+  if(sl&&+sl.value!==ptRaiseTo)sl.value=ptRaiseTo;
+  if(b)b.textContent=ptRaiseTo>=L.maxTo?'All in '+fmtChips(L.maxTo):(L.bet?'Bet ':'Raise to ')+fmtChips(ptRaiseTo);
+}
+// ── The screen ──
+// The seats are built once per line-up; ptRender fills them in
+function ptBuild(){
+  var ring=document.getElementById('pt-seats');if(!ring)return;
+  var slots=pt.on?PT_SLOTS[pt.seats.length-1]:PT_SLOTS[pt.lobby.bots],h='';
+  var seats=pt.on?pt.seats:[{name:'You',bot:null}].concat(slots.map(function(){return null;}));
+  seats.forEach(function(s,i){
+    var slot=i===0?'you':slots[i-1],b=s&&s.bot?PT_BOT[s.bot]:null;
+    h+='<div class="pt-seat s-'+slot+(s?'':' empty')+'" id="pt-seat-'+i+'">'+
+      '<div class="pt-bet" id="pt-bet-'+i+'"></div><div class="pt-dbtn" id="pt-dbtn-'+i+'">D</div>'+
+      '<div class="pt-cards" id="pt-cards-'+i+'"></div>'+
+      '<div class="pt-plate"><span class="pt-av"'+(b?' style="--h:'+b.hue+'"':'')+'>'+(s?s.name.replace(/^The /,'').charAt(0):'')+'</span>'+
+      '<span class="pt-who"><b>'+(s?s.name:'Empty seat')+'</b><small id="pt-sub-'+i+'">'+(b?b.style:i===0?'':'')+'</small></span>'+
+      '<span class="pt-stack" id="pt-stack-'+i+'"></span></div>'+
+      '<div class="pt-act" id="pt-act-'+i+'"></div></div>';
+  });
+  ring.innerHTML=h;
+  document.getElementById('pt-board')._sig=null;
+}
+function ptRender(){
+  var area=document.getElementById('he-pt');if(!area)return;
+  area.classList.toggle('seated',pt.on);
+  var h=pt.hand,q=[],showAll=h&&h.over&&h.res&&h.res.showdown,arc=gameMode==='arcade',st=pt.on?ptStake():PT_STAKES[pt.lobby.stakes];
+  var bestSet=showAll?{}:null;
+  if(showAll)h.res.pots.forEach(function(p){p.winners.forEach(function(j){bestSet[j]=heBest5(h.ps[j].hole.concat(h.board));});});
+  if(pt.on)pt.seats.forEach(function(s,i){
+    var el=document.getElementById('pt-seat-'+i);if(!el)return;
+    var p=h&&h.ps[i],live=p&&p.in&&!p.folded,won=h&&h.over&&h.res&&((h.res.won[i]||0)>0);
+    el.classList.toggle('acting',!!(h&&!h.over&&h.cur===i));
+    el.classList.toggle('folded',!!(p&&(p.folded||!p.in)));
+    el.classList.toggle('won',!!won);
+    document.getElementById('pt-stack-'+i).textContent=fmtChips(s.stack);
+    var cards=[];
+    if(p&&p.in&&p.hole.length&&!(p.folded&&i!==0))cards=i===0||(showAll&&h.shown.indexOf(i)>=0)?p.hole:['down','down'];
+    heDrawCards(document.getElementById('pt-cards-'+i),cards,q,i,bestSet&&bestSet[i]?bestSet[i]:null);
+    var bet=p&&!h.over?p.bet:0,be=document.getElementById('pt-bet-'+i);
+    be.innerHTML=bet?'<div class="pt-pile" style="--s:24px">'+chipPileHTML(chipsFor(bet).slice(0,24),{s:24,gap:3,per:12})+'</div><span>'+fmtChips(bet)+'</span>':'';
+    document.getElementById('pt-dbtn-'+i).style.display=h&&h.btn===i?'flex':'none';
+    var act=document.getElementById('pt-act-'+i),txt='';
+    if(won)txt='Wins '+fmtChips(h.res.won[i]);
+    else if(showAll&&h.shown.indexOf(i)>=0)txt=heName(h.res.scores[i]);
+    else if(p)txt=p.last||'';
+    act.textContent=txt;act.className='pt-act'+(won?' win':txt?' on':'');
+    if(i===0)document.getElementById('pt-sub-0').textContent=p&&p.in&&p.hole.length?heName(heScore(p.hole.concat(h.board))):'';
+  });
+  // The board and the pot
+  var board=h?h.board.slice():[];while(board.length<5)board.push('slot');
+  // At a showdown the board lights up the cards the main pot was won with
+  var mainBest=showAll&&h.res.pots[0]?bestSet[h.res.pots[0].winners[0]]:null;
+  heDrawCards(document.getElementById('pt-board'),board,q,9,mainBest);
+  var pot=h?ptPot(h)-(h.over?0:h.ps.reduce(function(s2,p){return s2+p.bet;},0)):0,potEl=document.getElementById('pt-pot');
+  if(h&&h.over&&h.res)potEl.innerHTML=h.res.pots.map(function(p,k){return '<span>'+(h.res.pots.length>1?(k?'Side pot ':'Main pot '):'Pot ')+'<b>'+fmtChips(p.amount)+'</b></span>';}).join('')+(h.res.rake?'<span class="rake">Rake '+fmtChips(h.res.rake)+'</span>':'');
+  else potEl.innerHTML=pot?'<div class="pt-pile" style="--s:28px">'+chipPileHTML(chipsFor(pot).slice(0,30),{s:28,gap:3,per:10})+'</div><span>Pot <b>'+fmtChips(pot)+'</b></span>':'';
+  heDealQueue(q,area.querySelector('.peccy-dealer'),ptScale);
+  document.getElementById('pt-felt-sub').textContent=arc?'NO RAKE ON THE ARCADE FLOOR':'RAKE 5%, UP TO 3 BIG BLINDS';
+  ptRenderConsole();ptRenderSide();ptRenderLobby();
+}
+// Your odds against the hands still in, as if they could be holding anything (worked out once per card)
+function ptOdds(){
+  var h=pt.hand;if(!h||!h.ps[0].in||h.ps[0].folded||!h.ps[0].hole.length)return null;
+  var n=h.ps.filter(function(p,i){return i&&ptLive(h,i);}).length;if(!n)return null;
+  var key=h.no+':'+h.board.length+':'+n;
+  if(key!==ptOddsKey){ptOddsKey=key;ptOddsVal=heEquity(h.ps[0].hole,h.board,n,h.board.length===5?2500:1500);}
+  return {eq:ptOddsVal,n:n};
+}
+function ptRenderConsole(){
+  var c=document.getElementById('pt-console');if(!c)return;
+  var h=pt.hand,html='';
+  if(!pt.on){c.innerHTML='';return;}
+  var odds=pt.odds?ptOdds():null,oddsTxt=odds?'<span class="pt-odds">You win '+Math.round(odds.eq.win*100)+'%'+(odds.eq.tie>0.005?', tie '+Math.round(odds.eq.tie*100)+'%':'')+' <small>against '+odds.n+(odds.n>1?' random hands':' random hand')+'</small></span>':'';
+  if(ptMine()){
+    var L=ptLegal(pt,0),pot=ptPot(h);
+    if(ptRaiseTo<L.minTo||ptRaiseTo>L.maxTo||!ptConsoleHand||ptConsoleHand!==h.no+':'+h.street+':'+h.curBet){ptRaiseTo=L.minTo;ptConsoleHand=h.no+':'+h.street+':'+h.curBet;}
+    var callLbl=L.canCheck?'Check':L.call>=pt.seats[0].stack?'All in '+fmtChips(L.call):'Call '+fmtChips(L.call);
+    var need=L.toCall?Math.round(L.toCall/(pot+L.toCall)*100):0;
+    html+='<div class="pt-moves"><button class="btn btn-secondary" onclick="ptYou(\'fold\')">Fold</button>'+
+      '<button class="btn btn-secondary" onclick="ptYou(\''+(L.canCheck?'check':'call')+'\')">'+callLbl+'</button>';
+    if(L.canRaise){
+      var allin=ptRaiseTo>=L.maxTo,lbl=allin?'All in '+fmtChips(L.maxTo):(L.bet?'Bet ':'Raise to ')+fmtChips(ptRaiseTo);
+      html+='<div class="pt-raise">'+(L.allinOnly?'':'<div class="pt-presets"><button onclick="ptPreset(\'min\')">Min</button><button onclick="ptPreset(0.5)">½ pot</button><button onclick="ptPreset(0.75)">¾ pot</button><button onclick="ptPreset(1)">Pot</button><button onclick="ptPreset(\'max\')">All in</button></div>'+
+        '<input type="range" id="pt-slider" min="'+L.minTo+'" max="'+L.maxTo+'" step="'+(h.sb||1)+'" value="'+ptRaiseTo+'" oninput="ptSetRaise(this.value)" aria-label="Raise amount">')+
+        '<button class="btn btn-primary" id="pt-raise-btn" onclick="ptYou(\'raise\')">'+lbl+'</button></div>';
+    }
+    html+='</div><div class="pt-info">'+oddsTxt+(L.toCall?'<span>Call '+fmtChips(L.call)+' to win '+fmtChips(pot)+': you need to win '+need+'% of the time to break even</span>':'')+'</div>';
+  }else{
+    var who=h&&!h.over&&h.cur>0?pt.seats[h.cur].name:'',st;
+    if(h&&!h.over)st=!ptLive(h,0)?'You folded. The hand plays out…':who?who+' is thinking…':'Dealing the rest of the board…';
+    else st=pt.seats[0].stack<=0?'Out of chips: top up or leave the table.':'Next hand in a moment…';
+    html='<div class="pt-wait"><span>'+st+'</span>'+(h&&!h.over&&ptLive(h,0)?oddsTxt:'')+'</div>';
+  }
+  c.innerHTML=html;
+}
+var ptConsoleHand='';
+function ptRenderSide(){
+  var el=document.getElementById('pt-side');if(!el)return;
+  var st=pt.on?ptStake():PT_STAKES[pt.lobby.stakes],arc=gameMode==='arcade',h=pt.hand,s=pt.on?pt.seats[0]:null;
+  var rake=arc?'No rake on the Arcade floor':'Rake 5% of pots that see a flop, up to '+fmtChips(st.bb*PT_RAKE_CAP);
+  var html='<div class="pt-side-head"><b>Peccy\'s Poker Room</b><small>No-limit Hold\'em · blinds '+fmtChips(st.sb)+'/'+fmtChips(st.bb)+'</small><small>'+rake+'</small></div>';
+  if(pt.on){
+    var net=s.stack-pt.bought+(h&&!h.over?h.ps[0].total:0);
+    html+='<div class="pt-me"><div><small>At the table</small><b>'+fmtChips(s.stack)+'</b></div><div><small>Bought in</small><b>'+fmtChips(pt.bought)+'</b></div><div><small>Session</small><b class="'+(net>0?'up':net<0?'down':'')+'">'+(net>0?'+':net<0?'−':'')+fmtChips(Math.abs(net))+'</b></div></div>'+
+      '<div class="pt-side-btns"><button class="rl-small-btn" onclick="ptTopUp()">Top up</button><button class="rl-small-btn" onclick="ptLeave()">Leave table</button></div>'+
+      '<div class="pt-toggles"><button class="pt-tog'+(pt.odds?' on':'')+'" onclick="ptToggle(\'odds\')"><i></i>Show my odds</button><button class="pt-tog'+(pt.fast?' on':'')+'" onclick="ptToggle(\'fast\')"><i></i>Fast bots</button></div>';
+    html+='<div class="pt-log"><b>This hand</b>'+(h?h.log.slice().reverse().map(function(t){return '<span>'+t+'</span>';}).join(''):'<span>Waiting for the next hand</span>')+
+      (pt.results.length?'<b>Earlier hands</b>'+pt.results.slice(h&&h.over?1:0,12).map(function(r){return '<span class="'+(r.me>0?'up':r.me<0?'down':'')+'">#'+r.no+' '+r.text+(r.me?' <em>'+(r.me>0?'+':'−')+fmtChips(Math.abs(r.me))+'</em>':'')+'</span>';}).join(''):'')+'</div>';
+  }else{
+    html+='<div class="pt-how"><p>Sit down with up to four regulars. Each one plays their own way: watch who bluffs and who only bets the nuts.</p>'+
+      '<p>Your buy-in comes out of your chips, and whatever you have at the table goes back when you leave.</p>'+
+      '<p>Hands rank from high card up to a royal flush. Your best five of the seven cards play.</p></div>';
+  }
+  el.innerHTML=html;
+}
+function ptRenderLobby(){
+  var el=document.getElementById('pt-lobby');if(!el)return;
+  if(pt.on){el.innerHTML='';el.style.display='none';return;}
+  el.style.display='';
+  var L=pt.lobby,st=PT_STAKES[L.stakes];
+  if(!L.buy||L.buy<st.min||L.buy>st.max)L.buy=Math.max(st.min,Math.min(st.max,Math.floor(balance/st.bb)*st.bb));
+  var can=balance>=st.min,buy=Math.min(L.buy,Math.max(st.min,balance));
+  el.innerHTML='<b class="pt-lob-title">Take a seat</b>'+
+    '<div class="pt-lob-row"><small>Stakes</small><div class="pt-stakes">'+PT_STAKES.map(function(s,i){var ok=balance>=s.min;
+      return '<button class="'+(i===L.stakes?'on':'')+(ok?'':' short')+'" onclick="ptLobbySet(\'stakes\','+i+')"><b>'+fmtChips(s.sb)+'/'+fmtChips(s.bb)+'</b><small>'+(ok?'buy in '+fmtChips(s.min)+'–'+fmtChips(s.max):'need '+fmtChips(s.min))+'</small></button>';}).join('')+'</div></div>'+
+    '<div class="pt-lob-row"><small>Opponents</small><div class="sb-seg pt-nbots">'+[1,2,3,4].map(function(n){return '<button class="'+(n===L.bots?'on':'')+'" onclick="ptLobbySet(\'bots\','+n+');ptBuild();ptRender()">'+n+'</button>';}).join('')+'</div></div>'+
+    (can?'<div class="pt-lob-row"><small>Buy in</small><div class="pt-buy"><input type="range" min="'+st.min+'" max="'+Math.min(st.max,Math.floor(balance/st.bb)*st.bb)+'" step="'+st.bb+'" value="'+buy+'" oninput="pt.lobby.buy=+this.value;document.getElementById(\'pt-buy-v\').textContent=fmtChips(this.value)" aria-label="Buy-in"><b id="pt-buy-v">'+fmtChips(buy)+'</b></div></div>':'')+
+    '<button class="btn btn-primary" onclick="ptSit()"'+(can?'':' disabled')+'>'+(can?'Sit down':'Need '+fmtChips(st.min-balance)+' more chips')+'</button>';
+}
+// Both tables scale down to fit the window instead of scrolling
+function heLayout(){
+  var area=document.getElementById('game-holdem');if(!area||!area.classList.contains('active'))return;
+  var wide=innerWidth>760;
+  if(he.view==='uth'){
+    var fit=document.querySelector('#he-uth .table-fit'),h0=fit.offsetHeight,s=1;
+    if(wide&&h0&&!(uthBusy()&&fit._locked))s=Math.max(0.45,Math.min(1,roomBelow(fit)/h0));
+    else if(uthBusy()&&fit._locked)s=uthScale;
+    fit._locked=uthBusy();
+    uthScale=s;fit.style.transform=s<1?'scale('+s.toFixed(4)+')':'';fit.style.marginBottom=s<1?(-(1-s)*h0)+'px':'';
+  }else{
+    var wrap=document.getElementById('pt-wrap'),stage=document.getElementById('pt-stage'),box=document.getElementById('pt-fit');
+    wrap.style.height=wide?Math.max(420,roomBelow(wrap))+'px':'';
+    // On a phone the table is laid out as a column instead (see the phone styles), at full size
+    if(!wide){ptScale=1;box.style.transform='';box.style.left='';return;}
+    var W=box.offsetWidth,H=box.offsetHeight;
+    ptScale=Math.max(0.3,Math.min(1,stage.clientWidth/W,stage.clientHeight/H));
+    box.style.transform='scale('+ptScale.toFixed(4)+')';
+    box.style.left=Math.max(0,(stage.clientWidth-W*ptScale)/2)+'px';
+  }
+}
+window.addEventListener('resize',heLayout);
+// Chips out on the Hold'em tables: your stack at the poker table (and what's in the pot) and the bets on the felt
+function heHeld(){
+  var n=0,h=pt.hand;
+  if(pt.on)n+=pt.seats[0].stack+(h&&!h.over?h.ps[0].total:0);
+  if(uthBusy())n+=uth.ante*2+uth.trips+uth.play;
+  return n;
+}
+// Reset clears both tables: you stand up from the poker table, and the felt is cleared
+function heResetTables(){
+  clearTimeout(ptTimer);
+  pt.on=false;pt.hand=null;pt.seats=[];pt.results=[];
+  uth.st='bet';uth.c=[];uth.res=null;uth.play=0;uth.fold=false;uth.ante=0;uth.trips=0;
+  ptBuild();ptRender();uthRender();
+}
+// What a save keeps of Hold'em: which game, the Ultimate hand on the felt, and your seat at the poker table
+function heSnap(){
+  return {view:he.view,
+    uth:{st:uth.st,ante:uth.ante,trips:uth.trips,play:uth.play,fold:uth.fold,c:uth.c,target:uth.target,tips:uth.tips,last:uth.last},
+    pt:{on:pt.on,stakes:pt.stakes,seats:pt.seats,btn:pt.btn,handNo:pt.handNo,hand:pt.hand,bought:pt.bought,results:pt.results,odds:pt.odds,fast:pt.fast,nBots:pt.nBots,lobby:pt.lobby}};
+}
+// Each part is checked on its own; anything that doesn't add up starts fresh instead
+function heRestore(s){
+  s=s&&typeof s==='object'?s:{};
+  function num(v){return typeof v==='number'&&isFinite(v)&&v>=0?Math.floor(v):0;}
+  function cards(a,n){return Array.isArray(a)&&a.length===n&&a.every(function(c){return c===(c|0)&&c>=0&&c<52;})?a:null;}
+  he.view=s.view==='pt'?'pt':'uth';
+  var u=s.uth&&typeof s.uth==='object'?s.uth:{},st=['bet','pre','flop','river','done'].indexOf(u.st)>=0?u.st:'bet',c=cards(u.c,9);
+  uth={st:c||st==='bet'?st:'bet',ante:num(u.ante),trips:num(u.trips),play:num(u.play),fold:!!u.fold,c:c||[],res:null,target:u.target==='trips'?'trips':'ante',tips:!!u.tips,
+    last:u.last&&typeof u.last==='object'?{ante:num(u.last.ante),trips:num(u.last.trips)}:null};
+  // A settled hand's result is worked out again from its cards, so the felt shows it as it was
+  if(uth.st==='done')uth.res=uthSettle({p:uth.c.slice(0,2),d:uth.c.slice(2,4),board:uth.c.slice(4,9),ante:uth.ante,trips:uth.trips,play:uth.play,fold:uth.fold},gameMode==='arcade');
+  clearTimeout(ptTimer);ptWaiting=false;
+  var p=s.pt&&typeof s.pt==='object'?s.pt:{},seats=Array.isArray(p.seats)?p.seats.filter(function(x){return x&&typeof x.name==='string'&&typeof x.stack==='number'&&isFinite(x.stack)&&x.stack>=0;}):[];
+  var ok=!!p.on&&seats.length>=2&&seats.length<=5&&!seats[0].bot&&PT_STAKES[p.stakes];
+  seats.forEach(function(x,i){x.stack=Math.floor(x.stack);if(i&&!PT_BOT[x.bot])x.bot=PT_BOTS[0].id;});
+  var lob=p.lobby&&typeof p.lobby==='object'?p.lobby:{};
+  pt={on:!!ok,stakes:ok?p.stakes:0,seats:ok?seats:[],btn:ok?num(p.btn)%seats.length:0,handNo:num(p.handNo),bought:num(p.bought),
+    results:Array.isArray(p.results)?p.results.slice(0,30):[],odds:p.odds!==false,fast:!!p.fast,nBots:num(p.nBots)||4,
+    hand:null,lobby:{stakes:PT_STAKES[lob.stakes]?lob.stakes:0,bots:lob.bots>=1&&lob.bots<=4?lob.bots:4,buy:num(lob.buy)}};
+  // A hand that was being played carries on, as long as it's the same table it was dealt at
+  var h=p.hand;
+  if(ok&&h&&typeof h==='object'&&Array.isArray(h.ps)&&h.ps.length===seats.length&&Array.isArray(h.deck)&&h.deck.length===52)pt.hand=h;
+}
+
 // ═══ MODES ═══
 // Classic is the real-odds casino. Arcade adds Peccy's Bar, and keeps its own chips and cosmetics.
 // Arcade odds also lean the player's way, so every game pays back a little over 100% (about 103%):
@@ -2609,11 +3860,11 @@ function shopDrawBall(cv,B){
 //   blackjack blackjack pays 2 to 1, and five cards without busting win (about +3% with basic strategy)
 //   roulette  0 hands back the bets it beat, and one lucky number a spin pays double (101-103%)
 var ARCADE_RTP=103;
-var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech',bar:'bar-say',coin:'coin-peccy-speech',sports:'sports-peccy-speech'};
+var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette:'roulette-peccy-speech',plinko:'plinko-peccy-speech',shop:'shop-peccy-speech',bar:'bar-say',coin:'coin-peccy-speech',sports:'sports-peccy-speech',holdem:'uth-say'};
 function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
 function setMode(m){
   if(m===gameMode||!MODE_START[m])return;
-  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||cf.busy){modeSay("Finish this round before you switch floors! 🎲");return;}
+  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||cf.busy||uthBusy()||ptBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
   if(sbBusy()){modeSay('Finish watching (or skip to the end) before you switch floors! 📺');return;}
   if(mx.on){mxSay(mx.cust?'Finish the shift (or clock out) before you switch floors! 🍸':'Finish your drink (or cancel it) before you switch floors! 🍸');return;}
   // Chips on a table go back to the stack they came from before the floors swap
@@ -2627,6 +3878,8 @@ function setMode(m){
   // Each floor has its own sportsbook league and its own coin streaks
   sbCastStop();hrCastStop();sbView={sport:'fb',tab:'games',main:'game',gi:0,ti:null,ri:0,hi:null};sbSlip.legs=[];cf.streak=0;cf.last=0;cf.hist=[];cfUI();
   if(document.getElementById('game-sports').classList.contains('active'))sbOpen();
+  // Each floor has its own poker table too (your seat and stack there wait for you)
+  ptBuild();if(document.getElementById('game-holdem').classList.contains('active'))heOpen();
   modeSay(m==='arcade'?"Welcome to the Arcade floor! The bar's open and the odds lean your way. 🍸🕹️":"Back on the Classic floor: real odds, no funny business. 🎩");
 }
 // Everything on screen that shows which mode you're in
@@ -2645,7 +3898,7 @@ function modeApply(){
   document.getElementById('bj-arc-main').textContent=arc?'BLACKJACK PAYS 2 TO 1':'BLACKJACK PAYS 3 TO 2';
   document.getElementById('bj-arc-sub').textContent=arc?'FIVE CARDS WITHOUT BUSTING WIN':'DEALER STANDS ON ALL 17s';
   if(slHubReady){slHubRtp();slRenderPaytable();}
-  pkUI();pkDraw();
+  pkUI();pkDraw();uthRender();ptRender();
   // The arcade strip changes the header's height, so the games re-measure
   fitTables();if(document.getElementById('game-slots').classList.contains('active'))slLayout();
 }
@@ -3232,7 +4485,8 @@ var PECCY_OUTFITS={
   blackjack:{vest:['#1d1e26','#454857','#0b0b10'],tie:['#ef4b43','#8e1515'],square:'#ff9900'},
   roulette:{vest:['#521220','#8a2c41','#2a0710'],tie:['#30313b','#0b0b0f'],square:'#f2c75c'},
   slots:{vest:['#26364b','#4a6587','#121a26'],tie:['#ffbd59','#d46f00'],square:'#ffffff'},
-  bar:{vest:['#3a2116','#6b4128','#1c0e07'],tie:['#c06bff','#6a1fae'],square:'#ff9900'}
+  bar:{vest:['#3a2116','#6b4128','#1c0e07'],tie:['#c06bff','#6a1fae'],square:'#ff9900'},
+  holdem:{vest:['#16402c','#2f6b4c','#0a2216'],tie:['#1b1b22','#050507'],square:'#f2c75c'}
 };
 // Hats reach above the artwork, so a Peccy wearing one is drawn in a box this much taller
 var PECCY_HAT_TOP=-46;
@@ -6320,7 +7574,7 @@ function sbCastDraw(){
 //                  off, so the result is already fixed) or 'final'
 //   fut[t]         team t's chance of being champion (sbFutures)
 //   bets, champs   your bets (see BETS) and [[season, team, w, l], ...]
-var sb=null,sbView={sport:'fb',tab:'games',main:'game',gi:0,ti:null,ri:0,hi:null},sbCastOpts={hl:true,speed:1},sbAway=0;  // sbAway: chips won by games that finished while the page was closed
+var sb=null,sbView={sport:'fb',tab:'games',main:'game',gi:0,ti:null,ri:0,hi:null},sbCastOpts={hl:true,speed:1,hrSpeed:1},sbAway=0;  // sbAway: chips won by games that finished while the page was closed
 function sbClamp(v,a,b){return Math.max(a,Math.min(b,v));}
 function sbNewSeason(prev){
   var s={season:prev?prev.season+1:1,week:1,rat:[],rec:[],last:[],games:[],fut:[],champs:prev?prev.champs.slice(-20):[],nextId:prev?prev.nextId:1,
@@ -6612,11 +7866,14 @@ function sbCastEnded(gi){
   sbRenderSide();
 }
 function sbBack(){sbCastStop();hrCastStop();sbView.main=sbView.sport==='hr'?'race':'game';sbRender();}
-function sbSetSpeed(v){sbCastOpts.speed=v;if(sbCast)sbCast.speed=v;if(hrCast)hrCast.speed=v;sbCtrlUI();}
+// Football and racing each keep their own speed, so a 4x football game doesn't send the next race flying
+function sbSpeedRacing(){return !!hrCast||sbView.sport==='hr';}
+function sbSetSpeed(v){if(sbSpeedRacing()){sbCastOpts.hrSpeed=v;if(hrCast)hrCast.speed=v;}else{sbCastOpts.speed=v;if(sbCast)sbCast.speed=v;}sbCtrlUI();}
 function sbSetHl(on){sbCastOpts.hl=on;if(sbCast)sbCast.hl=on;sbCtrlUI();}
 function sbSkip(){if(hrCast&&!hrCast.done)hrCastSkip();else sbCastSkip();}
 function sbCtrlUI(){
-  [1,2,4].forEach(function(v){var b=document.getElementById('sb-sp-'+v);if(b)b.classList.toggle('on',sbCastOpts.speed===v);});
+  var cur=sbSpeedRacing()?sbCastOpts.hrSpeed:sbCastOpts.speed;
+  [1,2,4].forEach(function(v){var b=document.getElementById('sb-sp-'+v);if(b)b.classList.toggle('on',cur===v);});
   var a=document.getElementById('sb-hl-1'),b2=document.getElementById('sb-hl-0');if(a){a.classList.toggle('on',sbCastOpts.hl);b2.classList.toggle('on',!sbCastOpts.hl);}
 }
 // The scoreboard over the field, broadcast style
@@ -6808,7 +8065,7 @@ var HR_HORSES=[
   {n:'Iron Duke',coat:'#1e1a18',s1:'#6c7a89',s2:'#ffd23d',spd:80,sta:90,con:82,fr:0.2,cl:0.5},
   {n:'Starlight Express',coat:'#c9a35a',s1:'#1d3768',s2:'#ffd23d',spd:88,sta:78,con:74,fr:0.4,cl:0.3}
 ];
-var HR_DISTS=[1000,1200,1400,1600,2000,2400],HR_RUNNERS=8,HR_PER_DAY=4,HR_RUNS=2000,HR_SEGS=24,HR_TIME=3.2;
+var HR_DISTS=[1000,1200,1400,1600,2000,2400],HR_RUNNERS=8,HR_PER_DAY=4,HR_RUNS=2000,HR_SEGS=24,HR_TIME=1;
 var HR_NAMES=['Lucky Seven Stakes','Double Down Handicap','Royal Flush Trophy','High Roller Stakes','Blue Chip Plate','Neon Nights Handicap','Snake Eyes Stakes','Golden Chip Trophy','Cashier\'s Cup','Jackpot Juvenile'];
 function hrKind(d){return d<=1200?'Sprint':d<=1600?'Mile':'Classic';}
 // Run a race from a seed. Each runner's speed for each stretch comes from its ability over this distance, how it's
@@ -6959,7 +8216,7 @@ function hrRenderMain(){
   }
   var mine=sbBetsOn('hr:'+race.id);
   if(mine.length)html+='<div class="sb-mine">'+mine.map(function(b){var l=b.legs.filter(function(x){return x.sp==='hr'&&x.r===race.id;})[0];return '<span class="'+l.st+'">'+(l.st==='won'?'✔ ':l.st==='lost'?'✘ ':'🎟 ')+l.lab+(b.kind==='parlay'?' (in a parlay)':': '+fmtChips(b.amt)+' at ×'+b.mult.toFixed(2))+'</span>';}).join('')+'</div>';
-  html+='<div class="sb-go"><button class="btn btn-primary" onclick="hrWatch('+ri+')">'+(race.st==='final'?'↺ Watch the replay':race.st==='live'?'▶ Watch the race':'🐎 Go to the post')+'</button>'+
+  html+='<div class="sb-go"><button class="btn btn-primary" onclick="hrWatch('+ri+')">'+(race.st==='final'?'↺ Watch the replay':race.st==='live'?'▶ Watch the race':'Go to the post')+'</button>'+
     (race.st==='final'?'<span class="sb-final">Won by #'+(race.order[0]+1)+' '+HR_HORSES[race.run[race.order[0]]].n+'</span>':'')+'</div>';
   el.innerHTML=html;
   if(open)hrExUI(ri);
@@ -6970,7 +8227,7 @@ function hrWatch(ri){
   if((hrCast&&!hrCast.done&&hrCast.race!==race)||(sbCast&&!sbCast.done)){sbBusySay();return;}
   if(race.st==='open'){hrLock(race);saveGame();}
   sbCastStop();sbView.main='racecast';sbView.ri=ri;sbRender();
-  hrCastStart(race,document.getElementById('sb-cv'),{speed:sbCastOpts.speed,onEnd:function(){hrCastEnded(ri);},
+  hrCastStart(race,document.getElementById('sb-cv'),{speed:sbCastOpts.hrSpeed,onEnd:function(){hrCastEnded(ri);},
     paused:function(){return !document.getElementById('game-sports').classList.contains('active');}});
   sbFitCast();
 }
@@ -6989,7 +8246,8 @@ function hrCastEnded(ri){
 // Each runner's position comes straight from hrSim's times for every stretch (the same seed as the result), so
 // the race you watch is the race that's settled. The track is drawn fresh each frame from the camera's position:
 // sky, grandstand and crowd (scrolling slower, for depth), the infield, rails and posts, distance poles and the
-// finish post. HR_TIME race-seconds pass for every real second at 1x.
+// finish post. At 1x the race runs in real time (HR_TIME race-seconds a second): about 85 seconds over 1,400m, two and
+// a half minutes for the Peccy's Cup. 2x, 4x and skip are there for the impatient.
 var hrCast=null,HRC_PX=5,HRC_RAIL=80,HRC_OUT=162;
 function hrCrowd(){
   var c=document.createElement('canvas');c.width=640;c.height=30;var x=c.getContext('2d'),R=sbRng(99),cols=['#e6c9a8','#8a5a3c','#d9d9d9','#c94f4f','#4f7fc9','#ffd23d','#3ddc84','#c06bff','#ff9900'];
