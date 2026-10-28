@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Peccy's Casino</title>
-<meta name="description" content="A just-for-fun casino with Peccy as your dealer: blackjack, roulette and nine slot machines modelled on real ones. No real money.">
+<meta name="description" content="A just-for-fun casino with Peccy as your dealer: blackjack, roulette and twelve slot machines modelled on real ones. No real money.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8E%B0%3C/text%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
@@ -487,7 +487,7 @@
   .peccy-small { width: 56px; height: 66px; flex: none; filter: drop-shadow(0 6px 12px rgba(0,0,0,0.5)); }
   .sl-host .peccy-speech { font-size: 12.5px; max-width: 260px; text-align: left; }
   .sl-marquee {
-    position: relative; padding: 10px 34px 9px; border-radius: 18px; overflow: hidden; min-width: 0;
+    position: relative; padding: 11px 34px 10px; border-radius: 18px; overflow: hidden; min-width: 0;
     background: radial-gradient(120% 150% at 50% 0%, color-mix(in srgb, var(--acc) 38%, #000) 0%, rgba(0,0,0,0.65) 72%);
     border: 1px solid color-mix(in srgb, var(--acc) 40%, transparent);
   }
@@ -633,6 +633,38 @@
     border-left: 22px solid transparent; border-right: 22px solid transparent; border-top: 44px solid var(--gold-2); filter: drop-shadow(0 4px 6px rgba(0,0,0,0.6));
   }
   .sl-wheel-prize { position: absolute; left: 0; right: 0; bottom: -2%; font: 900 34px var(--display); color: var(--gold-2); text-shadow: 0 0 20px var(--gold); min-height: 40px; }
+  /* Sky High: each reel is as tall as its rows and grows upward, against a hatched "not built yet" backdrop */
+  .sl-reels.grow { height: var(--colh); align-items: flex-end; border-radius: 10px;
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 10px, transparent 10px 20px), linear-gradient(180deg, #0a1722, #05090e); }
+  .sl-reels.grow .sl-col { --ch: calc(var(--colh) / 7); height: calc(var(--ch) * var(--n)); }
+  .sl-reels.grow.growing .sl-col { transition: height 0.45s cubic-bezier(.3,1.2,.5,1); }  /* only while a spin adds or drops rows */
+  /* Cosmic Clusters' spots: marked (a faint ring), then multipliers (a badge) */
+  .sl-cell.sp1::before, .sl-cell.spx::before, .sl-cell.fr::before { content: ''; position: absolute; inset: 5%; border-radius: 12px; pointer-events: none; }
+  .sl-cell.sp1::before { box-shadow: inset 0 0 0 2px rgba(180,160,255,0.45); background: rgba(140,108,255,0.12); }
+  .sl-cell.spx::before { box-shadow: inset 0 0 0 2px #c4b5ff; background: rgba(140,108,255,0.32); }
+  .sl-mark { position: absolute; top: 4%; right: 5%; z-index: 3; padding: 0 4px; border-radius: 5px; font: 900 calc(var(--sz) * 0.2) var(--display); line-height: 1.25; color: #fff; background: #7c4dff; }
+  /* Huff N' Peccy's frames: straw, then sticks, then bricks */
+  .sl-cell.fr1::before { border: 3px dashed #e8c75a; background: rgba(232,199,90,0.08); }
+  .sl-cell.fr2::before { border: 4px solid #a0652f; background: rgba(160,101,47,0.16); }
+  .sl-cell.fr3::before { border: 5px solid #c0452f; background: repeating-linear-gradient(0deg, rgba(192,69,47,0.24) 0 8px, rgba(0,0,0,0.14) 8px 10px); }
+  /* Peccy and the Beanstalk: walking wilds float over the reels while they respin underneath */
+  .sl-walkers { position: absolute; top: 10px; left: 10px; z-index: 3; pointer-events: none; }
+  .sl-walker { position: absolute; display: flex; align-items: center; justify-content: center; font-size: calc(var(--sz) * 0.52);
+    transition: left 0.5s cubic-bezier(.4,0,.2,1), opacity 0.5s; filter: drop-shadow(0 3px 6px rgba(0,0,0,0.6)); }
+  /* Parcel Party's pick */
+  .sl-pick { display: flex; flex-direction: column; align-items: center; gap: 14px; width: min(92%, 640px); }
+  .sl-pick-head { text-align: center; }
+  .sl-pick-head b { display: block; font: 900 30px var(--display); color: var(--gold-2); }
+  .sl-pick-head small { font-size: 14px; color: rgba(255,255,255,0.8); }
+  .sl-pick-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; width: 100%; }
+  .sl-parcel { aspect-ratio: 1.25; border-radius: 14px; border: 2px solid rgba(255,153,0,0.5); background: linear-gradient(180deg, #4a2c0c, #2a1806); font-size: clamp(26px, 5vw, 44px); cursor: pointer; transition: transform 0.15s; }
+  .sl-parcel:hover:not(.open) { transform: translateY(-3px); }
+  .sl-parcel.open { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; cursor: default; border-color: var(--jp, #888); background: color-mix(in srgb, var(--jp, #888) 25%, #120a02); animation: slLand 0.4s ease-out; }
+  .sl-parcel span { font: 900 clamp(14px, 2.4vw, 20px) var(--display); color: #fff; }
+  .sl-parcel em { font: 700 12px 'Inter', sans-serif; font-style: normal; color: var(--gold-2); }
+  .sl-parcel.jp-grand { --jp: #ff3b30; } .sl-parcel.jp-major { --jp: #a855f7; } .sl-parcel.jp-minor { --jp: #3b82f6; } .sl-parcel.jp-mini { --jp: #22c55e; }
+  .sl-parcel.won { box-shadow: 0 0 0 3px var(--gold-2), 0 0 24px var(--gold); transform: scale(1.04); }
+  .sl-parcel.rest { opacity: 0.45; animation: none; }
   .sl-win-msg { min-height: 20px; margin-top: 6px; font-size: 12.5px; color: rgba(255,255,255,0.78); line-height: 1.45; }
   /* Control deck: credit, bet and win meters, then the spin button */
   .sl-console {
@@ -704,6 +736,7 @@
   @media (max-width: 640px) {
     .sl-cabinet { height: auto; min-height: 0; padding: 10px 10px 12px; }
     .sl-stage { flex: none; height: 62vw; min-height: 200px; }
+    .sl-bonus { align-items: flex-start; padding-top: 70px; }  /* the cabinet is tall on a phone: bonus screens start at its top, in view */
     .sl-host .peccy-speech { display: none; }
     .sl-side-btns { flex-direction: row; }
     .sl-meter { min-width: 86px; }
@@ -1335,6 +1368,53 @@
   .blackout-text { max-width: 520px; text-align: center; color: #fff; font: 600 16px 'Inter', sans-serif; line-height: 1.6; }
   .blackout-text h3 { font: 900 30px var(--display); margin-bottom: 10px; color: #e6c8ff; }
   .blackout-text button { margin-top: 18px; }
+  /* ═══ HOUSE ALWAYS WINS ═══ Broke after being 1,000 up: the room goes dark, the sign slams down a word at a time
+     and the floor shakes with each one, then Peccy has a word and you pick what's next (houseShow) */
+  .house-over { position: fixed; inset: 0; z-index: 290; display: none; align-items: center; justify-content: center; padding: 24px; overflow: hidden;
+    background: radial-gradient(70% 60% at 50% 42%, rgba(122,16,14,0.5), rgba(8,4,3,0.96) 72%), #050302; }
+  .house-over.show { display: flex; animation: houseIn 0.6s ease both; }
+  @keyframes houseIn { from { opacity: 0; } }
+  .house-stage { display: flex; flex-direction: column; align-items: center; max-width: 960px; text-align: center; }
+  .house-over.show .house-stage { animation: houseShake 1.7s linear both; }
+  .house-title { display: flex; flex-direction: column; align-items: center; }
+  .house-word { display: block; opacity: 0; font: 900 clamp(52px, min(12vw, 17vh), 160px)/0.92 var(--display); letter-spacing: 0.02em; text-transform: uppercase; color: var(--text); text-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+  .house-word.wins {
+    font-size: clamp(64px, min(15vw, 21vh), 210px); color: transparent; text-shadow: none;
+    background: linear-gradient(180deg, #fff6d6 8%, var(--gold-2) 45%, var(--gold) 70%, #a8741a 100%); -webkit-background-clip: text; background-clip: text;
+  }
+  .house-over.show .house-word { animation: houseSlam 0.28s cubic-bezier(.55,0,.8,.2) both; }
+  .house-over.show .house-word:nth-child(1) { animation-delay: 0.42s; }
+  .house-over.show .house-word:nth-child(2) { animation-delay: 0.78s; }
+  .house-over.show .house-word:nth-child(3) { animation-delay: 1.15s; }
+  @keyframes houseSlam { from { opacity: 0; transform: scale(2.6); } 60% { opacity: 1; } to { opacity: 1; transform: none; } }
+  /* A jolt as each word lands (at 0.7s, 1.06s and 1.43s) */
+  @keyframes houseShake {
+    0%, 40%, 49%, 61%, 70%, 82%, 93%, 100% { transform: none; }
+    42% { transform: translate(-6px, 4px); } 44% { transform: translate(5px, -3px); } 46% { transform: translate(-3px, 2px); }
+    63% { transform: translate(6px, 4px); } 65% { transform: translate(-5px, -3px); } 67% { transform: translate(3px, 2px); }
+    84% { transform: translate(-10px, 7px) rotate(-0.5deg); } 86% { transform: translate(9px, -5px) rotate(0.4deg); } 88% { transform: translate(-5px, 3px); } 90% { transform: translate(2px, -1px); }
+  }
+  .house-host { display: flex; align-items: center; gap: 12px; margin-top: 26px; text-align: left; }
+  .house-peccy { flex: none; width: 76px; height: 90px; filter: drop-shadow(0 8px 14px rgba(0,0,0,0.6)); }
+  .house-peccy.has-hat { height: calc(90px * 286 / 240); }
+  .house-host .peccy-speech { max-width: 320px; font-size: 14px; }
+  .house-sub { margin-top: 18px; font-size: 15px; color: var(--muted); }
+  .house-sub b { color: var(--gold-2); font-weight: 700; }
+  .house-btns { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin-top: 22px; }
+  .house-btns .rl-small-btn { padding: 11px 18px; font-size: 13px; }
+  .house-over.show .house-host { animation: houseUp 0.6s ease 1.85s both; }
+  .house-over.show .house-sub { animation: houseUp 0.6s ease 2.15s both; }
+  .house-over.show .house-btns { animation: houseUp 0.6s ease 2.45s both; }
+  @keyframes houseUp { from { opacity: 0; transform: translateY(18px); } }
+  @media (prefers-reduced-motion: reduce) {
+    .house-over.show .house-stage { animation: none; }
+    .house-over.show .house-word, .house-over.show .house-host, .house-over.show .house-sub, .house-over.show .house-btns { animation: houseIn 0.5s ease 0.2s both; }
+    .house-word { opacity: 1; }
+  }
+  @media (max-width: 640px) {
+    .house-host .peccy-speech { max-width: 210px; font-size: 13px; }
+    .house-btns { flex-direction: column; align-items: stretch; width: min(320px, 100%); }
+  }
 
   /* ═══ PLINKO ═══ Controls on the left, the peg board filling the rest of the screen */
   #game-plinko.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
@@ -2171,7 +2251,7 @@
     .sl-cabinet { padding: 8px 14px 10px; }
     .sl-head .peccy-small { width: 44px; height: 52px; }
     .sl-head .peccy-small.has-hat { height: calc(52px * 286 / 240); }
-    .sl-marquee { padding: 6px 30px 5px; }
+    .sl-marquee { padding: 10px 30px; }  /* the bulbs sit 5-8px in: keep the text clear of them */
     .sl-name { font-size: 24px; }
     .sl-jackpots { margin-top: 5px; }
     .sl-jp { padding: 3px 10px 4px; }
@@ -2193,6 +2273,8 @@
     .sl-card-body { gap: 4px; padding: 8px 12px 9px; }
     .sl-card-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 11.5px; }
     .sl-hub-grid.roomy .sl-card-desc { display: block; overflow: visible; }
+    .sl-hub-grid.tight { --pv-h: 72px; --pv-k: 0.58; }
+    .sl-hub-grid.tight .sl-card-meta { display: none; }
     /* Shop: a slimmer header (its grid scrolls inside the window, see shopLayout) */
     .shop-head { padding: 8px 16px; margin-bottom: 8px; }
     .shop-host-peccy { width: 54px; height: 64px; }
@@ -2394,6 +2476,7 @@
       <div class="sl-window">
         <div class="sl-reels" id="sl-reels"></div>
         <svg class="sl-lines" id="sl-lines"></svg>
+        <div class="sl-walkers" id="sl-walkers"></div>
         <div class="sl-banner" id="sl-banner" onclick="slPressed()"></div>
       </div>
     </div>
@@ -2725,6 +2808,18 @@
 </div>
 <!-- Blacking out: the screen fades to black, then you come round on the casino floor -->
 <div class="blackout" id="blackout"><div class="blackout-text" id="blackout-text"></div></div>
+<!-- House always wins: going broke after being 1,000 chips or more up (houseCheck) -->
+<div class="house-over" id="house-over" role="alertdialog" aria-modal="true" aria-labelledby="house-title" aria-describedby="house-sub">
+  <div class="house-stage">
+    <h2 class="house-title" id="house-title" aria-label="House always wins"><span class="house-word">House</span><span class="house-word">always</span><span class="house-word wins">wins</span></h2>
+    <div class="house-host">
+      <svg class="peccy-dealer house-peccy" data-outfit="blackjack" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+      <div class="peccy-speech" id="house-say"></div>
+    </div>
+    <p class="house-sub" id="house-sub"></p>
+    <div class="house-btns" id="house-btns"></div>
+  </div>
+</div>
 
 <footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="rulesOpen()">How to play</button><button class="bug-btn" onclick="saveOpen()">Save code</button><button class="bug-btn" onclick="bugOpen()">Report a bug</button></footer>
 
@@ -2791,6 +2886,7 @@ function bugNote(t){bugErrors.push(t);if(bugErrors.length>5)bugErrors.shift();}
 window.addEventListener('error',function(e){bugNote((e.message||'Script error')+(e.lineno?' (line '+e.lineno+')':''));});
 window.addEventListener('unhandledrejection',function(e){bugNote('Unhandled promise: '+(e.reason&&e.reason.message||e.reason));});
 var balance = 100,balanceShown = 100;
+var houseHigh = 0,houseWait = 0;  // the most chips held since you last went broke (see HOUSE ALWAYS WINS)
 function fmtChips(n){return Math.round(n).toLocaleString('en-US');}
 // The top-bar balance counts to the new value and flashes green or red; the slot credit meter and the
 // shop wallet follow. Every change is saved, so chips (like shop purchases) survive closing the page.
@@ -2799,13 +2895,14 @@ function updateBalance() {
   var credit = document.getElementById('sl-credit'); if (credit) credit.textContent = fmtChips(to);
   var wallet = document.getElementById('shop-balance'); if (wallet) wallet.textContent = fmtChips(to);
   achMax('peak', to);
+  houseNote();
   saveGame();
   if (to === from) { el.textContent = fmtChips(to); return; }
   el.classList.remove('up', 'down'); void el.offsetWidth; el.classList.add(to > from ? 'up' : 'down');
   cancelAnimationFrame(updateBalance.raf);
   if (document.hidden) { el.textContent = fmtChips(balanceShown = to); return; }
   (function tick(now) {
-    var p = Math.min(1, (now - t0) / 500);
+    var p = Math.max(0, Math.min(1, (now - t0) / 500));  // a frame can be stamped just before t0
     balanceShown = Math.round(from + (to - from) * (1 - Math.pow(1 - p, 3)));
     el.textContent = fmtChips(balanceShown);
     if (p < 1) updateBalance.raf = requestAnimationFrame(tick); else balanceShown = to;
@@ -2816,6 +2913,7 @@ function resetBank() {
   var start = MODE_START[gameMode], held = balance + heHeld();
   if (held > start && !confirm('Reset your ' + (gameMode === 'arcade' ? 'arcade ' : '') + 'chips to ' + fmtChips(start) + '? You have ' + fmtChips(held) + ' right now' + (held > balance ? ', counting what\'s on the Hold\'em tables' : '') + '. Anything you bought in the shop stays yours.')) return;
   balance = start;
+  houseHigh = 0;  // a fresh stack starts a fresh run for House always wins
   heResetTables();
   if (gameMode === 'arcade') { if (mx.on) mxClose(); bar.drinks = []; bar.buzz = 0; barRender(); }
   updateBalance();
@@ -3096,7 +3194,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&((it.price===0&&!
 var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
-function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap(),ach:achSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
+function modeSnapshot(){var s={balance:balance,houseHigh:houseHigh,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap(),ach:achSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
@@ -3118,6 +3216,7 @@ function modeRestore(m){
   // Trophies first, so sports bets settled while the page was closed still count toward them
   achRestore(s.ach);
   balance=balanceShown=typeof s.balance==='number'&&isFinite(s.balance)&&s.balance>=0?Math.floor(s.balance):MODE_START[m];
+  houseHigh=typeof s.houseHigh==='number'&&isFinite(s.houseHigh)?Math.max(0,s.houseHigh):0;houseWait=0;
   shopState.owned=s.owned&&typeof s.owned==='object'&&!Array.isArray(s.owned)?s.owned:{};
   shopState.eq=JSON.parse(JSON.stringify(SHOP_FREE));
   if(s.eq)for(var k in SHOP_FREE)if(s.eq[k]&&shopOwns(k,s.eq[k]))shopState.eq[k]=s.eq[k];
@@ -3167,7 +3266,9 @@ function shopBuy(cat,id){
     clearTimeout(shopBuy.t);shopBuy.t=setTimeout(function(){if(shopState.pending===key){shopState.pending=null;shopRender();}},3500);
     return;
   }
-  shopState.pending=null;balance-=shopPrice(it);shopState.owned[key]=1;updateBalance();achBump('buy');
+  // Spending isn't losing, so what you spend comes off your high-water mark for House always wins too
+  var paid=shopPrice(it);houseHigh=Math.max(0,houseHigh-paid);
+  shopState.pending=null;balance-=paid;shopState.owned[key]=1;updateBalance();achBump('buy');
   shopEquip(cat,id);
   setPeccySpeech('shop-peccy-speech',slRand(["Ooh, excellent taste! ✨","Fresh from the stockroom! 📦","That's going straight on! 😎","Treat yourself, you've earned it! 💎"]));
 }
@@ -4208,7 +4309,7 @@ var ACH=[
   {id:'sl_50x',g:'slots',name:'Mega win',desc:'Win 50 times your bet on one spin',tier:2,stat:'sl_50x',goal:1},
   {id:'sl_jackpot',g:'slots',name:'Jackpot!',desc:'Win a named jackpot: Mini, Minor, Major or Grand',tier:2,stat:'sl_jackpot',goal:1},
   {id:'sl_grand',g:'slots',name:'The Grand',desc:'Win the Grand jackpot',tier:3,stat:'sl_grand',goal:1},
-  {id:'sl_all',g:'slots',name:'Machine hopper',desc:'Play all nine machines',tier:2,stat:'machines',goal:9},
+  {id:'sl_all',g:'slots',name:'Machine hopper',desc:'Play all twelve machines',tier:2,stat:'machines',goal:12},
   {id:'sl_1000',g:'slots',name:'Reel regular',desc:'Spin 1,000 times',tier:2,stat:'sl_spin',goal:1000},
   {id:'rl_straight',g:'rl',name:'Straight up',desc:'Win a bet on a single number',tier:1,stat:'rl_straight',goal:1},
   {id:'rl_zero',g:'rl',name:'Zero hero',desc:'Win a bet when 0 comes up',tier:2,stat:'rl_zero_win',goal:1},
@@ -4265,7 +4366,7 @@ function achChips(n){return n*(achArc()?ARCADE_PRICE_X:1);}
 function achVal(k){
   var s=ach.stats;
   if(k==='played')return Object.keys(s.played||{}).filter(function(g){return ACH_FLOOR.indexOf(g)>=0;}).length;
-  if(k==='machines')return Object.keys(s.machines||{}).length;
+  if(k==='machines')return Object.keys(s.machines||{}).filter(function(id){return SLOT_MACHINES[id];}).length;  // machines still on the floor
   if(k==='owned')return Object.keys(shopState.owned||{}).length;
   return +s[k]||0;
 }
@@ -5813,12 +5914,6 @@ function slDrawSym(m,tables,c){var s=slDraw(tables[c]);if(m.valueTables&&m.value
 // One reel's worth of symbols. Like real reel strips, a machine with m.stick repeats the symbol above
 // with that chance, so symbols come in runs (it's what makes pay-anywhere clusters form).
 function slDrawCol(m,tables,c,n){
-  // 3-reel machines: only the payline stop is drawn. As on a physical strip, symbols and blanks
-  // alternate, so the stops above and below are blanks around a symbol, or symbols around a blank.
-  if(m.kind==='classic'){
-    var p=slDrawSym(m,tables,c);
-    return slBase(p)==='_'?[slDraw(m.symTables[c]),p,slDraw(m.symTables[c])]:['_',p,'_'];
-  }
   var col=[],q=m.stick||0;
   for(var r=0;r<n;r++){
     var prev=col[r-1],pb=slBase(prev);
@@ -5845,13 +5940,13 @@ function slSetup(m,force){
   for(var c=0;c<m.cols;c++){
     var w=typeof m.weights==='function'?m.weights(c):m.weights,fw=m.fsWeights?(typeof m.fsWeights==='function'?m.fsWeights(c):m.fsWeights):w;
     m.tables.push(slTable(slKnob(m,w)));m.fsTables.push(slTable(slKnob(m,fw)));
-    // The symbols-only strip that fills the stops next to a blank on 3-reel machines
-    if(m.kind==='classic'){var sw=Object.assign({},w);delete sw._;(m.symTables=m.symTables||[])[c]=slTable(sw);}
   }
   if(m.values){m.valueTables={};for(var k in m.values)m.valueTables[k]=slTable(m.values[k]);}
   if(m.wheel){var wt={};m.wheel.forEach(function(w,i){wt[i]=w[1];});m.wheelTable=slTable(wt);}
   if(m.rowWeights)m.rowTable=slTable(m.rowWeights);
   if(m.specials){var sp={};m.specials.forEach(function(s){sp[s]=1;});m.specialTable=slTable(sp);}
+  if(m.pickWeights)m.pickTable=slTable(m.pickWeights);
+  if(m.houses){m.houseTables={};for(var lv in m.houses)m.houseTables[lv]=slTable(m.houses[lv]);}
 }
 
 // ── Win evaluators. Amounts are in chips for the bet passed in. ──
@@ -5904,21 +5999,6 @@ function slAnyWins(m,g,bet){
   });
   return wins;
 }
-// Classic single line (Double Diamond rules): three of a kind, any three bars, cherries anywhere on the
-// line; each wild substitutes and doubles (two wilds ×4), three wilds pay the top award outright.
-function slClassicWins(m,g,bet){
-  var line=[0,1,2].map(function(c){return slBase(g[c][1]);}),W=m.wild,nw=0,best=0,label='',hit=[];
-  line.forEach(function(s){if(s===W)nw++;});
-  var others=line.filter(function(s){return s!==W;}),mult=Math.pow(2,nw),isBar=function(x){return x==='B1'||x==='B2'||x==='B3';};
-  function take(p,txt,cells){if(p>best){best=p;label=txt;hit=cells;}}
-  var all=[[0,1],[1,1],[2,1]];
-  if(nw===3)take(m.pay.W[3],'Three '+slName(m,W),all);
-  ['S7','B3','B2','B1'].forEach(function(s){if(others.length&&others.every(function(x){return x===s;}))take(m.pay[s][3]*mult,'Three '+slName(m,s)+(nw?' (×'+mult+' wild)':''),all);});
-  if(others.length&&others.every(isBar))take(m.pay.AB[3]*mult,'Any three bars'+(nw?' (×'+mult+' wild)':''),all);
-  var ch=line.filter(function(x){return x==='CH';}).length;
-  if(ch){var n=Math.min(3,ch+nw);take(m.pay.CH[n]*mult,n+' cherr'+(n>1?'ies':'y')+(nw?' (×'+mult+' wild)':''),all.filter(function(p,i){return line[i]==='CH'||line[i]===W;}));}
-  return best?[{line:0,cells:hit,amount:best*bet*m.k,text:label}]:[];
-}
 function slScatterWin(m,cells,bet,mult){
   var top=Math.max.apply(null,Object.keys(m.scatterPay).map(Number)),p=m.scatterPay[Math.min(cells.length,top)];
   return p?{cells:cells,amount:p*bet*mult,text:cells.length+' '+slName(m,m.scatter)+' scatters'}:null;
@@ -5939,48 +6019,46 @@ function slTumble(m,g,wins,tables){
   return {grid:ng,drops:drops};
 }
 function slOrbValue(m,s,bet){var v=slVal(s);return (m.jackpots[v]||+v)*bet;}
+function slShuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
+// How many machines there are, in words, for the slot floor and the rules
+function slCountWord(){var n=Object.keys(SLOT_MACHINES).length;return ['No','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen'][n]||String(n);}
+// Clusters: 5 or more of a symbol touching up, down, left or right, paid by the cluster's size (5-6, 7-8, 9-10,
+// 11-12, 13-14, 15+). spots are Cosmic Clusters' multiplier spots, keyed reel × rows + row: a cluster pays times
+// the total of the multipliers it covers (a spot that's only marked, at 1, adds nothing).
+function slClusterWins(m,g,bet,spots){
+  var C=m.cols,R=m.rows,seen={},wins=[],D=[[1,0],[-1,0],[0,1],[0,-1]];
+  for(var c=0;c<C;c++)for(var r=0;r<R;r++){
+    var s=slBase(g[c][r]);if(seen[c*R+r]||!m.pay[s])continue;
+    var cells=[],stack=[[c,r]];seen[c*R+r]=1;
+    while(stack.length){
+      var p=stack.pop();cells.push(p);
+      for(var i=0;i<4;i++){var x=p[0]+D[i][0],y=p[1]+D[i][1];
+        if(x>=0&&x<C&&y>=0&&y<R&&!seen[x*R+y]&&slBase(g[x][y])===s){seen[x*R+y]=1;stack.push([x,y]);}}
+    }
+    var n=cells.length;if(n<5)continue;
+    var b=n>=15?5:n>=13?4:n>=11?3:n>=9?2:n>=7?1:0,mult=0;
+    if(spots)cells.forEach(function(q){var v=spots[q[0]*R+q[1]];if(v>1)mult+=v;});
+    wins.push({cells:cells,amount:m.pay[s][b]*bet*m.k*(mult||1),text:n+' '+slName(m,s)+(mult?' ×'+mult:'')});
+  }
+  return wins;
+}
+// Parcel Party's pick: twelve parcels, three of each jackpot. The order they open in is drawn here, so the odds
+// come from the draw, not from which parcels you choose (as on the real machines): the winning jackpot turns up
+// for the third time on the last parcel opened, and every other one at most twice. rest is what's left unopened.
+function slPickOrder(target){
+  var L=['MINI','MINOR','MAJOR','GRAND'],seq=[target,target],left={};
+  L.forEach(function(l){left[l]=3;if(l!==target)for(var n=Math.floor(Math.random()*3);n>0;n--)seq.push(l);});
+  seq=slShuffle(seq);seq.push(target);
+  seq.forEach(function(l){left[l]--;});
+  var rest=[];L.forEach(function(l){for(var i=0;i<left[l];i++)rest.push(l);});
+  return {order:seq,rest:slShuffle(rest)};
+}
 
 // ── The machines ──
 // rtp: the original's published return; measured: what this machine came out at in slotTune
 // (exact: worked out from the reel odds rather than simulated, for the 3-reel games); hit: the % of
 // spins that win anything (slotSimulate), which sets how often Arcade spins are on the house.
-var SL_CLASSIC_SYM={W:{wild:1,name:'Double Peccy'},S7:{seven:'#ff3b3b',name:'Seven'},B3:{bars:3,name:'Triple Bar'},B2:{bars:2,name:'Double Bar'},B1:{bars:1,name:'Single Bar'},CH:{e:'🍒',name:'Cherry'},_:{blank:1,name:'Blank'}};
-var SL_CLASSIC_PAY={W:{3:1000},S7:{3:80},B3:{3:40},B2:{3:25},B1:{3:10},AB:{3:5},CH:{1:2,2:5,3:10}};
 var SLOT_MACHINES={
-  classic:{
-    name:'Double Peccy',icon:'💎',type:'Classic',sub:'3 reels · 1 line · one Peccy doubles a win, two quadruple it',
-    based:'IGT Double Diamond',rtp:95,rtpNote:'IGT ships Double Diamond at several settings; 95% is a common one',measured:95,hit:23.0,exact:1,
-    theme:{acc:'#4fc3f7',bg1:'#13253d',bg2:'#060c16'},
-    cols:3,rows:3,kind:'classic',lines:[[1,1,1]],wild:'W',maxCell:200,k:1,
-    sym:SL_CLASSIC_SYM,pay:SL_CLASSIC_PAY,
-    weights:{W:1,S7:1.6,B3:2.2,B2:3,B1:4.5,CH:2.6,_:14},knob:['_'],f:1.4873,
-    rules:'One payline across the middle. Three of a kind pays, any mix of three bars pays 5×, and cherries pay anywhere on the line (one 2×, two 5×, three 10×). Double Peccy is wild: one in a win doubles it, two quadruple it, and three pay 1,000× your bet. Blank stops pay nothing.',
-    say:{intro:"Old-school reels: one line, cherries, bars and Double Peccy wilds! 💎"},
-    play:function(bet){
-      var g=slFill(this,this.tables);
-      return [slStep('spin',g,slClassicWins(this,g,bet),{status:'',tease:{line:'W',say:"Two Peccys on the line... can you get a third? 🤞"}})];
-    }
-  },
-  wheel:{
-    name:'Wheel of Peccy',icon:'🎡',type:'Bonus wheel',sub:'3 reels · 1 line · SPIN on the third reel spins the big wheel',
-    based:'IGT Wheel of Fortune (Double Diamond reels)',rtp:93,rtpNote:'land-based Wheel of Fortune machines run roughly 88–95%; 93% is used here',measured:93,hit:13.1,exact:1,
-    theme:{acc:'#ffcc00',bg1:'#3a1060',bg2:'#10031c'},
-    cols:3,rows:3,kind:'classic',lines:[[1,1,1]],wild:'W',maxCell:200,k:1,
-    sym:Object.assign({SP:{spin:1,name:'SPIN'}},SL_CLASSIC_SYM),pay:SL_CLASSIC_PAY,
-    weights:function(c){var w={W:1,S7:1.6,B3:2.2,B2:3,B1:4.5,CH:2.6,_:14};if(c===2)w.SP=0.55;return w;},knob:['_'],f:3.3613,
-    wheel:[[20,16],[25,14],[30,12],[40,10],[50,9],[60,7],[75,6],[80,5],[100,4.5],[120,3.5],[150,3],[200,2],[250,1.5],[400,0.8],[500,0.6],[1000,0.25]],
-    rules:'Double Diamond reels on one payline (same pays as Double Peccy). The third reel also carries a SPIN symbol: land it on the payline and the big wheel spins for 20× to 1,000× your bet. Like the real machine, the wheel\'s wedges look equal but the bigger prizes come up less often.',
-    say:{intro:"Land SPIN on the third reel and the big wheel is all yours! 🎡",feature:"Wheel! Of! PECCY! 🎡"},
-    play:function(bet){
-      var m=this,g=slFill(m,m.tables),steps=[slStep('spin',g,slClassicWins(m,g,bet),{status:'',tease:{line:'W',say:"Two Peccys on the line... can you get a third? 🤞"}})];
-      if(slBase(g[2][1])==='SP'){
-        var i=+slDraw(m.wheelTable);
-        steps.push(slStep('banner',null,[],{text:'SPIN THE WHEEL!',sub:'SPIN landed on the payline',feature:true}));
-        steps.push(slStep('wheel',g,[{cells:[[2,1]],amount:m.wheel[i][0]*bet,text:'Bonus wheel '+m.wheel[i][0]+'× bet'}],{wedge:i}));
-      }
-      return steps;
-    }
-  },
   pharaoh:{
     name:'Pharaoh Peccy',icon:'🏺',type:'Free spins',sub:'5 reels · 20 lines · 3 Sphinx = 15 free spins at ×3',
     based:'IGT Cleopatra',rtp:95.02,rtpNote:'IGT\'s published 95.02%',measured:95.0,hit:33.6,
@@ -6120,50 +6198,6 @@ var SLOT_MACHINES={
       return steps;
     }
   },
-  megaways:{
-    name:'Gold Rush Megaways',icon:'⛏️',type:'Megaways',sub:'6 reels of 2–7 symbols · up to 117,649 ways · cascades · unlimited multiplier',
-    based:'Big Time Gaming Bonanza Megaways',rtp:96,rtpNote:'Big Time Gaming\'s published 96.00%',measured:96.0,hit:43.1,
-    theme:{acc:'#ffb300',bg1:'#2b1a07',bg2:'#0d0702'},
-    cols:6,rows:7,colCells:5,kind:'ways',wild:'W',scatter:'SC',maxCell:150,k:1,
-    sym:slWithRoyals({W:{e:'🧨',name:'Dynamite',wild:0},SC:{e:'🪙',name:'Gold'},pur:slGem('Purple gem',70),red:slGem('Ruby',160),grn:slGem('Emerald',-80),blu:slGem('Sapphire',0)}),
-    pay:{pur:{2:0.2,3:1,4:2.5,5:10,6:50},red:{3:0.5,4:1,5:2.5,6:7.5},grn:{3:0.3,4:0.5,5:1,6:2},blu:{3:0.25,4:0.5,5:1,6:2},
-      A:{3:0.2,4:0.4,5:1,6:1.75},K:{3:0.2,4:0.4,5:0.8,6:1.5},Q:{3:0.15,4:0.3,5:0.6,6:1},J:{3:0.1,4:0.25,5:0.5,6:1},T:{3:0.1,4:0.2,5:0.4,6:0.8},N:{3:0.1,4:0.2,5:0.4,6:0.8}},
-    rowWeights:{2:2,3:3,4:3,5:2.5,6:1.5,7:0.7},
-    weights:function(c){return {W:c>=1&&c<=4?0.9:0,SC:0.85,pur:1.6,red:2.4,grn:3,blu:3,A:4,K:4,Q:4.5,J:4.5,T:5,N:5};},knob:['SC','pur','red','grn','blu','A','K','Q','J','T','N'],f:1.371,
-    rules:'Every spin each reel shows 2 to 7 symbols, so the number of ways (shown above the reels) changes every time, up to 117,649. Ways pay per way times your bet from the leftmost reel. Wins explode and new symbols cascade in. Dynamite is wild on reels 2 to 5. Four or more gold scatters give 12 free spins plus 5 for each extra; in free spins the multiplier starts at ×1 and grows by 1 after every cascade with no limit, and 3 or 4 gold scatters add 5 or 10 spins. The top pays match Bonanza (six purple gems 50×, six rubies 7.5×); the smaller rungs are close stand-ins, and the original\'s extra row of mine carts above the reels is folded into the reels here.',
-    say:{intro:"Every spin changes the ways to win. Four gold for free spins! ⛏️",feature:"Gold rush! The multiplier climbs with every cascade! ⛏️"},
-    play:function(bet){
-      var m=this,steps=[],mult=1;
-      function rows(){var r=[];for(var c=0;c<m.cols;c++)r.push(+slDraw(m.rowTable));return r;}
-      function ways(g){return g.reduce(function(a,col){return a*col.length;},1);}
-      function sequence(tables,fs){
-        var g=slFill(m,tables,rows()),drops=null;
-        for(var guard=0;guard<60;guard++){
-          var wins=slWaysWins(m,g,bet,null);
-          if(fs)wins.forEach(function(w){w.amount*=mult;w.text+=' ×'+mult;});
-          var st=slStep(drops?'tumble':'spin',g,wins,{drops:drops,status:(fs?'FREE SPINS · MULTIPLIER ×'+mult+' · ':'')+ways(g).toLocaleString()+' WAYS',
-            tease:drops?null:{sym:m.scatter,need:fs?3:4,say:fs?"One more gold for extra spins! 🪙":"Three gold... one more for free spins! 🪙"}});
-          steps.push(st);
-          if(!wins.length)break;
-          if(fs)mult++;
-          var tb=slTumble(m,g,wins,tables);g=tb.grid;drops=tb.drops;
-        }
-        return slCellsOf(g,m.scatter);
-      }
-      var sc=sequence(m.tables,false);
-      if(sc.length>=4){
-        var left=12+5*(sc.length-4),total=left,played=0;
-        steps.push(slStep('banner',null,[],{text:left+' FREE SPINS',sub:'Unlimited multiplier: +1 after every cascade',feature:true}));
-        while(left>0&&played<200){
-          left--;played++;
-          var n=sequence(m.tables,true).length;
-          if(n>=3){var add=n>=4?10:5;left+=add;total+=add;steps.push(slStep('banner',null,[],{text:'+'+add+' FREE SPINS',sub:n+' gold scatters!'}));}
-        }
-        steps.push(slStep('summary',null,[],{text:'GOLD RUSH OVER'}));
-      }
-      return steps;
-    }
-  },
   candy:{
     name:'Candy Cloud Bonanza',icon:'🍭',type:'Tumble',sub:'6 × 5 · pays anywhere · tumbling wins · bomb multipliers',
     based:'Pragmatic Play Sweet Bonanza',rtp:96.48,rtpNote:'Pragmatic Play\'s published 96.48%',measured:96.5,hit:48.0,
@@ -6246,8 +6280,262 @@ var SLOT_MACHINES={
       }
       return steps;
     }
+  },
+  huff:{
+    name:'Huff N\' Peccy',icon:'🐺',type:'Build and blow down',sub:'5 reels · 243 ways · 6+ hard hats build houses for the wolf to blow down',
+    based:'Light & Wonder Huff N\' Puff',rtp:96,rtpNote:'the online Huff N\' Puff games are quoted at 96.0%',measured:95.7,hit:26.9,
+    theme:{acc:'#f2b134',bg1:'#33260d',bg2:'#100b02'},
+    cols:5,rows:3,kind:'ways',wild:'W',scatter:'HH',maxCell:160,k:2.5,
+    sym:slWithRoyals({W:{wild:1,name:'Builder Peccy'},HH:{e:'⛑️',name:'Hard hat'},wlf:{e:'🐺',name:'Big bad wolf'},pg3:{e:'🐽',name:'Brick pig'},pg2:{e:'🐖',name:'Stick pig'},
+      pg1:{e:'🐷',name:'Straw pig'},ham:{e:'🔨',name:'Hammer'},H1:{e:'🛖',name:'Straw house',house:1},H2:{e:'🏡',name:'Stick house',house:1},H3:{e:'🏠',name:'Brick house',house:1}}),
+    pay:{wlf:{3:1,4:3,5:10},pg3:{3:0.8,4:2,5:6},pg2:{3:0.6,4:1.5,5:4},pg1:{3:0.5,4:1.2,5:3},ham:{3:0.4,4:1,5:2.5},
+      A:{3:0.25,4:0.5,5:1.5},K:{3:0.25,4:0.5,5:1.5},Q:{3:0.2,4:0.4,5:1},J:{3:0.2,4:0.4,5:1},T:{3:0.15,4:0.3,5:0.8},N:{3:0.15,4:0.3,5:0.8}},
+    jackpots:{MINI:10,MINOR:25,MAJOR:150,GRAND:1000},
+    // What a house turns out to hold when the wolf blows it down, by how far it was built (1 straw, 2 sticks, 3 bricks)
+    houses:{1:{0.5:35,1:35,1.5:20,2:10},2:{2:30,3:30,5:20,8:10,MINI:8,MINOR:2},3:{10:35,15:25,20:18,30:10,50:6,100:3,250:1,MINI:4,MINOR:2,MAJOR:0.5,GRAND:0.08}},
+    weights:function(c){return {W:c>=1&&c<=3?4:0,HH:7.5,wlf:2.5,pg3:3,pg2:3.5,pg1:4,ham:4.5,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
+    fsWeights:function(c){return {W:c>=1&&c<=3?4:0,HH:5,wlf:2.5,pg3:3,pg2:3.5,pg1:4,ham:4.5,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
+    knob:['A','K','Q','J','T','N'],f:1.0582,
+    ptExtra:[['HH','Six or more hard hats, anywhere','6 free spins that build houses'],['H1','Straw house','0.5× to 2× your bet'],['H2','Stick house','2× to 8×, or the Mini or Minor'],['H3','Brick house','10× to 250×, or the Mini, Minor, Major or Grand']],
+    rules:'243 ways: matching symbols on adjacent reels from the left pay per way. Builder Peccy is wild on reels 2 to 4. Six or more hard hats anywhere start 6 free spins, and each of their spots gets a straw frame. In the free spins every hard hat builds on its spot: straw becomes sticks, sticks become bricks, and a hat on bricks adds a brick house to another spot. Three or more hats in one free spin add a spin. When the spins run out, the wolf huffs and puffs three times, blowing down the straw houses, then the stick houses, then the brick ones, and each pays what it hides: straw 0.5× to 2× your bet, sticks 2× to 8× or a small jackpot, bricks 10× to 250× or any jackpot. Jackpots are fixed: Mini 10×, Minor 25×, Major 150×, Grand 1,000× your bet. The symbol pays are close stand-ins for the original\'s.',
+    say:{intro:"Six hard hats start the build... and then the wolf comes knocking. 🐺",feature:"Hard hats on! Let's build some houses! ⛑️"},
+    play:function(bet){
+      var m=this,steps=[],g=slFill(m,m.tables),hats=slCellsOf(g,'HH');
+      steps.push(slStep('spin',g,slWaysWins(m,g,bet,null),{status:'',tease:{sym:'HH',need:6,say:"Five hard hats... one more starts the build! ⛑️"}}));
+      if(hats.length<6)return steps;
+      var fr={},left=6,total=6,played=0;
+      hats.forEach(function(p){fr[p[0]+','+p[1]]=1;});
+      function marks(){var o={};for(var k in fr)o[k]={cls:'fr fr'+fr[k]};return o;}
+      steps.push(slStep('banner',null,[],{text:'6 FREE SPINS',sub:'Every hard hat builds: straw, then sticks, then bricks',feature:true}));
+      steps.push(slStep('frames',g,[],{marks:marks(),status:'STRAW FRAMES ON '+hats.length+' SPOTS'}));
+      while(left>0&&played<60){
+        left--;played++;
+        var fg=slFill(m,m.fsTables),fh=slCellsOf(fg,'HH');
+        fh.forEach(function(p){
+          var k=p[0]+','+p[1];
+          if((fr[k]||0)<3){fr[k]=(fr[k]||0)+1;return;}
+          var open=[];for(var c=0;c<m.cols;c++)for(var r=0;r<m.rows;r++)if((fr[c+','+r]||0)<3)open.push(c+','+r);
+          if(open.length)fr[open[Math.floor(Math.random()*open.length)]]=3;
+        });
+        steps.push(slStep('spin',fg,slWaysWins(m,fg,bet,null),{status:'FREE SPIN '+played+' OF '+total+' · BUILDING',marks:marks()}));
+        if(fh.length>=3){left++;total++;steps.push(slStep('banner',null,[],{text:'+1 FREE SPIN',sub:fh.length+' hard hats in one spin!'}));}
+      }
+      // The wolf: three huffs, straw first, then sticks, then bricks
+      var hg=[],vals={},NM=['','straw','stick','brick'];
+      for(var c=0;c<m.cols;c++){hg.push([]);for(var r=0;r<m.rows;r++){var k=c+','+r;hg[c].push(fr[k]?'H'+fr[k]:null);if(fr[k])vals[k]=slDraw(m.houseTables[fr[k]]);}}
+      for(var lv=1;lv<=3;lv++){
+        var cells=[],sum=0;
+        for(var key in fr)if(fr[key]===lv){var q=key.split(',').map(Number);cells.push(q);hg[q[0]][q[1]]='H'+lv+':'+vals[key];sum+=(m.jackpots[vals[key]]||+vals[key])*bet;}
+        if(cells.length)steps.push(slStep('huff',slCopy(hg),[{cells:cells,amount:sum,text:cells.length+' '+NM[lv]+' house'+(cells.length>1?'s':'')}],{level:lv,status:'THE WOLF BLOWS DOWN THE '+NM[lv].toUpperCase()+' HOUSES'}));
+      }
+      steps.push(slStep('summary',null,[],{text:'ALL BLOWN DOWN'}));
+      return steps;
+    }
+  },
+  cosmic:{
+    name:'Cosmic Clusters',icon:'🪐',type:'Cluster tumble',sub:'7 × 7 · clusters of 5+ tumble away · multiplier spots up to ×128',
+    based:'Pragmatic Play Sugar Rush',rtp:96.5,rtpNote:'Pragmatic Play\'s published 96.50%',measured:96.6,hit:42.0,
+    theme:{acc:'#8c6cff',bg1:'#1b1045',bg2:'#06030f'},
+    cols:7,rows:7,kind:'cluster',scatter:'SC',maxCell:100,k:2.2,
+    sym:{SC:{e:'🌀',name:'Wormhole'},ali:{e:'👽',name:'Alien'},ufo:{e:'🛸',name:'Saucer'},pla:{e:'🪐',name:'Ringed planet'},rkt:{e:'🚀',name:'Rocket'},
+      moo:{e:'🌙',name:'Moon'},com:{e:'☄️',name:'Comet'},sat:{e:'🛰️',name:'Satellite'}},
+    // Pays by cluster size: 5-6, 7-8, 9-10, 11-12, 13-14, 15 or more
+    pay:{ali:[1.5,3,7,15,40,150],ufo:[1,2,5,10,25,100],pla:[0.8,1.5,3,8,20,60],rkt:[0.6,1.2,2.5,5,12,40],moo:[0.4,0.8,1.5,3,8,25],com:[0.3,0.6,1.2,2.5,6,18],sat:[0.25,0.5,1,2,5,15]},
+    fsAward:{3:10,4:12,5:15,6:20,7:30},
+    weights:{SC:0.22,ali:4,ufo:4.4,pla:4.8,rkt:5.2,moo:5.6,com:6,sat:6.4},f:1,stick:0.06,
+    ptExtra:[['SC','Wormhole (scatter)','3, 4, 5, 6 or 7 start 10, 12, 15, 20 or 30 free spins']],
+    rules:'No lines: 5 or more matching symbols touching up, down, left or right make a cluster, which pays by its size. Winning clusters burst and new symbols tumble in, again and again while there are wins. Every spot a cluster bursts on is marked; the next burst on a marked spot turns it into a ×2 multiplier, and each burst after that doubles it, up to ×128. A cluster pays times the total of the multipliers it covers. In the base game the spots clear after each spin. Three or more wormholes start 10 to 30 free spins, where the spots stay for the whole feature, and three more add spins.',
+    say:{intro:"Clusters of five pop, and the spots they leave behind start multiplying! 🪐",feature:"A wormhole opens! The multiplier spots stay for the whole feature! 🌀"},
+    play:function(bet){
+      var m=this,steps=[],R=m.rows;
+      function marks(spots){var o={};for(var k in spots){var v=spots[k];o[Math.floor(k/R)+','+(k%R)]=v>1?{cls:'spx',label:'×'+v}:{cls:'sp1'};}return o;}
+      // One spin and every tumble it sets off; each burst marks or doubles the spots it covered
+      function sequence(spots,status,fs){
+        var g=slFill(m,m.tables),drops=null;
+        for(var guard=0;guard<80;guard++){
+          var wins=slClusterWins(m,g,bet,spots);
+          steps.push(slStep(drops?'tumble':'spin',g,wins,{status:status,drops:drops,marks:marks(spots),
+            tease:drops?null:{sym:m.scatter,need:3,say:fs?"One more wormhole for extra spins! 🌀":"Two wormholes... one more opens the feature! 🌀"}}));
+          if(!wins.length)break;
+          wins.forEach(function(w){w.cells.forEach(function(p){var k=p[0]*R+p[1],v=spots[k];spots[k]=!v?1:Math.min(128,v===1?2:v*2);});});
+          var tb=slTumble(m,g,wins,m.tables);g=tb.grid;drops=tb.drops;
+        }
+        return slCellsOf(g,m.scatter).length;
+      }
+      var n=sequence({},'',false);
+      if(n>=3){
+        var left=m.fsAward[Math.min(n,7)],total=left,played=0,spots={};
+        steps.push(slStep('banner',null,[],{text:left+' FREE SPINS',sub:'The multiplier spots stay for the whole feature',feature:true}));
+        while(left>0&&played<200){
+          left--;played++;
+          var c=sequence(spots,'FREE SPIN '+played+' OF '+total+' · SPOTS STAY',true);
+          if(c>=3){var add=m.fsAward[Math.min(c,7)];left+=add;total+=add;steps.push(slStep('banner',null,[],{text:'+'+add+' FREE SPINS',sub:c+' wormholes!'}));}
+        }
+        steps.push(slStep('summary',null,[],{text:'FREE SPINS OVER'}));
+      }
+      return steps;
+    }
+  },
+  parcels:{
+    name:'Parcel Party',icon:'📦',type:'Two bonus games',sub:'5 reels · 20 lines · parcels start a pick bonus · three wheels spin the prize wheel',
+    based:'pick-and-match jackpot and bonus-wheel slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.2,hit:36.6,
+    theme:{acc:'#ff9900',bg1:'#33200a',bg2:'#0f0802'},
+    cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',scatter:'PK',maxCell:170,k:2.5,
+    sym:slWithRoyals({W:{wild:1,name:'Courier Peccy'},PK:{e:'📦',name:'Parcel'},WH:{e:'🎡',name:'Prize wheel'},trk:{e:'🚚',name:'Delivery truck'},pln:{e:'✈️',name:'Cargo plane'},
+      gft:{e:'🎁',name:'Gift'},tag:{e:'🏷️',name:'Price tag'},crt:{e:'🛒',name:'Cart'}}),
+    pay:{W:{2:5,3:30,4:150,5:600},trk:{2:2,3:25,4:100,5:400},pln:{2:2,3:20,4:80,5:300},gft:{3:15,4:50,5:200},tag:{3:10,4:30,5:150},crt:{3:10,4:30,5:120},
+      A:{3:5,4:20,5:80},K:{3:5,4:20,5:80},Q:{3:4,4:15,5:60},J:{3:4,4:15,5:60},T:{3:3,4:10,5:50},N:{3:3,4:10,5:50}},
+    jackpots:{MINI:10,MINOR:25,MAJOR:100,GRAND:1000},pickWeights:{MINI:62,MINOR:28,MAJOR:9,GRAND:1},
+    wheel:[[5,14],[8,12],[10,12],[15,10],[20,9],[25,8],[30,7],[40,6],[50,5],[75,4],[100,3],[150,2],[250,1],[500,0.5]],
+    weights:function(c){return {W:4.5,PK:1.5,WH:c%2===0?4:0,trk:3,pln:3.5,gft:4,tag:4.5,crt:5,A:6,K:6,Q:7,J:7,T:8,N:8};},
+    knob:['A','K','Q','J','T','N'],f:1.2154,
+    ptExtra:[['PK','Three or more parcels, anywhere','Parcel Pick: find three of a jackpot to win it'],['WH','A wheel on each of reels 1, 3 and 5','Prize wheel: 5× to 500× your bet']],
+    rules:'20 lines, paid left to right. Courier Peccy is wild and pays on its own too. Two bonus games: three or more parcels anywhere start the Parcel Pick, where you open parcels until you find three of the same jackpot, and win it (Mini 10×, Minor 25×, Major 100× or Grand 1,000× your bet). A wheel on each of reels 1, 3 and 5 spins the prize wheel for 5× to 500× your bet; the wedges look equal, but the big prizes come up less often. Both can land on the same spin. As on the real machines, what the parcels hold is settled when the bonus starts, so which ones you open doesn\'t change the prize.',
+    say:{intro:"Parcels start the pick bonus, wheels spin for prizes. Two ways to a bonus! 📦",feature:"Special delivery! Bonus time! 📦"},
+    play:function(bet){
+      var m=this,lb=bet/m.lines.length,g=slFill(m,m.tables),pk=slCellsOf(g,'PK'),wh=slCellsOf(g,'WH'),steps=[],reels={};
+      wh.forEach(function(p){reels[p[0]]=1;});
+      var wheel=Object.keys(reels).length===3;
+      steps.push(slStep('spin',g,slLineWins(m,g,lb,1),{status:'',tease:{sym:'PK',need:3,say:"Two parcels... one more opens the pick bonus! 📦"}}));
+      if(pk.length>=3){
+        var target=slDraw(m.pickTable);
+        steps.push(slStep('banner',null,[],{text:'PARCEL PICK',sub:'Open parcels: find three of a jackpot to win it',feature:true}));
+        steps.push(slStep('pick',g,[{cells:pk,amount:m.jackpots[target]*bet,text:target+' jackpot'}],{pick:slPickOrder(target),target:target}));
+      }
+      if(wheel){
+        var i=+slDraw(m.wheelTable);
+        steps.push(slStep('banner',null,[],{text:'PRIZE WHEEL',sub:'Three wheels landed: spin for up to 500× your bet',feature:pk.length<3}));
+        steps.push(slStep('wheel',g,[{cells:wh,amount:m.wheel[i][0]*bet,text:'Prize wheel '+m.wheel[i][0]+'× bet'}],{wedge:i}));
+      }
+      return steps;
+    }
+  },
+  skyhigh:{
+    name:'Sky High Scale-Up',icon:'🏗️',type:'Expanding reels',sub:'5 reels · 3 rows up to 7 · every win adds a row and respins',
+    based:'expanding-reel ways slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.7,hit:26.5,
+    theme:{acc:'#4fc3f7',bg1:'#0d2c44',bg2:'#030f19'},
+    cols:5,rows:7,grow:true,kind:'ways',wild:'W',scatter:'SC',maxCell:140,k:1/6,
+    sym:slWithRoyals({W:{wild:1,name:'Hard-hat Peccy'},SC:{e:'🏗️',name:'Crane'},sky:{e:'🏙️',name:'Skyline'},twr:{e:'🗼',name:'Tower'},hel:{e:'🚁',name:'Helicopter'},ves:{e:'🦺',name:'Safety vest'}}),
+    pay:{sky:{3:2,4:5,5:20},twr:{3:1.5,4:4,5:15},hel:{3:1,4:3,5:10},ves:{3:1,4:2.5,5:8},A:{3:0.5,4:1,5:3},K:{3:0.5,4:1,5:3},Q:{3:0.4,4:0.8,5:2.5},J:{3:0.4,4:0.8,5:2.5},T:{3:0.3,4:0.6,5:2},N:{3:0.3,4:0.6,5:2}},
+    weights:function(c){return {W:c>=1&&c<=3?1.2:0,SC:0.9,sky:2.5,twr:3,hel:3.5,ves:4,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
+    knob:['A','K','Q','J','T','N'],f:0.868,
+    ptExtra:[['SC','Crane (scatter)','3 or more start 8 free spins']],
+    rules:'Ways pay: matching symbols on adjacent reels from the left pay per way. The reels start 3 rows tall (243 ways). Every win adds a row to every reel and respins them free, up to 7 rows and 16,807 ways; the run ends on a respin that doesn\'t win, or after the respin at full height. Hard-hat Peccy is wild on reels 2 to 4. Three or more cranes, on any spin of the run, start 8 free spins with the reels already 4 rows tall. In the feature they never shrink: every winning spin adds a row, and once they\'re 7 tall every winning spin adds 1 to a multiplier on all wins. Three cranes in the feature add 4 spins.',
+    say:{intro:"Win and the tower grows! Every win adds a row and respins. 🏗️",feature:"Cranes up! The reels only grow from here! 🏗️"},
+    play:function(bet){
+      var m=this,steps=[],rows=3,trig=0;
+      function label(n){return n+' ROWS · '+Math.pow(n,m.cols).toLocaleString()+' WAYS';}
+      // Each win grows the reels a row and respins them, until a respin misses or the respin at full height is done
+      for(var guard=0;guard<10;guard++){
+        var g=slFill(m,m.tables,rows),wins=slWaysWins(m,g,bet,null);
+        trig=Math.max(trig,slCellsOf(g,m.scatter).length);
+        steps.push(slStep('spin',g,wins,{status:(guard?'RESPIN · ':'')+label(rows),grow:guard>0,tease:{sym:m.scatter,need:3,say:"Two cranes... one more starts the free spins! 🏗️"}}));
+        if(!wins.length||rows===7)break;
+        rows++;
+      }
+      if(trig>=3){
+        var left=8,total=8,played=0,fr=4,mult=1;
+        steps.push(slStep('banner',null,[],{text:'8 FREE SPINS',sub:'The reels start 4 rows tall and only grow',feature:true}));
+        while(left>0&&played<100){
+          left--;played++;
+          var fg=slFill(m,m.tables,fr),fw=slWaysWins(m,fg,bet,null),fsc=slCellsOf(fg,m.scatter).length;
+          if(mult>1)fw.forEach(function(w){w.amount*=mult;w.text+=' ×'+mult;});
+          steps.push(slStep('spin',fg,fw,{status:'FREE SPIN '+played+' OF '+total+' · '+label(fr)+(mult>1?' · ×'+mult:''),tease:{sym:m.scatter,need:3,say:"One more crane for extra spins! 🏗️"}}));
+          if(fw.length){if(fr<7)fr++;else mult++;}
+          if(fsc>=3){left+=4;total+=4;steps.push(slStep('banner',null,[],{text:'+4 FREE SPINS',sub:fsc+' cranes!'}));}
+        }
+        steps.push(slStep('summary',null,[],{text:'FREE SPINS OVER'}));
+      }
+      return steps;
+    }
+  },
+  fishing:{
+    name:'Reel Big Catch',icon:'🎣',type:'Cash collect',sub:'5 reels · 10 lines · in free spins Fisherman Peccy reels in every fish',
+    based:'Pragmatic Play Big Bass Bonanza',rtp:96.71,rtpNote:'Pragmatic Play\'s published 96.71%',measured:97.0,hit:27.6,
+    theme:{acc:'#29b6c8',bg1:'#0b3140',bg2:'#021118'},
+    cols:5,rows:3,kind:'lines',lines:SL_LINES10,wild:'W',scatter:'SC',maxCell:170,k:2,
+    sym:slWithRoyals({W:{wild:1,name:'Fisherman Peccy'},SC:{e:'🛥️',name:'Fishing boat'},F:{e:'🐟',name:'Money fish',cash:1},rod:{e:'🎣',name:'Fishing rod'},box:{e:'🧰',name:'Tackle box'},dck:{e:'🦆',name:'Decoy duck'}},['A','K','Q','J','T']),
+    pay:{rod:{2:2,3:20,4:50,5:200},box:{2:2,3:15,4:40,5:150},dck:{2:1,3:10,4:30,5:100},F:{2:1,3:5,4:20,5:200},A:{3:5,4:10,5:50},K:{3:5,4:10,5:50},Q:{3:3,4:10,5:40},J:{3:3,4:10,5:40},T:{3:3,4:8,5:30}},
+    scatterPay:{3:2,4:20,5:200},fsAward:{3:10,4:15,5:20},
+    values:{F:{2:35,5:25,10:16,15:9,20:6,25:4,50:2.5}},
+    weights:{SC:1.05,F:4,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
+    fsWeights:{W:0.65,F:6,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
+    knob:['A','K','Q','J','T'],f:0.714,wildNote:'Free spins only: substitutes for every pay symbol, and reels in every money fish',
+    ptExtra:[['F:10','Money fish','Worth 2× to 50× your bet, collected in free spins']],
+    rules:'10 lines, paid left to right. Money fish pay on the lines like any symbol, and each carries a cash value (2× to 50× your bet). Three, four or five fishing boats pay 2×, 20× or 200× and start 10, 15 or 20 free spins. In the free spins Fisherman Peccy is wild, and every one that lands reels in the value of every fish on screen. Every fourth fisherman adds 10 more spins and raises what fish pay: ×2, then ×3, then ×10.',
+    say:{intro:"Fish are worth cash, but you need Fisherman Peccy to reel them in! 🎣",feature:"All aboard! Fisherman Peccy's on the water! 🛥️"},
+    play:function(bet){
+      var m=this,lb=bet/m.lines.length,steps=[],g=slFill(m,m.tables),sc=slCellsOf(g,m.scatter);
+      steps.push(slStep('spin',g,slPush(slLineWins(m,g,lb,1),sc.length>=3?slScatterWin(m,sc,bet,1):null),{status:'',tease:{sym:m.scatter,need:3,say:"Two boats... one more and we go fishing! 🛥️"}}));
+      if(sc.length<3)return steps;
+      var left=m.fsAward[Math.min(sc.length,5)],total=left,played=0,caught=0,lvl=0,MULT=[1,2,3,10];
+      steps.push(slStep('banner',null,[],{text:left+' FREE SPINS',sub:'Every Fisherman Peccy reels in every fish on screen',feature:true}));
+      while(left>0&&played<120){
+        left--;played++;
+        var fg=slFill(m,m.fsTables),ws=slCellsOf(fg,'W'),fish=slCellsOf(fg,'F');
+        var tag=' · FISHERMEN '+caught+' / 4'+(MULT[lvl]>1?' · FISH ×'+MULT[lvl]:'');
+        steps.push(slStep('spin',fg,slLineWins(m,fg,lb,1),{status:'FREE SPIN '+played+' OF '+total+tag}));
+        if(ws.length&&fish.length){
+          var sum=0;fish.forEach(function(p){sum+=+slVal(fg[p[0]][p[1]]);});
+          steps.push(slStep('gather',fg,[{cells:fish.concat(ws),amount:sum*bet*ws.length*MULT[lvl],text:(ws.length>1?ws.length+' fishermen reel':'Fisherman Peccy reels')+' in '+fish.length+' fish'+(MULT[lvl]>1?' ×'+MULT[lvl]:'')}],{status:'REELED IN!'+tag}));
+        }
+        if(ws.length&&lvl<3){
+          caught+=ws.length;
+          while(caught>=4&&lvl<3){caught-=4;lvl++;left+=10;total+=10;steps.push(slStep('banner',null,[],{text:'+10 FREE SPINS',sub:'Fish now pay ×'+MULT[lvl]}));}
+        }
+      }
+      steps.push(slStep('summary',null,[],{text:'BACK TO SHORE'}));
+      return steps;
+    }
+  },
+  beanstalk:{
+    name:'Peccy and the Beanstalk',icon:'🌱',type:'Walking wilds',sub:'5 reels · 20 lines · every wild walks one reel left with a free respin',
+    based:'NetEnt Jack and the Beanstalk',rtp:96.28,rtpNote:'NetEnt\'s published 96.28%',measured:96.6,hit:35.9,
+    theme:{acc:'#7cc95a',bg1:'#15361a',bg2:'#051107'},
+    cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',scatter:'SC',maxCell:170,k:1,
+    sym:slWithRoyals({W:{wild:1,name:'Climbing Peccy'},SC:{e:'🪺',name:'Golden nest'},gse:{e:'🪿',name:'Golden goose'},cas:{e:'🏰',name:'Giant\'s castle'},cow:{e:'🐄',name:'Cow'},
+      axe:{e:'🪓',name:'Axe'},bns:{e:'🫘',name:'Magic beans'}},['A','K','Q','J','T']),
+    pay:{gse:{3:25,4:100,5:500},cas:{3:20,4:80,5:300},cow:{3:15,4:50,5:200},axe:{3:10,4:40,5:150},bns:{3:10,4:30,5:100},
+      A:{3:5,4:15,5:60},K:{3:5,4:15,5:60},Q:{3:4,4:12,5:50},J:{3:4,4:12,5:50},T:{3:3,4:10,5:40}},
+    scatterPay:{3:2,4:20,5:200},
+    weights:function(c){return {W:c>0?1.1:0.6,SC:1.3,gse:2.5,cas:3,cow:3.5,axe:4,bns:4.5,A:6,K:6,Q:7,J:7,T:8};},
+    knob:['A','K','Q','J','T'],f:1.0705,wildNote:'Substitutes for every pay symbol, then walks one reel left with a free respin',
+    rules:'20 lines, paid left to right. Climbing Peccy is wild, and walks: after a spin pays, every wild steps one reel to the left and the other reels respin free, again and again until the wilds have climbed off the left edge. Wilds that land on a respin start walking too. Three, four or five golden nests anywhere pay 2×, 20× or 200× your bet and start 10 free spins, where every win with a wild in it is tripled. Three nests in the feature add 5 spins.',
+    say:{intro:"Wilds walk one reel left and respin every step of the way! 🌱",feature:"Up the beanstalk! Every walking wild triples your wins! 🪿"},
+    play:function(bet){
+      var m=this,lb=bet/m.lines.length,steps=[];
+      // One spin and the respins its wilds walk through; returns the most nests seen on any of them
+      function run(tables,fs,status){
+        var g=slFill(m,tables),walk=null,most=0;
+        for(var guard=0;guard<30;guard++){
+          var wins=slLineWins(m,g,lb,1),scs=slCellsOf(g,m.scatter);
+          if(fs)wins.forEach(function(w){if(w.cells.some(function(p){return g[p[0]][p[1]]===m.wild;})){w.amount*=3;w.text+=' · wild ×3';}});
+          most=Math.max(most,scs.length);
+          steps.push(slStep('spin',g,slPush(wins,scs.length>=3?slScatterWin(m,scs,bet,1):null),{status:walk?'WALKING WILD · RESPIN'+(status?' · '+status:''):status,walk:walk,
+            tease:walk?null:{sym:m.scatter,need:3,say:fs?"One more nest for extra spins! 🪺":"Two nests... one more climbs the beanstalk! 🪺"}}));
+          var ws=slCellsOf(g,m.wild);
+          // Wilds on the first reel climb off; the rest step left and everything else respins
+          if(!ws.some(function(p){return p[0]>0;}))break;
+          walk=ws.map(function(p){return [p[0],p[1],p[0]-1];});
+          g=slFill(m,tables);ws.forEach(function(p){if(p[0]>0)g[p[0]-1][p[1]]=m.wild;});
+        }
+        return most;
+      }
+      if(run(m.tables,false,'')>=3){
+        var left=10,total=10,played=0;
+        steps.push(slStep('banner',null,[],{text:'10 FREE SPINS',sub:'Every win with a wild in it is tripled',feature:true}));
+        while(left>0&&played<100){
+          left--;played++;
+          if(run(m.tables,true,'FREE SPIN '+played+' OF '+total+' · WILD WINS ×3')>=3){left+=5;total+=5;steps.push(slStep('banner',null,[],{text:'+5 FREE SPINS',sub:'Three golden nests!'}));}
+        }
+        steps.push(slStep('summary',null,[],{text:'BACK DOWN THE BEANSTALK'}));
+      }
+      return steps;
+    }
   }
 };
+// The order on the slot floor: the new machines mixed in among the originals
+SLOT_MACHINES=(function(o){var n={};['huff','pharaoh','cosmic','book','parcels','starburst','skyhigh','stampede','fishing','candy','beanstalk','dragon'].forEach(function(k){n[k]=o[k];});return n;})(SLOT_MACHINES);
 
 // Console helpers. slotSimulate measures payback over many 1-chip spins; slotTune binary-searches the
 // machine's knob (m.f) until the measured payback matches the original's published RTP.
@@ -6274,24 +6562,11 @@ function slotTune(id,spins){
   x=stick?(lo+hi)/2:Math.sqrt(lo*hi);if(stick)m.stick=x;else m.f=x;slSetup(m,true);
   return stick?{stick:+x.toFixed(4)}:{f:+x.toFixed(4)};
 }
-// Exact payback of a 3-reel, 1-line machine: every payline combination weighted by its odds
-function slotExactRtp(id){
-  var m=SLOT_MACHINES[id],ev=0,wheel=0,tw=0;slSetup(m,true);
-  if(m.wheel)m.wheel.forEach(function(w){tw+=w[1];wheel+=w[0]*w[1];});
-  function odds(t){var prev=0;return t.keys.map(function(k,i){var p=(t.cum[i]-prev)/t.total;prev=t.cum[i];return [k,p];});}
-  var a=odds(m.tables[0]),b=odds(m.tables[1]),c=odds(m.tables[2]);
-  a.forEach(function(x){b.forEach(function(y){c.forEach(function(z){
-    var w=slClassicWins(m,[[null,x[0],null],[null,y[0],null],[null,z[0],null]],1),amt=w.length?w[0].amount:0;
-    if(z[0]==='SP')amt+=wheel/tw;
-    ev+=x[1]*y[1]*z[1]*amt;
-  });});});
-  return +(ev*100).toFixed(3);
-}
 
 // ── Cabinet: drawing and animation ──
 // A bet is credits per spin times the denomination (what one credit is worth): 1 up to 1,000 a spin
 var SL_DENOMS=[1,5,10,25,50,100],SL_LEVELS=[1,2,3,5,10];
-var slState={id:'classic',denom:5,level:2,bet:10,playing:false,fast:false,auto:0,autoN:0,change:0,grid:null};
+var slState={id:'huff',denom:5,level:2,bet:10,playing:false,fast:false,auto:0,autoN:0,change:0,grid:null};
 function slM(){return SLOT_MACHINES[slState.id];}
 function slWait(ms){return new Promise(function(r){setTimeout(r,ms*(slState.fast?0.3:1));});}
 function slSay(t){if(t)setPeccySpeech('slots-peccy-speech',t);}
@@ -6308,10 +6583,10 @@ function slSymHTML(m,s,mult){
   if(d.royal)return '<span class="sl-royal" style="color:'+d.color+'">'+d.label+'</span>';
   if(d.seven)return '<span class="sl-seven" style="color:'+d.seven+'">7</span>';
   if(d.bars){var h='<span class="sl-bars'+(d.gold?' gold':'')+'">';for(var i=0;i<d.bars;i++)h+='<i>BAR</i>';return h+'</span>';}
-  if(d.spin)return '<span class="sl-spinsym">SPIN</span>';
   var out='<span'+(d.color||d.filter?' style="'+(d.color?'color:'+d.color+';':'')+(d.filter?'filter:'+d.filter+';':'')+'"':'')+'>'+d.e+'</span>';
   if(b==='B'&&v)out+='<span class="sl-tag sl-tag-mult">×'+v+'</span>';
-  if(b==='O'&&v)out+='<span class="sl-tag sl-tag-orb">'+(m.jackpots[v]?v:slFmt(+v*slState.bet))+'</span>';
+  // Orbs, money fish and blown-down houses show what they're worth: a jackpot's name, or chips at the bet
+  if((b==='O'||d.cash||d.house)&&v)out+='<span class="sl-tag sl-tag-orb">'+(m.jackpots&&m.jackpots[v]?v:slFmt(+v*slState.bet))+'</span>';
   if(m.wild===b&&d.wild===0)out+='<span class="sl-tag sl-tag-wild">WILD</span>';
   return out;
 }
@@ -6373,16 +6648,15 @@ function slSpinTo(m,grid,wm,tz,hold){
   return new Promise(function(done){
     var cols=slCols(),reels=document.getElementById('sl-reels'),prev=slState.grid,speed=slState.fast?0.45:1;
     var tease=slTeaseReels(m,grid,tz),stopAt=[],t=0,said=false,last=0,c;
+    // Sky High: when this spin adds or drops rows, the reels grow (or shrink) as they spin
+    reels.classList.toggle('growing',!!(m.grow&&prev&&prev[0]&&prev[0].length!==grid[0].length));
     for(c=0;c<m.cols;c++){t=c===0?650:t+(tease[c]?SL_TEASE_MS:(m.cols>5?140:200));stopAt.push(Math.round(t*speed));}
     for(c=0;c<m.cols;c++){
       if(hold&&hold[c])continue;
       var n=grid[c].length,dur=stopAt[c],K=n+Math.max(6,Math.round(dur/70)),strip=cols[c].firstChild,h='',r,pc=prev&&prev[c]?prev[c]:[];
-      // 3-reel strips alternate symbol and blank all the way round, into the stops already showing
-      var blankAt=m.kind==='classic'?(slBase(grid[c][0])==='_'?0:1):-1;
-      if(blankAt>=0&&pc.length&&(K+(slBase(pc[0])==='_'?0:1))%2!==blankAt)K++;
       cols[c].style.setProperty('--n',n);
       for(r=0;r<n;r++)h+=slCellHTML(m,grid[c][r],wm&&wm[c][r]);
-      for(r=n;r<K;r++)h+=slCellHTML(m,blankAt<0?slDrawSym(m,m.tables,c):r%2===blankAt?'_':slDraw(m.symTables[c]),0,'sl-blur');
+      for(r=n;r<K;r++)h+=slCellHTML(m,slDrawSym(m,m.tables,c),0,'sl-blur');
       for(r=0;r<n;r++)h+=slCellHTML(m,pc.length?pc[r%pc.length]:null);
       strip.style.transition='none';strip.innerHTML=h;
       strip.style.transform='translateY(calc(var(--ch) * -'+K+'))';
@@ -6402,7 +6676,7 @@ function slSpinTo(m,grid,wm,tz,hold){
       })(c);
     }
     setTimeout(function(){
-      reels.classList.remove('teasing');cols.forEach(function(col){col.classList.remove('sl-tease');});
+      reels.classList.remove('teasing','growing');cols.forEach(function(col){col.classList.remove('sl-tease');});
       slSetGrid(m,grid,wm);done();
     },last+40);
   });
@@ -6443,12 +6717,95 @@ function slWheelSpin(m,idx){
     },dur+60);
   });
 }
+// Marks that belong to a spot on the reels rather than a symbol (Cosmic Clusters' multiplier spots, the house
+// frames in Huff N' Peccy): {"reel,row":{cls,label}}, drawn onto whatever cell is there now
+function slShowMarks(m,marks){
+  if(!marks)return;
+  for(var k in marks){
+    var p=k.split(','),e=slCellEl(+p[0],+p[1]),mk=marks[k];if(!e)continue;
+    mk.cls.split(' ').forEach(function(x){e.classList.add(x);});
+    if(mk.label){var t=document.createElement('span');t.className='sl-mark';t.textContent=mk.label;e.appendChild(t);}
+  }
+}
+// Walking wilds (Peccy and the Beanstalk): each [reel, row, to] steps a wild one reel left, over the reels, before
+// they respin underneath it; a wild going to reel -1 climbs off the edge. Its old spot is emptied as it leaves.
+function slWalk(m,moves){
+  return new Promise(function(done){
+    var lay=document.getElementById('sl-walkers'),box=document.getElementById('sl-reels').getBoundingClientRect(),nodes=[];
+    lay.innerHTML='';
+    moves.forEach(function(mv){
+      var e=slCellEl(mv[0],mv[1]),r=e.getBoundingClientRect(),d=document.createElement('div');
+      d.className='sl-walker';d.style.left=(r.left-box.left)+'px';d.style.top=(r.top-box.top)+'px';
+      d.style.width=r.width+'px';d.style.height=r.height+'px';d.style.setProperty('--sz',Math.min(r.width,r.height)+'px');
+      d.innerHTML=SL_PECCY+'<span class="sl-tag sl-tag-wild">WILD</span>';
+      lay.appendChild(d);e.innerHTML='';nodes.push([d,mv,r.width]);
+    });
+    void lay.offsetWidth;
+    nodes.forEach(function(n){
+      var d=n[0],mv=n[1];
+      if(mv[2]<0){d.style.left=(parseFloat(d.style.left)-n[2]-5)+'px';d.style.opacity='0';}
+      else d.style.left=(slCellEl(mv[2],mv[1]).getBoundingClientRect().left-box.left)+'px';
+    });
+    setTimeout(done,slState.fast?260:620);
+  });
+}
+function slWalkersClear(){var l=document.getElementById('sl-walkers');if(l)l.innerHTML='';}
+// Parcel Party's pick: twelve parcels to open. Each one opened shows the next prize in the order drawn in play();
+// three of a jackpot ends it, then the parcels left show what they held.
+function slPick(m,pick){
+  return new Promise(function(done){
+    var ov=document.getElementById('sl-bonus'),h='<div class="sl-pick"><div class="sl-pick-head"><b>Parcel Pick</b><small>Open parcels until you find three of the same jackpot</small></div><div class="sl-pick-grid">';
+    for(var i=0;i<12;i++)h+='<button class="sl-parcel" aria-label="Open parcel '+(i+1)+'">📦</button>';
+    ov.innerHTML=h+'</div><button class="rl-small-btn sl-pick-auto">Open them for me</button></div>';
+    ov.classList.add('show');
+    var btns=[].slice.call(ov.querySelectorAll('.sl-parcel')),k=0,over=false,auto=false;
+    function show(b,lab,cls){b.classList.add('open','jp-'+lab.toLowerCase());if(cls)b.classList.add(cls);b.innerHTML='<span>'+lab+'</span><em>'+slFmt(m.jackpots[lab]*slState.bet)+'</em>';}
+    function open(b){
+      if(over||b.classList.contains('open'))return;
+      var lab=pick.order[k++];show(b,lab);
+      if(k<pick.order.length)return;
+      over=true;
+      btns.forEach(function(e){if(e.classList.contains('jp-'+lab.toLowerCase()))e.classList.add('won');});
+      setTimeout(function(){
+        var j=0;btns.forEach(function(e){if(!e.classList.contains('open'))show(e,pick.rest[j++],'rest');});
+        setTimeout(function(){ov.classList.remove('show');done();},slState.fast?1000:2400);
+      },slState.fast?300:800);
+    }
+    btns.forEach(function(b){b.onclick=function(){open(b);};});
+    ov.querySelector('.sl-pick-auto').onclick=function(){
+      if(auto)return;auto=true;
+      (function next(){if(over)return;var c=btns.filter(function(e){return !e.classList.contains('open');});open(c[Math.floor(Math.random()*c.length)]);setTimeout(next,slState.fast?150:450);})();
+    };
+  });
+}
 async function slAnimate(m,st){
   if(st.status!==undefined)slStatus(st.status);
-  if(st.t==='spin'){slClearMarks();await slSpinTo(m,st.grid,st.wildMults,st.tease,st.hold);slMarkWins(m,st.wins);return;}
+  if(st.t==='spin'){
+    slClearMarks();
+    // A walking wild leaves its spot empty, so the reel doesn't show it there again as it starts to spin
+    if(st.walk){var pg=slCopy(slState.grid);st.walk.forEach(function(mv){pg[mv[0]][mv[1]]=null;});slState.grid=pg;await slWalk(m,st.walk);}
+    await slSpinTo(m,st.grid,st.wildMults,st.tease,st.hold);
+    slWalkersClear();slShowMarks(m,st.marks);slMarkWins(m,st.wins);return;
+  }
   if(st.t==='tumble'){
     document.querySelectorAll('#sl-reels .sl-cell.win').forEach(function(e){e.classList.add('pop');});
-    await slWait(380);slClearMarks();await slDropTo(m,st.grid,st.drops);slMarkWins(m,st.wins);return;
+    await slWait(380);slClearMarks();await slDropTo(m,st.grid,st.drops);slShowMarks(m,st.marks);slMarkWins(m,st.wins);return;
+  }
+  // Huff N' Peccy: the trigger's hard hats get their straw frames
+  if(st.t==='frames'){slClearMarks();slShowMarks(m,st.marks);await slWait(1100);return;}
+  if(st.t==='pick'){
+    await slPick(m,st.pick);slMarkWins(m,st.wins);
+    slFlashJackpots([st.target]);slState.jpHit=(slState.jpHit||[]).concat([st.target]);return;
+  }
+  // The wolf blows one kind of house down: the houses appear (first huff), then this kind shows its prizes
+  if(st.t==='huff'){
+    var NM=['','straw','stick','brick'];
+    slBanner('🐺 HUFF... AND PUFF!','Down come the '+NM[st.level]+' houses');await slWait(1500);slBannerHide();
+    slClearMarks();slSetGrid(m,st.grid,null,function(c,r){var s=st.grid[c][r];return s?(slBase(s)==='H'+st.level?'locked sl-land':'locked'):'';});
+    slMarkWins(m,st.wins);
+    var jp={};st.wins[0].cells.forEach(function(p){var v=slVal(st.grid[p[0]][p[1]]);if(m.jackpots[v])jp[v]=1;});
+    jp=Object.keys(jp);if(jp.length){slFlashJackpots(jp);slState.jpHit=(slState.jpHit||[]).concat(jp);}
+    return;
   }
   if(st.t==='expand'){
     // The reel fills with the symbol in one sweep
@@ -6534,7 +6891,7 @@ async function slSpin(){
     showConfetti();peccyHop('.peccy-small');slBanner(x>=150?'EPIC WIN':x>=50?'MEGA WIN':'BIG WIN',slFmt(run)+' chips · '+slX(x)+' your bet');
     await slWait(2400);slBannerHide();
   }
-  slStatus(m.kind==='ways'&&m.colCells?slState.grid.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS':'');
+  slStatus(slWaysStatus(m,slState.grid));
   if(comp){slWin(run,'🍀 On the house! Peccy hands your bet back');slSay(slRand(["This spin's on the house! 🍀","Psst... have that one back. Don't tell the boss! 🤫","Peccy slides your chips back. Lucky you! 🍀"]));}
   else if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
   else{slWin(0,'<span style="color:#ff8a80">No win this time</span>');slSay(slRand(SL_SAY.lose));}
@@ -6594,40 +6951,41 @@ function slRenderPaytable(){
     '<div class="sl-pt-src">Based on <b>'+m.based+'</b> · pays shown as multiples of your total bet</div><div class="sl-pt-grid">';
   function row(s,label,pays){return '<div class="sl-pt-row"><div class="sl-pt-sym">'+slSymHTML(m,s)+'</div><div class="sl-pt-pays"><div>'+label+'</div>'+pays+'</div></div>';}
   function desc(o,f){return Object.keys(o).sort(function(a,b){return b-a;}).map(function(n){return n+': <b>'+slX(f(o[n]))+'</b>';}).join(' · ');}
-  if(m.kind==='classic'){
-    [['W','Three Double Peccy','1000'],['S7','Three Sevens','80'],['B3','Three Triple Bars','40'],['B2','Three Double Bars','25'],['B1','Three Single Bars','10']].forEach(function(r){h+=row(r[0],r[1],'<b>'+r[2]+'×</b>');});
-    h+=row('B2','Any three bars','<b>5×</b>')+row('CH','Cherries anywhere on the line','1: <b>2×</b> · 2: <b>5×</b> · 3: <b>10×</b>');
-    if(m.wheel)h+=row('SP','SPIN on the payline (reel 3)','Spins the wheel: <b>20× – 1000×</b>');
-  }else{
-    Object.keys(m.pay).forEach(function(s){
-      var p=m.pay[s],t;
-      if(m.kind==='any')t='8-9: <b>'+slX(p[0]*m.k)+'</b> · 10-11: <b>'+slX(p[1]*m.k)+'</b> · 12+: <b>'+slX(p[2]*m.k)+'</b>';
-      else t=desc(p,function(v){return m.kind==='ways'?v*m.k:v*m.k/m.lines.length;})+(m.kind==='ways'?' per way':'');
-      h+=row(s,slName(m,s),t);
-    });
-    if(m.scatterPay)h+=row(m.scatter,slName(m,m.scatter)+(m.scatter===m.wild?' (wild + scatter, pays anywhere)':' (scatter, pays anywhere)'),desc(m.scatterPay,function(v){return v;}));
-    if(m.wild&&m.wild!==m.scatter&&!m.pay[m.wild])h+=row(m.wild,slName(m,m.wild)+' (wild)','Substitutes for every pay symbol');
-  }
+  var CL=['5–6','7–8','9–10','11–12','13–14','15+'];
+  Object.keys(m.pay).forEach(function(s){
+    var p=m.pay[s],t;
+    if(m.kind==='any')t='8-9: <b>'+slX(p[0]*m.k)+'</b> · 10-11: <b>'+slX(p[1]*m.k)+'</b> · 12+: <b>'+slX(p[2]*m.k)+'</b>';
+    else if(m.kind==='cluster')t=p.map(function(v,i){return CL[i]+': <b>'+slX(v*m.k)+'</b>';}).join(' · ');
+    else t=desc(p,function(v){return m.kind==='ways'?v*m.k:v*m.k/m.lines.length;})+(m.kind==='ways'?' per way':'');
+    h+=row(s,slName(m,s)+(m.kind==='cluster'?' cluster':''),t);
+  });
+  if(m.scatterPay)h+=row(m.scatter,slName(m,m.scatter)+(m.scatter===m.wild?' (wild + scatter, pays anywhere)':' (scatter, pays anywhere)'),desc(m.scatterPay,function(v){return v;}));
+  if(m.wild&&m.wild!==m.scatter&&!m.pay[m.wild])h+=row(m.wild,slName(m,m.wild)+' (wild)',m.wildNote||'Substitutes for every pay symbol');
+  // Features with no pay table of their own: what sets them off, and what they're worth
+  (m.ptExtra||[]).forEach(function(x){h+=row(x[0],x[1],x[2]);});
   h+='</div><div class="sl-pt-rules">'+m.rules+'</div>';
-  h+='<div class="sl-pt-rtp"><b>Payback:</b> this machine returns '+(m.exact?'exactly':'about')+' <b>'+(m.measured!=null?m.measured+'%':'—')+'</b> of what is bet'+(m.exact?' (worked out from the reel odds)':' over millions of spins')+', tuned to the original\'s <b>'+m.rtp+'%</b> ('+m.rtpNote+').';
+  h+='<div class="sl-pt-rtp"><b>Payback:</b> this machine returns '+(m.exact?'exactly':'about')+' <b>'+(m.measured!=null?m.measured+'%':'—')+'</b> of what is bet'+(m.exact?' (worked out from the reel odds)':' over millions of spins')+', tuned to '+(m.generic?'':'the original\'s ')+'<b>'+m.rtp+'%</b> ('+m.rtpNote+').';
   if(slCompChance(m))h+='<br>🍀 <b>Arcade:</b> about 1 in '+Math.round(1/slCompChance(m))+' spins that win nothing are on the house (you get your bet back), so here it returns about <b>'+ARCADE_RTP+'%</b>.';
   h+='</div>';
   document.getElementById('sl-paytable').innerHTML=h;
 }
 // The slot hub: a card per machine with a still of its reels, how it plays, and what it's based on
 var SL_BLURBS={
-  classic:'The old-school three-reeler: sevens, bars and cherries on one line, with Double Peccy wilds that double or quadruple a win.',
-  wheel:'Classic Double Diamond reels with a twist. Land SPIN on the third reel and the giant bonus wheel picks your prize.',
+  huff:'Six hard hats start the build. Every hat turns straw into sticks into bricks, then the wolf blows the houses down for prizes and jackpots.',
+  cosmic:'Clusters of five or more burst and tumble. Every spot they burst on turns into a multiplier, doubling up to ×128.',
+  parcels:'Two bonus games: parcels open a pick-and-match jackpot bonus, and three wheels spin the prize wheel for up to 500×.',
+  skyhigh:'The reels start 3 tall. Every win adds a row and respins, up to 7 rows and 16,807 ways, and in free spins they never shrink.',
+  fishing:'Big Bass style. Money fish swim the reels, and in free spins every Fisherman Peccy wild reels them all in.',
+  beanstalk:'Walking wilds: every wild pays, steps one reel left and the reels respin, until it climbs off the edge.',
   pharaoh:'Egyptian free spins in the Cleopatra style. Three Sphinx scatters award 15 free spins with every win tripled.',
   book:'The Book is wild and scatter at once. In free spins one symbol is chosen to expand across whole reels for huge line wins.',
   starburst:'Glowing gems that pay both ways. Wilds on the middle reels expand to fill the reel and hold while the others respin.',
   stampede:'1024 ways to win in the Buffalo style. Coins start a free-spin stampede where every wild multiplies your win.',
-  megaways:'Every spin reshapes the reels, up to 117,649 ways. Wins cascade, and in free spins the multiplier climbs with no limit.',
   candy:'No lines: 8 or more of a sweet anywhere pays. Wins tumble away for more, and free spins drop bombs worth up to 100×.',
   dragon:'Lightning Link style. Six or more orbs lock for Hold & Spin, with Mini, Minor and Major jackpots, and the Grand for a full screen.'
 };
 function slBuildHub(){
-  var h='<div class="sl-hub-head"><h2>The Slot Floor</h2><p>Nine machines modelled on real casino favourites. Pick one to play.</p>'+rulesBtn('slots')+'</div><div class="sl-hub-grid">';
+  var h='<div class="sl-hub-head"><h2>The Slot Floor</h2><p>'+slCountWord()+' machines modelled on real casino games. Pick one to play.</p>'+rulesBtn('slots')+'</div><div class="sl-hub-grid">';
   for(var id in SLOT_MACHINES){
     var m=SLOT_MACHINES[id];slSetup(m);
     h+='<div class="sl-card" role="button" tabindex="0" id="sl-card-'+id+'" style="--tile:'+m.theme.acc+';--card-bg:'+m.theme.bg2+'" onclick="slOpen(\''+id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();slOpen(\''+id+'\');}">'+
@@ -6644,7 +7002,7 @@ function slBuildHub(){
 function slHubLayout(){
   var g=document.querySelector('.sl-hub-grid');if(!g||!g.offsetParent)return;
   var on=innerWidth>760;g.classList.toggle('scrolls',on);
-  g.style.zoom='';g.style.removeProperty('--pv-h');g.style.removeProperty('--pv-k');g.classList.remove('roomy');
+  g.style.zoom='';g.style.removeProperty('--pv-h');g.style.removeProperty('--pv-k');g.classList.remove('roomy','tight');
   var room=Math.max(220,roomBelow(g));
   g.style.maxHeight=on?room+'px':'';
   slHubClose(g);
@@ -6654,6 +7012,8 @@ function slHubLayout(){
 // drops a column or two) to the biggest size, up to 1.5x, at which every machine still fits without scrolling
 function slHubGrow(g,room){
   var best=1;
+  // Too many cards for a short screen: a tighter card (shorter preview, no "Based on" line) before resorting to scrolling
+  if(g.scrollHeight>g.clientHeight+1){g.classList.add('tight');slHubClose(g);return;}
   for(var z=1.05;z<=1.5;z+=0.05){
     g.style.zoom=z.toFixed(2);g.style.maxHeight=(room/z)+'px';slHubClose(g);
     if(g.scrollHeight<=g.clientHeight+1)best=z;
@@ -6672,7 +7032,7 @@ function slHubGrow(g,room){
   var k=Math.min(kMax,k0*(h0+spare/Object.keys(rows).length-2)/h0);
   if(spare>=12&&k>k0*1.02){g.style.setProperty('--pv-k',k.toFixed(3));g.style.setProperty('--pv-h',Math.floor(h0*k/k0)+'px');}
 }
-// Nine machines rarely fill a grid's rows, so widen a few cards (the house machine first, the rest
+// A dozen machines rarely fill a grid's rows, so widen a few cards (the house machine first, the rest
 // spread out) until every row ends on the grid's right edge, instead of leaving a hole after the last
 function slHubClose(g){
   var cards=[].slice.call(g.querySelectorAll('.sl-card'));
@@ -6724,7 +7084,12 @@ function slOpen(id){
 }
 function slStartGrid(m){
   if(m.rowTable){var r=[];for(var c=0;c<m.cols;c++)r.push(+slDraw(m.rowTable));return slFill(m,m.tables,r);}
-  return slFill(m,m.tables);
+  return slFill(m,m.tables,m.grow?3:null);  // Sky High's reels start 3 rows tall
+}
+// The line above the reels when it's idle: how many ways the reels show, on machines where that changes
+function slWaysStatus(m,g){
+  var w=g.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS';
+  return m.grow?g[0].length+' ROWS · '+w:m.colCells?w:'';
 }
 function slSelect(id){
   if(slState.playing)return;
@@ -6734,10 +7099,10 @@ function slSelect(id){
   document.getElementById('sl-name').textContent=m.name;
   document.getElementById('sl-sub').textContent=m.sub;
   for(var c=0;c<m.cols;c++){h+='<div class="sl-col" style="--n:'+g[c].length+'"><div class="sl-strip">';for(var r=0;r<g[c].length;r++)h+=slCellHTML(m,g[c][r]);h+='</div></div>';}
-  reels.innerHTML=h;slState.grid=g;
+  reels.innerHTML=h;slState.grid=g;reels.classList.toggle('grow',!!m.grow);slWalkersClear();
   document.getElementById('sl-bonus').classList.remove('show');
   document.getElementById('sl-paytable').classList.remove('show');
-  slStatus(m.colCells?g.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS':'');
+  slStatus(slWaysStatus(m,g));
   slWin(0,'');slBannerHide();slClearMarks();slRenderJackpots();slLayout();slRenderPaytable();slUI();slSay(m.say.intro);
 }
 // Size the reels to the space the stage gives them, in both directions
@@ -7657,7 +8022,7 @@ var RULES=[
       rulesSec('ties','Ties','<p>When two hands are the same kind, the higher cards win: a pair of kings beats a pair of queens, and with the same pair, the next highest card (the kicker) decides. Suits never break a tie, so identical hands split the pot.</p>');
   }},
   {id:'slots',group:'Slots',name:'Slot machines',html:function(){
-    var h='<h3>Slot machines</h3><p>Nine machines, each modelled on a real casino favourite. Pick one on the slot floor; <b>All machines</b> takes you back.</p>'+
+    var h='<h3>Slot machines</h3><p>'+slCountWord()+' machines, most modelled on a real casino favourite. Pick one on the slot floor; <b>All machines</b> takes you back.</p>'+
       '<p class="rules-index">'+Object.keys(SLOT_MACHINES).map(function(id){return rulesLink('slots','m-'+id,SLOT_MACHINES[id].name);}).join(' · ')+'</p>'+
       rulesSec('bet','Your bet','<p>Your bet is the <b>denomination</b> (chips per credit: '+SL_DENOMS.join(', ')+') times the <b>credits</b> you set with − and + ('+SL_LEVELS.join(', ')+'). <b>Max bet</b> jumps to the most credits. Wins show as multiples of your bet.</p>'+
         rulesList(['<b>Auto spin</b> keeps spinning until you tap it again.','<b>Paytable</b> shows what every symbol pays on that machine, its features, and how much it pays back.']))+
@@ -7800,8 +8165,55 @@ function rulesGo(topic){
 }
 function rulesGoSlot(id){rulesClose();achClose();switchGame('slots');slOpen(id);}
 
+// ═══ HOUSE ALWAYS WINS ═══
+// Go broke after being up 1,000 chips or more and the house lets you know. houseHigh is the most you've held
+// (your chips plus anything at the Hold'em tables) since you last went broke or reset; shop purchases come off
+// it, since spending isn't losing. It's kept per floor in the save. A timer does the checking, because a lost
+// bet doesn't always touch the balance (blackjack takes your bet on Deal), and it waits until nothing is still
+// riding, then a moment more so the losing result lands first.
+var HOUSE_AT=1000,HOUSE_SAY=[
+  'Thanks for playing! The house appreciates your generosity. 🎩',
+  'Every last chip, accounted for. 😌',
+  'Don\'t take it personally. It\'s just maths. 📉',
+  'Come back any time. We\'ll keep the lights on for you. ✨',
+  'The odds send their regards. 🃏'
+];
+function houseNote(){var w=balance+heHeld();if(w>houseHigh)houseHigh=w;}
+// Anything still riding: a hand, spin, ball, flip or open sports bet, chips on a table, or a drink being mixed
+function houseAtStake(){
+  return bjGameActive||rouletteSpinning||rlTotal()>0||heHeld()>0||slState.playing||pk.running||pk.balls.length>0||cf.busy||mx.on||
+    !!(sb&&sb.bets&&sb.bets.some(function(b){return b.st==='open';}));
+}
+function houseIsOpen(){return document.getElementById('house-over').classList.contains('show');}
+function houseCheck(){
+  if(!saveLoaded||houseIsOpen())return;
+  houseNote();
+  if(balance<=0&&houseHigh>=HOUSE_AT&&!houseAtStake()&&!document.querySelector('.blackout.show')){
+    if(!houseWait)houseWait=Date.now();
+    else if(Date.now()-houseWait>=1400)houseShow();
+  }else houseWait=0;
+}
+setInterval(houseCheck,300);
+function houseShow(){
+  var high=houseHigh,start=MODE_START[gameMode];
+  houseHigh=0;houseWait=0;saveGame();  // once per run: it waits for the next climb past 1,000
+  document.getElementById('house-say').textContent=HOUSE_SAY[Math.floor(Math.random()*HOUSE_SAY.length)];
+  document.getElementById('house-sub').innerHTML='You were up to <b>'+fmtChips(high)+'</b> chips. The house kept every one.';
+  document.getElementById('house-btns').innerHTML='<button class="btn btn-primary" onclick="houseClose(\'reset\')">Start over with '+fmtChips(start)+' chips</button>'+
+    (spinAvail()?'<button class="rl-small-btn" onclick="houseClose(\'spin\')">Try your daily spin</button>':'')+
+    '<button class="rl-small-btn" onclick="houseClose()">Walk away</button>';
+  var o=document.getElementById('house-over');
+  o.classList.remove('show');void o.offsetWidth;o.classList.add('show');  // restart the animation
+  setTimeout(function(){var b=o.querySelector('.btn');if(b&&houseIsOpen())b.focus({preventScroll:true});},2600);
+}
+function houseClose(then){
+  document.getElementById('house-over').classList.remove('show');
+  if(then==='reset')resetBank();
+  if(then==='spin')achOpen();
+}
+
 // Esc closes whichever pop-up is open (the rules first, since they can sit over the rewards panel)
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(rulesIsOpen()){rulesClose();return;}bugClose();saveClose();achClose();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(houseIsOpen()){houseClose();return;}if(rulesIsOpen()){rulesClose();return;}bugClose();saveClose();achClose();}});
 
 // ═══ PLINKO ═══
 // Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
@@ -9469,7 +9881,7 @@ rlInitTable();
 pkInit();
 barShelves();barRender();
 slBuildHub();
-slSelect('classic');
+slSelect(Object.keys(SLOT_MACHINES)[0]);
 shopApply();
 // Refit a table when its contents change height (a split hand, a long result) and once the page settles
 if(window.ResizeObserver)document.querySelectorAll('.table-fit').forEach(function(el){new ResizeObserver(function(){fitTables(true);}).observe(el);});
