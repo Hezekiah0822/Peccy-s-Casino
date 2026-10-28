@@ -5010,7 +5010,8 @@ function peccyBlinkPhase(svg){
 
 // ═══ BLACKJACK ═══
 var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false,bjTie=false,bjBust=null;
-var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1,bjDoubled=false; // 1=main, 2=split; bjDoubled: the main hand was doubled (for its trophy)
+var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1,bjDoubled=false,bjDealerTurn=false; // 1=main, 2=split; bjDoubled: the main hand was doubled (for its trophy)
+// bjDealerTurn: Peccy is drawing, so nothing you press can start the dealer's turn (and its payout) a second time
 var suits=['&spades;','&hearts;','&diams;','&clubs;'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 
 function createDeck(){bjDeck=[];for(var d=0;d<6;d++)for(var s=0;s<suits.length;s++)for(var r=0;r<ranks.length;r++)bjDeck.push({suit:suits[s],rank:ranks[r]});for(var i=bjDeck.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=bjDeck[i];bjDeck[i]=bjDeck[j];bjDeck[j]=t;}}
@@ -5149,7 +5150,7 @@ function bjDeal(){
   barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');bjTie=!!barTake('oldfash');bjBust=barTake('bloody');
   document.getElementById('player-hands-container').classList.toggle('blurry',bjBlur);
   bjPlayerHand=[bjDeck.pop(),bjDeck.pop()];bjDealerHand=[bjDeck.pop(),bjDeck.pop()];
-  bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;bjDoubled=false;
+  bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;bjDoubled=false;bjDealerTurn=false;
   document.getElementById('bj-message').textContent='';
   bjShowGameBtns();
   renderBJHands(false);
@@ -5161,8 +5162,9 @@ function bjDeal(){
 }
 
 function bjSplit(){
-  if(!canSplit()) return;
+  if(bjDealerTurn||!canSplit()) return;
   balance-=bjBetAmount;bjSplitBet=bjBetAmount;updateBalance();
+  document.getElementById('bj-bet-display').textContent=bjBetAmount+bjSplitBet;  // both hands' bets are on the table now
   bjIsSplit=true;bjActiveHand=1;
   bjSplitHand=[bjPlayerHand.pop()];
   bjPlayerHand.push(bjDeck.pop());
@@ -5182,6 +5184,7 @@ function bjCharlie(h){return gameMode==='arcade'&&h.length>=5&&handScore(h)<=21;
 function bjSplitDone(){if(handScore(bjPlayerHand)>21)bjResolveAll();else bjStand();}
 
 function bjHit(){
+  if(bjDealerTurn||!bjGameActive)return;
   var hand=getActiveHand();
   hand.push(bjDeck.pop());
   // Hide double after first hit
@@ -5215,6 +5218,7 @@ function bjHit(){
 }
 
 function bjDouble(){
+  if(bjDealerTurn||!bjGameActive)return;
   var hand=getActiveHand();
   var bet=bjActiveHand===1?bjBetAmount:bjSplitBet;
   if(bet>balance){setPeccySpeech('bj-peccy-speech',"Not enough chips to double! 😬");return;}
@@ -5250,6 +5254,8 @@ function bjStand(){
     return;
   }
   // All player hands done — dealer draws (your buttons go away while Peccy plays)
+  if(bjDealerTurn||!bjGameActive)return;
+  bjDealerTurn=true;
   bjPlayBtns(false);renderBJHands(true);
   var draw=function(){
     if(handScore(bjDealerHand)<17){
@@ -5282,21 +5288,21 @@ function bjResolveAll(){
   // Resolve hand 1
   // (Arcade bar buffs: an Old Fashioned wins ties, a Bloody Mary hands back half a busted bet)
   var ps1=handScore(bjPlayerHand),back;
-  if(ps1>21){back=barBustBack(bjBust,bjBetAmount);totalWin+=back;msgs.push('Hand 1: Bust'+(back?' (🍅 +'+back+' back)':''));}
-  else if(bjCharlie(bjPlayerHand)){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Charlie +'+bjBetAmount*2);}
-  else if(ds>21||ps1>ds){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Win +'+bjBetAmount*2);}
-  else if(ps1===ds&&bjTie){totalWin+=bjBetAmount*2;msgs.push('Hand 1: 🥃 Tie wins +'+bjBetAmount*2);}
+  if(ps1>21){back=barBustBack(bjBust,bjBetAmount);totalWin+=back;msgs.push('Hand 1: Bust −'+bjBetAmount+(back?' (🍅 +'+back+' back)':''));}
+  else if(bjCharlie(bjPlayerHand)){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Charlie +'+bjBetAmount);}
+  else if(ds>21||ps1>ds){totalWin+=bjBetAmount*2;msgs.push('Hand 1: Win +'+bjBetAmount);}
+  else if(ps1===ds&&bjTie){totalWin+=bjBetAmount*2;msgs.push('Hand 1: 🥃 Tie wins +'+bjBetAmount);}
   else if(ps1===ds){totalWin+=bjBetAmount;msgs.push('Hand 1: Push');}
-  else{msgs.push('Hand 1: Lose');}
+  else{msgs.push('Hand 1: Lose −'+bjBetAmount);}
 
   // Resolve hand 2
   var ps2=handScore(bjSplitHand);
-  if(ps2>21){back=barBustBack(bjBust,bjSplitBet);totalWin+=back;msgs.push('Split: Bust'+(back?' (🍅 +'+back+' back)':''));}
-  else if(bjCharlie(bjSplitHand)){totalWin+=bjSplitBet*2;msgs.push('Split: Charlie +'+bjSplitBet*2);}
-  else if(ds>21||ps2>ds){totalWin+=bjSplitBet*2;msgs.push('Split: Win +'+bjSplitBet*2);}
-  else if(ps2===ds&&bjTie){totalWin+=bjSplitBet*2;msgs.push('Split: 🥃 Tie wins +'+bjSplitBet*2);}
+  if(ps2>21){back=barBustBack(bjBust,bjSplitBet);totalWin+=back;msgs.push('Split: Bust −'+bjSplitBet+(back?' (🍅 +'+back+' back)':''));}
+  else if(bjCharlie(bjSplitHand)){totalWin+=bjSplitBet*2;msgs.push('Split: Charlie +'+bjSplitBet);}
+  else if(ds>21||ps2>ds){totalWin+=bjSplitBet*2;msgs.push('Split: Win +'+bjSplitBet);}
+  else if(ps2===ds&&bjTie){totalWin+=bjSplitBet*2;msgs.push('Split: 🥃 Tie wins +'+bjSplitBet);}
   else if(ps2===ds){totalWin+=bjSplitBet;msgs.push('Split: Push');}
-  else{msgs.push('Split: Lose');}
+  else{msgs.push('Split: Lose −'+bjSplitBet);}
 
   balance+=totalWin;updateBalance();
   var totalBet=bjBetAmount+bjSplitBet;
@@ -5314,7 +5320,7 @@ function bjResolveAll(){
   else{setPeccySpeech('bj-peccy-speech',"Both hands down. The house stands tall! 😎");}
 
   var color=totalWin>totalBet?'#2d8b57':totalWin>0?'#fff':'#e63946';
-  var net=totalWin-totalBet;var netStr=net>=0?'+'+net:''+net;
+  var net=totalWin-totalBet;var netStr=net>0?'+'+net:net<0?'−'+(-net):'0';
   document.getElementById('bj-message').innerHTML=msgs.join(' | ')+'<br><span style="font-size:16px;color:'+color+'">Net: '+netStr+'</span>';
 }
 
@@ -5342,7 +5348,7 @@ function bjEndGame(r,m){
   if(w>bjBetAmount){achBump('bj_win');achWin(w-bjBetAmount);if(r==='blackjack')achBump('bj_natural');if(bjDoubled)achBump('bj_double_win');if(bjPlayerHand.length>=5)achBump('bj_five_win');}
   bjRenderBet(w>bjBetAmount?'won':w<bjBetAmount?'lost':'',w-bjBetAmount);
   if(w>bjBetAmount)peccyHop('.peccy-dealer-svg');
-  var wt=r==='push'&&!bjTie?'Bet returned: '+w:w>bjBetAmount?'Won: +'+w:w>0?'Got back '+w+' of '+bjBetAmount:'Lost: -'+bjBetAmount;
+  var wt=r==='push'&&!bjTie?'Bet returned: '+w:w>bjBetAmount?'Won: +'+(w-bjBetAmount):w>0?'Got back '+w+' of '+bjBetAmount:'Lost: −'+bjBetAmount;
   document.getElementById('bj-message').innerHTML=m+'<br><span style="font-size:16px;color:'+(w>bjBetAmount?'#2d8b57':w>0?'#fff':'#e63946')+'">'+wt+'</span>';
 }
 
