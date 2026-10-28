@@ -600,6 +600,8 @@
   .sl-tag-wild { background: linear-gradient(180deg, var(--gold-2), var(--gold)); color: #3a2a00; }
   .sl-tag-mult { background: #ff1744; color: #fff; }
   .sl-tag-orb { background: rgba(0,0,0,0.82); color: var(--gold-2); border: 1px solid var(--gold); }
+  /* Reel Big Catch: a fish's value only pays in free spins, so outside them it shows dimmed, as a promise */
+  .sl-cabinet:not(.in-feature) .sl-tag-cash { color: rgba(255,255,255,0.55); border-color: rgba(255,255,255,0.25); background: rgba(0,0,0,0.6); }
   .sl-lines { position: absolute; top: 10px; left: 10px; pointer-events: none; overflow: visible; z-index: 3; }
   .sl-banner {
     position: absolute; inset: 0; display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 5;
@@ -6461,12 +6463,17 @@ var SLOT_MACHINES={
     weights:{SC:1.05,F:4,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
     fsWeights:{W:0.65,F:6,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
     knob:['A','K','Q','J','T'],f:0.714,wildNote:'Free spins only: substitutes for every pay symbol, and reels in every money fish',
-    ptExtra:[['F:10','Money fish','Worth 2× to 50× your bet, collected in free spins']],
-    rules:'10 lines, paid left to right. Money fish pay on the lines like any symbol, and each carries a cash value (2× to 50× your bet). Three, four or five fishing boats pay 2×, 20× or 200× and start 10, 15 or 20 free spins. In the free spins Fisherman Peccy is wild, and every one that lands reels in the value of every fish on screen. Every fourth fisherman adds 10 more spins and raises what fish pay: ×2, then ×3, then ×10.',
+    ptExtra:[['F:10','Money fish','Worth 2× to 50× your bet, but only when Fisherman Peccy reels them in during free spins']],
+    rules:'10 lines, paid left to right. Every money fish shows a cash value (2× to 50× your bet), but that value only pays when Fisherman Peccy reels it in during the free spins, as in Big Bass Bonanza. Outside the free spins, fish pay only as a line symbol, like any other. Three, four or five fishing boats pay 2×, 20× or 200× and start 10, 15 or 20 free spins. In the free spins Fisherman Peccy is wild, and every one that lands reels in the value of every fish on screen. Every fourth fisherman adds 10 more spins and raises what fish pay: ×2, then ×3, then ×10.',
     say:{intro:"Fish are worth cash, but you need Fisherman Peccy to reel them in! 🎣",feature:"All aboard! Fisherman Peccy's on the water! 🛥️"},
+    // Outside free spins the fish values are only a promise, so the line above the reels says so whenever fish show
+    idleHint:function(g){return slCellsOf(g,'F').length?'FISH VALUES PAY IN FREE SPINS ONLY':'';},
     play:function(bet){
-      var m=this,lb=bet/m.lines.length,steps=[],g=slFill(m,m.tables),sc=slCellsOf(g,m.scatter);
-      steps.push(slStep('spin',g,slPush(slLineWins(m,g,lb,1),sc.length>=3?slScatterWin(m,sc,bet,1):null),{status:'',tease:{sym:m.scatter,need:3,say:"Two boats... one more and we go fishing! 🛥️"}}));
+      var m=this,lb=bet/m.lines.length,steps=[],g=slFill(m,m.tables),sc=slCellsOf(g,m.scatter),fish=slCellsOf(g,'F').length;
+      var wins=slLineWins(m,g,lb,1);
+      wins.forEach(function(w){if(slBase(g[w.cells[0][0]][w.cells[0][1]])==='F')w.text+=' (line pay)';});
+      steps.push(slStep('spin',g,slPush(wins,sc.length>=3?slScatterWin(m,sc,bet,1):null),{status:m.idleHint(g),tease:{sym:m.scatter,need:3,say:"Two boats... one more and we go fishing! 🛥️"},
+        sayAfter:fish&&sc.length<3?"Those fish only pay their value when Fisherman Peccy reels them in. Three boats start the free spins! 🛥️":null}));
       if(sc.length<3)return steps;
       var left=m.fsAward[Math.min(sc.length,5)],total=left,played=0,caught=0,lvl=0,MULT=[1,2,3,10];
       steps.push(slStep('banner',null,[],{text:left+' FREE SPINS',sub:'Every Fisherman Peccy reels in every fish on screen',feature:true}));
@@ -6586,7 +6593,7 @@ function slSymHTML(m,s,mult){
   var out='<span'+(d.color||d.filter?' style="'+(d.color?'color:'+d.color+';':'')+(d.filter?'filter:'+d.filter+';':'')+'"':'')+'>'+d.e+'</span>';
   if(b==='B'&&v)out+='<span class="sl-tag sl-tag-mult">×'+v+'</span>';
   // Orbs, money fish and blown-down houses show what they're worth: a jackpot's name, or chips at the bet
-  if((b==='O'||d.cash||d.house)&&v)out+='<span class="sl-tag sl-tag-orb">'+(m.jackpots&&m.jackpots[v]?v:slFmt(+v*slState.bet))+'</span>';
+  if((b==='O'||d.cash||d.house)&&v)out+='<span class="sl-tag sl-tag-orb'+(d.cash?' sl-tag-cash':'')+'">'+(m.jackpots&&m.jackpots[v]?v:slFmt(+v*slState.bet))+'</span>';
   if(m.wild===b&&d.wild===0)out+='<span class="sl-tag sl-tag-wild">WILD</span>';
   return out;
 }
@@ -6857,18 +6864,21 @@ async function slSpin(){
   if(slState.auto)slState.autoN++;
   slState.playing=true;slState.fast=false;slState.jpHit=[];slUI();
   slSay(slRand(SL_SAY.spin));slWin(0,'');
-  var steps=barSpinSteps(m,bet),run=0,featStart=0;
+  // The cabinet is marked while a feature is on (Reel Big Catch's fish values light up then)
+  var cab=document.getElementById('sl-cabinet');cab.classList.remove('in-feature');
+  var steps=barSpinSteps(m,bet),run=0,featStart=0,tip=null;
   for(var i=0;i<steps.length;i++){
     var st=steps[i];
+    if(st.sayAfter)tip=st.sayAfter;
     if(st.t==='banner'){
       var sub=st.sym?'<span class="sl-banner-sym">'+slSymHTML(m,st.sym)+'</span>'+st.sub:st.sub;
       if(st.feature){
         featStart=run;slSay(m.say.feature);
-        slBanner(st.text,sub,'Press SPIN to start');await slWaitPress();slBannerHide();continue;
+        slBanner(st.text,sub,'Press SPIN to start');await slWaitPress();slBannerHide();cab.classList.add('in-feature');continue;
       }
       slBanner(st.text,sub);await slWait(1700);slBannerHide();continue;
     }
-    if(st.t==='summary'){slBanner(st.text,'The feature paid '+slFmt(run-featStart)+' chips');await slWait(2000);slBannerHide();slStatus('');continue;}
+    if(st.t==='summary'){cab.classList.remove('in-feature');slBanner(st.text,'The feature paid '+slFmt(run-featStart)+' chips');await slWait(2000);slBannerHide();slStatus('');continue;}
     await slAnimate(m,st);
     run+=st.win;
     if(st.win>0){slWin(run,slWinText(st));await slWait(st.wins.length>2?1300:1000);}
@@ -6891,10 +6901,13 @@ async function slSpin(){
     showConfetti();peccyHop('.peccy-small');slBanner(x>=150?'EPIC WIN':x>=50?'MEGA WIN':'BIG WIN',slFmt(run)+' chips · '+slX(x)+' your bet');
     await slWait(2400);slBannerHide();
   }
+  cab.classList.remove('in-feature');
   slStatus(slWaysStatus(m,slState.grid));
+  // A machine's tip for this spin (Reel Big Catch: what the fish values are for), every time at first, then now and then
+  if(tip){slState.tips=(slState.tips||0)+1;if(slState.tips>3&&Math.random()>0.25)tip=null;}
   if(comp){slWin(run,'🍀 On the house! Peccy hands your bet back');slSay(slRand(["This spin's on the house! 🍀","Psst... have that one back. Don't tell the boss! 🤫","Peccy slides your chips back. Lucky you! 🍀"]));}
-  else if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(slRand(x>=15?SL_SAY.big:SL_SAY.win));}
-  else{slWin(0,'<span style="color:#ff8a80">No win this time</span>');slSay(slRand(SL_SAY.lose));}
+  else if(run>0){slWin(run,'Total win · '+slX(x)+' your bet'+bx.note+(total<1?' · kept as change until it makes a whole chip':''));slSay(tip&&x<15?tip:slRand(x>=15?SL_SAY.big:SL_SAY.win));}
+  else{slWin(0,'<span style="color:#ff8a80">No win this time</span>');slSay(tip||slRand(SL_SAY.lose));}
   slState.playing=false;slState.fast=false;
   slUI();
   // Auto spin carries on until it's stopped (or the chips run out)
@@ -7086,10 +7099,11 @@ function slStartGrid(m){
   if(m.rowTable){var r=[];for(var c=0;c<m.cols;c++)r.push(+slDraw(m.rowTable));return slFill(m,m.tables,r);}
   return slFill(m,m.tables,m.grow?3:null);  // Sky High's reels start 3 rows tall
 }
-// The line above the reels when it's idle: how many ways the reels show, on machines where that changes
+// The line above the reels when it's idle: how many ways the reels show, on machines where that changes, or a
+// machine's own hint (Reel Big Catch: when the fish values pay)
 function slWaysStatus(m,g){
   var w=g.reduce(function(a,col){return a*col.length;},1).toLocaleString()+' WAYS';
-  return m.grow?g[0].length+' ROWS · '+w:m.colCells?w:'';
+  return m.grow?g[0].length+' ROWS · '+w:m.colCells?w:m.idleHint?m.idleHint(g):'';
 }
 function slSelect(id){
   if(slState.playing)return;
