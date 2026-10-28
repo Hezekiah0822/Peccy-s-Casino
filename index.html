@@ -94,7 +94,12 @@
   .btn:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-primary, .btn-gold { color: #1d1203; background: var(--aws-orange); box-shadow: inset 0 -2px 0 var(--lip); }
   /* Hit, Stand, Double and Split are equal choices on the felt, so they are one kind of thing: ivory plaques */
-  .btn-success, .btn-danger, .btn-blue { color: var(--ink-dark); background: var(--text); box-shadow: inset 0 -2px 0 #b5a88f; }
+  /* Hit, Stand, Double and Split keep their colours on the felt: green, red, gold and blue, each with its own lip */
+  .btn-success { --lip-c: #146b3e; color: #fff; background: #1f8f55; box-shadow: inset 0 -2px 0 var(--lip-c); }
+  .btn-danger { --lip-c: #9b211e; color: #fff; background: #d33b37; box-shadow: inset 0 -2px 0 var(--lip-c); }
+  .btn-blue { --lip-c: #1d4b9c; color: #fff; background: #2f6fd6; box-shadow: inset 0 -2px 0 var(--lip-c); }
+  /* Ultimate Texas Hold'em's Check and Bet buttons: ivory plaques on the felt */
+  .btn-plaque { --lip-c: #b5a88f; color: var(--ink-dark); background: var(--text); box-shadow: inset 0 -2px 0 var(--lip-c); }
   .btn-secondary { background: transparent; border: 1px solid var(--line-2); }
   .clear-bet, .rl-small-btn {
     padding: 7px 14px; border-radius: 999px; font: 500 12px 'Inter', sans-serif; cursor: pointer; transition: background 0.15s;
@@ -257,8 +262,8 @@
   @keyframes msgIn { from { transform: translate(-50%, -50%) scale(0.8); opacity: 0; } }
   /* Hit, Stand, Double and Split, in the middle of the felt; the printed arcs fade back while they're up */
   .bj-play { position: absolute; left: 50%; top: 50%; z-index: 6; display: flex; gap: 8px; transform: translate(-50%, -50%); white-space: nowrap; }
-  .bj-play .btn { padding: 11px 18px; font-size: 13.5px; box-shadow: inset 0 -2px 0 #b5a88f, 0 3px 8px rgba(0,0,0,0.35); }
-  .bj-play .btn-gold { color: var(--ink-dark); background: var(--text); }
+  .bj-play .btn { padding: 11px 18px; font-size: 13.5px; box-shadow: inset 0 -2px 0 var(--lip-c, #b5a88f), 0 3px 8px rgba(0,0,0,0.35); }
+  .bj-play .btn-gold { --lip-c: #a77a14; color: #2a1a00; background: #efc45a; }
   .bj-mid.playing .bj-arc { opacity: 0.18; transition: opacity 0.3s; }
   @media (max-width: 640px) {
     .bj-play { gap: 5px; }
@@ -1906,6 +1911,65 @@
     .pt-log { max-height: 260px; }
   }
   @media (max-width: 1100px) and (min-width: 761px) { .pt-wrap { grid-template-columns: minmax(0, 1fr) 250px; } }
+  /* ═══ TROPHIES ═══ The header button with its count of rewards to claim, the notices, and the trophy room */
+  .trophy-btn { position: relative; width: 32px; height: 32px; flex: none; border-radius: 50%; border: 1px solid var(--line-2); background: transparent; color: var(--muted); font-size: 14px; cursor: pointer; transition: color 0.15s, background 0.15s; }
+  .trophy-btn:hover { color: var(--text); background: rgba(255,240,220,0.06); }
+  .trophy-n { position: absolute; top: -6px; right: -7px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; font: 700 11px/18px var(--display); color: #1d1203; background: var(--aws-orange); }
+  .ach-toasts { position: fixed; top: 76px; right: 16px; z-index: 250; display: flex; flex-direction: column; gap: 8px; pointer-events: none; }
+  .ach-toast { pointer-events: auto; display: flex; align-items: center; gap: 10px; width: 300px; padding: 10px 12px; border-radius: 14px; border: 1px solid var(--line-2); background: var(--surface); color: var(--text);
+    text-align: left; font: inherit; cursor: pointer; box-shadow: 0 12px 30px rgba(0,0,0,0.5); animation: achIn 0.35s cubic-bezier(.3,1.3,.5,1); transition: opacity 0.4s, transform 0.4s; }
+  .ach-toast.out { opacity: 0; transform: translateX(24px); }
+  @keyframes achIn { from { opacity: 0; transform: translateX(32px); } }
+  .ach-toast > span:nth-child(2) { flex: 1; min-width: 0; }
+  .ach-toast small { display: block; font-size: 11px; color: var(--muted); }
+  .ach-toast b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font: 600 13.5px 'Inter', sans-serif; }
+  .ach-toast em { font: 700 15px var(--display); font-style: normal; color: var(--gold-2); }
+  /* Medals by tier (a finished challenge's notice gets felt green) */
+  .ach-medal { flex: none; width: 34px; height: 34px; border-radius: 50%; background: radial-gradient(circle at 34% 30%, rgba(255,255,255,0.55) 0 7%, transparent 8%), var(--m, #b8743a);
+    box-shadow: inset 0 0 0 3px rgba(0,0,0,0.2), inset 0 0 0 6px rgba(255,255,255,0.14); }
+  .ach-medal.sm { width: 28px; height: 28px; }
+  .t1 { --m: #b8743a; } .t2 { --m: #b9c1cc; } .t3 { --m: #e2b33c; } .ach-toast.ch { --m: #1f8f55; }
+  .bug-panel.ach-panel { width: min(900px, 100%); }
+  #ach-sum { margin-bottom: 14px; }
+  .ach-sec + .ach-sec { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .ach-sec-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; margin-bottom: 10px; }
+  .ach-sec-head b { font: 700 17px var(--display); }
+  .ach-sec-head small { font-size: 12px; color: var(--muted); }
+  .ach-sec-head .rl-small-btn { margin-left: auto; }
+  .ach-chs { display: flex; flex-direction: column; gap: 6px; }
+  .ach-ch { display: grid; grid-template-columns: 92px minmax(0, 1fr) 120px 48px 112px; align-items: center; gap: 12px; padding: 10px 12px; border-radius: 12px; background: var(--raised); }
+  .ach-game { font-size: 12px; color: var(--muted); }
+  .ach-ch > b { font: 500 14px 'Inter', sans-serif; }
+  .ach-bar { height: 6px; border-radius: 999px; overflow: hidden; background: rgba(255,240,220,0.08); }
+  .ach-bar i { display: block; height: 100%; border-radius: inherit; background: var(--gold); }
+  .ach-ch.done .ach-bar i { background: var(--win); }
+  .ach-prog { font: 600 12px var(--display); color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+  .ach-chips { font: 700 14px var(--display); color: var(--faint); text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .ach-done { font: 600 13px 'Inter', sans-serif; color: var(--win); text-align: right; white-space: nowrap; }
+  .ach-claim { justify-self: end; padding: 7px 12px; font-size: 13px; white-space: nowrap; }
+  .ach-bonus { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; padding: 10px 12px; border-radius: 12px; border: 1px dashed var(--line-2); }
+  .ach-bonus.done { border-style: solid; border-color: rgba(130,219,166,0.4); }
+  .ach-bonus b { display: block; font: 600 14px 'Inter', sans-serif; }
+  .ach-bonus small { display: block; margin-top: 1px; font-size: 12px; color: var(--muted); }
+  .ach-group { margin: 14px 0 6px; font: 600 12.5px 'Inter', sans-serif; color: var(--muted); }
+  .ach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .ach-t { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 12px; border: 1px solid var(--line); }
+  .ach-t:not(.got) .ach-medal { background: transparent; box-shadow: inset 0 0 0 2px rgba(255,240,220,0.14); }
+  .ach-t.ready { border-color: rgba(255,153,0,0.55); }
+  .ach-t-text { flex: 1; min-width: 0; }
+  .ach-t-text b { display: block; font: 600 13.5px 'Inter', sans-serif; }
+  .ach-t:not(.got) .ach-t-text b { color: var(--muted); }
+  .ach-t-text small { display: block; font-size: 12px; line-height: 1.35; color: var(--muted); }
+  .ach-t-text .ach-bar { margin-top: 6px; }
+  .ach-t-text .ach-prog { display: block; margin-top: 2px; font-size: 11px; text-align: left; }
+  @media (max-width: 760px) {
+    .ach-grid { grid-template-columns: 1fr; }
+    .ach-ch { grid-template-columns: minmax(0, 1fr) auto; gap: 6px 12px; }
+    .ach-ch .ach-game, .ach-ch > b, .ach-ch > :last-child { grid-column: 1 / -1; }
+    .ach-ch > :last-child { justify-self: start; }
+    .ach-toasts { top: auto; bottom: 16px; left: 16px; right: 16px; }
+    .ach-toast { width: auto; }
+  }
   /* ═══ CONFETTI ═══ */
   /* One quiet line under the games */
   .site-foot { position: relative; z-index: 1; padding: 0 16px 10px; text-align: center; font-size: 11px; line-height: 1.4; color: var(--faint); }
@@ -2090,6 +2154,7 @@
       <button class="mode-opt" id="mode-classic" onclick="setMode('classic')" title="Real casino odds">Classic</button>
       <button class="mode-opt" id="mode-arcade" onclick="setMode('arcade')" title="Peccy's Bar, and odds that lean your way">Arcade</button>
     </div>
+    <button class="trophy-btn" id="trophy-btn" onclick="achOpen()" title="Trophies and daily challenges" aria-label="Trophies and daily challenges"><i class="fa-solid fa-trophy"></i><span class="trophy-n" id="trophy-n" style="display:none"></span></button>
     <div class="chip-bank">
       <div class="chip-icon" id="chip-icon">R</div>
       <div>
@@ -2562,6 +2627,17 @@
   </div>
 </div>
 
+<!-- The trophy room: today's three challenges and every trophy, with rewards to claim -->
+<div class="bug-overlay" id="ach-overlay" onclick="if(event.target===this)achClose()">
+  <div class="bug-panel ach-panel" role="dialog" aria-labelledby="ach-title">
+    <button class="panel-close" onclick="achClose()" aria-label="Close">×</button>
+    <h2 id="ach-title">Trophy room</h2>
+    <p id="ach-sum"></p>
+    <div id="ach-body"></div>
+  </div>
+</div>
+<div class="ach-toasts" id="ach-toasts" aria-live="polite"></div>
+
 <div class="confetti-container" id="confetti-container"></div>
 
 <script>
@@ -2579,6 +2655,7 @@ function updateBalance() {
   var el = document.getElementById('balance'), from = balanceShown, to = balance, t0 = performance.now();
   var credit = document.getElementById('sl-credit'); if (credit) credit.textContent = fmtChips(to);
   var wallet = document.getElementById('shop-balance'); if (wallet) wallet.textContent = fmtChips(to);
+  achMax('peak', to);
   saveGame();
   if (to === from) { el.textContent = fmtChips(to); return; }
   el.classList.remove('up', 'down'); void el.offsetWidth; el.classList.add(to > from ? 'up' : 'down');
@@ -2826,7 +2903,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&(it.price===0||!!
 var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
-function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
+function modeSnapshot(){var s={balance:balance,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap(),ach:achSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
@@ -2845,6 +2922,8 @@ function readSave(key){
 // Load a mode's saved state into the live game (a mode with no save starts fresh)
 function modeRestore(m){
   var s=modeSaves[m]||{};
+  // Trophies first, so sports bets settled while the page was closed still count toward them
+  achRestore(s.ach);
   balance=balanceShown=typeof s.balance==='number'&&isFinite(s.balance)&&s.balance>=0?Math.floor(s.balance):MODE_START[m];
   shopState.owned=s.owned&&typeof s.owned==='object'&&!Array.isArray(s.owned)?s.owned:{};
   shopState.eq=JSON.parse(JSON.stringify(SHOP_FREE));
@@ -2894,7 +2973,7 @@ function shopBuy(cat,id){
     clearTimeout(shopBuy.t);shopBuy.t=setTimeout(function(){if(shopState.pending===key){shopState.pending=null;shopRender();}},3500);
     return;
   }
-  shopState.pending=null;balance-=shopPrice(it);shopState.owned[key]=1;updateBalance();
+  shopState.pending=null;balance-=shopPrice(it);shopState.owned[key]=1;updateBalance();achBump('buy');
   shopEquip(cat,id);
   setPeccySpeech('shop-peccy-speech',slRand(["Ooh, excellent taste! ✨","Fresh from the stockroom! 📦","That's going straight on! 😎","Treat yourself, you've earned it! 💎"]));
 }
@@ -3435,7 +3514,12 @@ function uthSettleNow(){
   // Each bet that didn't lose comes back with its winnings (half chips from a 3 to 2 Blind are rounded down)
   var back=0;[['ante',uth.ante],['blind',uth.ante],['play',uth.play],['trips',uth.trips]].forEach(function(b){if(b[1]&&r[b[0]]>=0)back+=b[1]+r[b[0]];});
   back=Math.floor(back);r.back=back;r.net=back-(uth.ante*2+uth.play+uth.trips);
-  uth.res=r;uth.st='done';balance+=back;updateBalance();saveGame();uthRender();
+  uth.res=r;uth.st='done';balance+=back;updateBalance();
+  achPlay('holdem');achBump('uth_hand');achWin(r.net);
+  if(r.out==='win'){achBump('uth_win');if(heCat(r.ps)>=5)achBump('uth_blind_flush');}
+  if(uth.trips&&r.trips>0)achBump('uth_trips_win');
+  if(heCat(r.ps)===9)achBump('he_royal');
+  saveGame();uthRender();
   var pn=heName(r.ps),dn=heName(r.ds),bigBlind=r.out==='win'&&UTH_BLIND[heCat(r.ps)]>=3,bigTrips=uth.trips&&r.trips>=uth.trips*8;
   if(r.net>0)peccyHop('#he-uth .peccy-dealer');
   if(bigBlind||bigTrips)showConfetti();
@@ -3508,7 +3592,7 @@ function uthRender(){
   if(!busy&&!done){document.getElementById('uth-'+uth.target).classList.add('sel');}
   // Your moves on the felt
   var tip=busy&&uth.tips?uthTipNow():null,btns='';
-  function b(label,fn,on,t){return '<button class="btn btn-success'+(tip===t?' tip':'')+'" onclick="'+fn+'"'+(on?'':' disabled')+'>'+label+'</button>';}
+  function b(label,fn,on,t){return '<button class="btn btn-plaque'+(tip===t?' tip':'')+'" onclick="'+fn+'"'+(on?'':' disabled')+'>'+label+'</button>';}
   if(uth.st==='pre')btns=b('Check','uthCheck()',1,0)+b('Bet 3×','uthPlay(3)',uth.ante*3<=balance,3)+b('Bet 4×','uthPlay(4)',uth.ante*4<=balance,4);
   else if(uth.st==='flop')btns=b('Check','uthCheck()',1,0)+b('Bet 2×','uthPlay(2)',uth.ante*2<=balance,2);
   else if(uth.st==='river')btns=b('Fold','uthFold()',1,-1)+b('Bet 1×','uthPlay(1)',uth.ante<=balance,1);
@@ -3612,6 +3696,15 @@ function ptFinish(){
   var line=h.log.filter(function(t){return / wins? | split /.test(t);}).join('. ');
   // Results already logged (a hand resumed after a reload) aren't added twice
   if(!pt.results.length||pt.results[0].no!==h.no){pt.results.unshift({no:h.no,text:line,me:me});pt.results=pt.results.slice(0,30);}
+  // Trophies and challenges, once per hand (a hand finished again after a reload doesn't count twice)
+  if(!h.ach&&h.ps[0].in){
+    h.ach=1;achPlay('holdem');achBump('pt_hand');
+    if(me>0){achBump('pt_pot');achWin(me);}
+    var mine=res.scores[0];
+    if(res.showdown&&(res.won[0]||0)>0&&mine!=null&&heCat(mine)>=6)achBump('pt_boat');
+    if(mine!=null&&heCat(mine)===9)achBump('he_royal');
+    if((res.won[0]||0)>0&&pt.seats.some(function(s,i){return i&&h.ps[i].in&&s.stack===0;}))achBump('pt_ko');
+  }
   saveGame();ptRender();
   if(me>0){peccyHop('#he-pt .peccy-dealer');if(res.showdown&&heCat(res.pots[0].score)>=6)showConfetti();}
   ptSay(line+'.'+(me>0?' 🎉':''));
@@ -3624,6 +3717,7 @@ function ptLeave(){
   clearTimeout(ptTimer);
   var s=pt.seats[0].stack,net=s-pt.bought;
   balance+=s;updateBalance();
+  if(pt.bought>0&&s>=pt.bought*2)achBump('pt_double');
   pt.on=false;pt.hand=null;pt.seats=[];
   saveGame();ptRender();
   ptSay(net>0?'You leave '+fmtChips(net)+' up. Nicely played! 💰':net<0?'You leave '+fmtChips(-net)+' down. Come back any time! 🃏':'You leave even. See you next time! 🃏');
@@ -3850,6 +3944,250 @@ function heRestore(s){
   // A hand that was being played carries on, as long as it's the same table it was dealt at
   var h=p.hand;
   if(ok&&h&&typeof h==='object'&&Array.isArray(h.ps)&&h.ps.length===seats.length&&Array.isArray(h.deck)&&h.deck.length===52)pt.hand=h;
+}
+
+// ═══ TROPHIES AND DAILY CHALLENGES ═══
+// Trophies mark things worth remembering (a natural, the Grand jackpot, a royal flush). Daily challenges give a
+// reason to come back: three a day, picked from the pool by the date, so everyone gets the same three, each from
+// a different game. Both count from one set of tallies (ach.stats), bumped as each game settles. Each floor keeps
+// its own, like its chips, and pays in its own chips: a trophy or challenge pays when you claim it in the trophy room.
+// The ids below are what a save remembers, so don't rename them.
+var ACH_TIER={1:{name:'Bronze',chips:25},2:{name:'Silver',chips:100},3:{name:'Gold',chips:400}};
+var ACH_GAMES={all:'Anywhere',bj:'Blackjack',slots:'Slots',rl:'Roulette',holdem:"Hold'em",pk:'Plinko',coin:'Coin Flip',sports:'Sports',bar:"Peccy's Bar"};
+var ACH_FLOOR=['bj','slots','rl','holdem','pk','coin','sports'];  // the games every floor has, for the grand tour
+var ACH=[
+  {id:'first_win',g:'all',name:"Beginner's luck",desc:'Win your first bet or hand',tier:1,stat:'win_any',goal:1},
+  {id:'tourist',g:'all',name:'Grand tour',desc:'Play every game on the floor',tier:2,stat:'played',goal:7},
+  {id:'big_100',g:'all',name:'Nice one',desc:'Come out 100 chips ahead on one bet or hand',tier:1,stat:'best_win',goal:100},
+  {id:'big_1000',g:'all',name:'Big score',desc:'Come out 1,000 chips ahead on one bet or hand',tier:2,stat:'best_win',goal:1000},
+  {id:'big_10000',g:'all',name:'Life-changing',desc:'Come out 10,000 chips ahead on one bet or hand',tier:3,stat:'best_win',goal:10000},
+  {id:'peak_1000',g:'all',name:'High roller',desc:'Hold 1,000 chips at once',tier:2,stat:'peak',goal:1000},
+  {id:'peak_10000',g:'all',name:'Whale',desc:'Hold 10,000 chips at once',tier:3,stat:'peak',goal:10000},
+  {id:'peak_100000',g:'all',name:"Peccy's mogul",desc:'Hold 100,000 chips at once',tier:3,stat:'peak',goal:100000},
+  {id:'daily_1',g:'all',name:'Daily grind',desc:'Finish all three daily challenges in a day',tier:1,stat:'daily_done',goal:1},
+  {id:'streak_7',g:'all',name:'Regular',desc:'Finish the daily challenges seven days in a row',tier:3,stat:'streak_best',goal:7},
+  {id:'buy_1',g:'all',name:'Dressed up',desc:'Buy something in the shop',tier:1,stat:'buy',goal:1},
+  {id:'buy_10',g:'all',name:'Collector',desc:'Own ten things from the shop',tier:3,stat:'owned',goal:10},
+  {id:'bj_natural',g:'bj',name:'Natural',desc:'Get a blackjack',tier:1,stat:'bj_natural',goal:1},
+  {id:'bj_double',g:'bj',name:'Double down',desc:'Win a hand you doubled',tier:1,stat:'bj_double_win',goal:1},
+  {id:'bj_split',g:'bj',name:'Split decision',desc:'Win both hands of a split',tier:2,stat:'bj_split_both',goal:1},
+  {id:'bj_five',g:'bj',name:'Five-card hand',desc:'Win a hand holding five cards or more',tier:2,stat:'bj_five_win',goal:1},
+  {id:'bj_50',g:'bj',name:'Card shark',desc:'Win 50 hands of blackjack',tier:3,stat:'bj_win',goal:50},
+  {id:'sl_bonus',g:'slots',name:'Bonus round',desc:'Set off a feature on any machine: free spins, the wheel, Hold & Spin',tier:1,stat:'sl_feature',goal:1},
+  {id:'sl_50x',g:'slots',name:'Mega win',desc:'Win 50 times your bet on one spin',tier:2,stat:'sl_50x',goal:1},
+  {id:'sl_jackpot',g:'slots',name:'Jackpot!',desc:'Win a named jackpot: Mini, Minor, Major or Grand',tier:2,stat:'sl_jackpot',goal:1},
+  {id:'sl_grand',g:'slots',name:'The Grand',desc:'Win the Grand jackpot',tier:3,stat:'sl_grand',goal:1},
+  {id:'sl_all',g:'slots',name:'Machine hopper',desc:'Play all nine machines',tier:2,stat:'machines',goal:9},
+  {id:'sl_1000',g:'slots',name:'Reel regular',desc:'Spin 1,000 times',tier:2,stat:'sl_spin',goal:1000},
+  {id:'rl_straight',g:'rl',name:'Straight up',desc:'Win a bet on a single number',tier:1,stat:'rl_straight',goal:1},
+  {id:'rl_zero',g:'rl',name:'Zero hero',desc:'Win a bet when 0 comes up',tier:2,stat:'rl_zero_win',goal:1},
+  {id:'rl_100',g:'rl',name:'Wheel watcher',desc:'Win 100 spins',tier:2,stat:'rl_win',goal:100},
+  {id:'uth_win',g:'holdem',name:'Ultimate',desc:"Win a hand of Ultimate Texas Hold'em",tier:1,stat:'uth_win',goal:1},
+  {id:'uth_blind',g:'holdem',name:'Blind luck',desc:'Get paid on the Blind with a flush or better',tier:2,stat:'uth_blind_flush',goal:1},
+  {id:'uth_trips',g:'holdem',name:'Trips!',desc:'Win the Trips side bet',tier:1,stat:'uth_trips_win',goal:1},
+  {id:'pt_pot',g:'holdem',name:'Take it down',desc:'Win a pot at the poker table',tier:1,stat:'pt_pot',goal:1},
+  {id:'pt_boat',g:'holdem',name:'Full boat',desc:'Win a showdown at the poker table with a full house or better',tier:2,stat:'pt_boat',goal:1},
+  {id:'pt_ko',g:'holdem',name:'Knockout',desc:'Win the pot that knocks a bot out of chips',tier:2,stat:'pt_ko',goal:1},
+  {id:'pt_double',g:'holdem',name:'Double up',desc:'Leave the poker table with twice what you bought in for',tier:3,stat:'pt_double',goal:1},
+  {id:'he_royal',g:'holdem',name:'Royal treatment',desc:"Make a royal flush in either Hold'em game",tier:3,stat:'he_royal',goal:1},
+  {id:'pk_edge',g:'pk',name:'Over the edge',desc:'Land a ball in an end bucket',tier:2,stat:'pk_edge',goal:1},
+  {id:'pk_1000',g:'pk',name:'Thousand balls',desc:'Drop 1,000 balls',tier:2,stat:'pk_ball',goal:1000},
+  {id:'cf_5',g:'coin',name:'Hot hand',desc:'Win five flips in a row',tier:2,stat:'cf_streak5',goal:1},
+  {id:'cf_double',g:'coin',name:'Double or nothing',desc:'Win a Double it flip',tier:1,stat:'cf_double_win',goal:1},
+  {id:'sb_win',g:'sports',name:'Called it',desc:'Win a sports bet',tier:1,stat:'sb_won',goal:1},
+  {id:'sb_parlay3',g:'sports',name:'Parlay king',desc:'Win a parlay of three legs or more',tier:2,stat:'sb_parlay3',goal:1},
+  {id:'sb_long',g:'sports',name:'Long shot',desc:'Win a bet paying ×10 or more',tier:2,stat:'sb_long',goal:1},
+  {id:'hr_exacta',g:'sports',name:'Exacta',desc:'Call the first two horses in order',tier:2,stat:'hr_exacta',goal:1},
+  {id:'sb_champ',g:'sports',name:'Champion pick',desc:'Win a bet on the season champion',tier:3,stat:'sb_champ',goal:1},
+  {id:'bar_5star',g:'bar',name:'Perfect pour',desc:'Mix a five-star drink',tier:2,stat:'bar_5star',goal:1,arcade:1},
+  {id:'bar_shift',g:'bar',name:'Clocked in',desc:'Serve at least one drink on a shift',tier:1,stat:'bar_shift',goal:1,arcade:1},
+  {id:'bar_tips',g:'bar',name:'Tip jar',desc:'Earn 300 chips in one shift',tier:2,stat:'bar_shift300',goal:1,arcade:1},
+  {id:'bar_blackout',g:'bar',name:'Lights out',desc:'Black out at the bar. Worth it?',tier:1,stat:'bar_blackout',goal:1,arcade:1}
+];
+var DAILY=[
+  {id:'bj_win',g:'bj',text:'Win 3 hands of blackjack',stat:'bj_win',goal:3},
+  {id:'bj_hand',g:'bj',text:'Play 10 hands of blackjack',stat:'bj_hand',goal:10},
+  {id:'sl_spin',g:'slots',text:'Spin the slots 30 times',stat:'sl_spin',goal:30},
+  {id:'sl_bonus',g:'slots',text:'Set off a bonus feature on any slot',stat:'sl_feature',goal:1},
+  {id:'sl_10x',g:'slots',text:'Win 10 times your bet on one slot spin',stat:'sl_10x',goal:1},
+  {id:'rl_win',g:'rl',text:'Win 3 roulette spins',stat:'rl_win',goal:3},
+  {id:'rl_straight',g:'rl',text:'Hit a number straight up at roulette',stat:'rl_straight',goal:1},
+  {id:'pk_ball',g:'pk',text:'Drop 50 Plinko balls',stat:'pk_ball',goal:50},
+  {id:'pk_5x',g:'pk',text:'Land a Plinko ball on 5× or more',stat:'pk_5x',goal:1},
+  {id:'cf_streak',g:'coin',text:'Win 3 coin flips in a row',stat:'cf_streak3',goal:1},
+  {id:'cf_flip',g:'coin',text:'Flip the coin 15 times',stat:'cf_flip',goal:15},
+  {id:'uth_win',g:'holdem',text:"Win 2 hands of Ultimate Texas Hold'em",stat:'uth_win',goal:2},
+  {id:'pt_pot',g:'holdem',text:'Win 3 pots at the poker table',stat:'pt_pot',goal:3},
+  {id:'pt_hand',g:'holdem',text:'Play 15 hands at the poker table',stat:'pt_hand',goal:15},
+  {id:'sb_bet',g:'sports',text:'Place 3 sports bets',stat:'sb_placed',goal:3},
+  {id:'hr_win',g:'sports',text:'Back a winning horse',stat:'hr_won',goal:1},
+  {id:'bar_mix',g:'bar',text:'Mix 2 drinks yourself',stat:'bar_mix',goal:2,arcade:1},
+  {id:'bar_shift',g:'bar',text:'Work a shift at the bar',stat:'bar_shift',goal:1,arcade:1},
+  {id:'win_any',g:'all',text:'Win 10 bets or hands, anywhere',stat:'win_any',goal:10}
+];
+var DAILY_CHIPS=40,DAILY_BONUS=80,DAILY_STREAK=20;
+var ACH_BY={},DAILY_BY={};ACH.forEach(function(a){ACH_BY[a.id]=a;});DAILY.forEach(function(d){DAILY_BY[d.id]=d;});
+var ach={stats:{},got:{},daily:null,streak:{last:'',n:0},quiet:false};
+function achArc(){return gameMode==='arcade';}
+function achDefs(){return ACH.filter(function(a){return !a.arcade||achArc();});}
+function achChips(n){return n*(achArc()?ARCADE_PRICE_X:1);}
+function achVal(k){
+  var s=ach.stats;
+  if(k==='played')return Object.keys(s.played||{}).filter(function(g){return ACH_FLOOR.indexOf(g)>=0;}).length;
+  if(k==='machines')return Object.keys(s.machines||{}).length;
+  if(k==='owned')return Object.keys(shopState.owned||{}).length;
+  return +s[k]||0;
+}
+// The tallies: a count, a best-ever value, or a set of things seen (games played, machines tried)
+function achBump(k,n){n=n==null?1:n;if(!(n>0))return;ach.stats[k]=(+ach.stats[k]||0)+n;achDailyBump(k,n);achCheck();}
+function achMax(k,v){if(v>(+ach.stats[k]||0)){ach.stats[k]=v;achCheck();}}
+function achMark(set,key){var s=ach.stats[set]=ach.stats[set]||{};if(!s[key]){s[key]=1;achCheck();}}
+function achPlay(g){achMark('played',g);}
+// A bet or hand that came out ahead counts toward winning anywhere, and toward the biggest single win
+function achWin(profit){if(profit>0){achBump('win_any');achMax('best_win',Math.floor(profit));}}
+function achCheck(){
+  achDefs().forEach(function(a){if(!ach.got[a.id]&&achVal(a.stat)>=a.goal){ach.got[a.id]='u';achToast('Trophy unlocked',a.name,achChips(ACH_TIER[a.tier].chips),'t'+a.tier);}});
+  achBadge();
+  if(achIsOpen())achRender();
+}
+// ── Daily challenges ──
+function achDay(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function achYesterday(){var d=new Date();d.setDate(d.getDate()-1);return achDay(d);}
+// Today's three: a shuffle seeded by the date (and the floor), keeping one challenge per game
+function achPick(day){
+  var h=2166136261,seed=day+':'+gameMode;
+  for(var i=0;i<seed.length;i++){h^=seed.charCodeAt(i);h=Math.imul(h,16777619);}
+  function rnd(){h+=0x6D2B79F5;var t=h;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return ((t^(t>>>14))>>>0)/4294967296;}
+  var pool=DAILY.filter(function(d){return !d.arcade||achArc();}),out=[],games={};
+  while(pool.length&&out.length<3){var d=pool.splice(Math.floor(rnd()*pool.length),1)[0];if(games[d.g])continue;games[d.g]=1;out.push(d.id);}
+  return out;
+}
+function achDaily(){
+  var day=achDay(),old=ach.daily;
+  if(!old||old.day!==day){ach.daily={day:day,ids:achPick(day),prog:{},claimed:{},bonus:0};if(old)achSettleDay(old);}
+  return ach.daily;
+}
+function achDayBefore(day){var p=day.split('-').map(Number);return achDay(new Date(p[0],p[1]-1,p[2]-1));}
+// Rewards finished but not claimed before midnight are paid when the next day starts, so none are lost
+// (an unclaimed all-three bonus still counts toward the streak, as of the day it was earned)
+function achSettleDay(D){
+  var chips=0,s=ach.streak;
+  D.ids.forEach(function(id){if(achDailyDone(D,id)&&!D.claimed[id]){D.claimed[id]=1;chips+=achChips(DAILY_CHIPS);}});
+  if(achAllDone(D)&&!D.bonus){
+    var n=s.last===achDayBefore(D.day)?s.n+1:1;s.n=n;s.last=D.day;D.bonus=1;
+    chips+=achChips(DAILY_BONUS+DAILY_STREAK*(Math.min(7,n)-1));
+    ach.stats.streak_best=Math.max(+ach.stats.streak_best||0,n);ach.stats.daily_done=(+ach.stats.daily_done||0)+1;
+  }
+  if(chips){balance+=chips;setTimeout(function(){updateBalance();achToast("Yesterday's rewards",'Paid when the day ended',chips,'ch');achCheck();},0);}
+}
+function achDailyBump(k,n){
+  var D=achDaily();
+  D.ids.forEach(function(id){
+    var d=DAILY_BY[id];if(!d||d.stat!==k||(D.prog[id]||0)>=d.goal)return;
+    D.prog[id]=Math.min(d.goal,(D.prog[id]||0)+n);
+    if(D.prog[id]>=d.goal)achToast('Challenge done',d.text,achChips(DAILY_CHIPS),'ch');
+  });
+}
+function achDailyDone(D,id){var d=DAILY_BY[id];return !!d&&(D.prog[id]||0)>=d.goal;}
+function achAllDone(D){return D.ids.length>0&&D.ids.every(function(id){return achDailyDone(D,id);});}
+// The streak counts days in a row with all three done; it's still alive if the last one was yesterday
+function achStreakNow(){var s=ach.streak;return s.last===achDay()||s.last===achYesterday()?s.n:0;}
+function achStreakNext(){var s=ach.streak;return s.last===achDay()?s.n:s.last===achYesterday()?s.n+1:1;}
+function achBonusChips(){return achChips(DAILY_BONUS+DAILY_STREAK*(Math.min(7,achStreakNext())-1));}
+// ── Claiming ──
+function achPay(n){balance+=n;updateBalance();saveGame();achBadge();achRender();}
+function achClaim(id){var a=ACH_BY[id];if(!a||ach.got[id]!=='u')return;ach.got[id]='c';achPay(achChips(ACH_TIER[a.tier].chips));}
+function achClaimDaily(id){var D=achDaily();if(D.claimed[id]||!achDailyDone(D,id))return;D.claimed[id]=1;achPay(achChips(DAILY_CHIPS));}
+function achClaimBonus(){
+  var D=achDaily();if(D.bonus||!achAllDone(D))return;
+  var chips=achBonusChips(),s=ach.streak;
+  s.n=achStreakNext();s.last=D.day;D.bonus=1;
+  achMax('streak_best',s.n);achBump('daily_done');
+  achPay(chips);showConfetti();
+}
+function achClaimable(){
+  var D=achDaily(),n=0;
+  achDefs().forEach(function(a){if(ach.got[a.id]==='u')n++;});
+  D.ids.forEach(function(id){if(achDailyDone(D,id)&&!D.claimed[id])n++;});
+  if(achAllDone(D)&&!D.bonus)n++;
+  return n;
+}
+// ── The header button, the notices and the trophy room ──
+function achBadge(){
+  var el=document.getElementById('trophy-n');if(!el)return;
+  var n=achClaimable();el.textContent=n;el.style.display=n?'':'none';
+  document.getElementById('trophy-btn').title=n?n+' reward'+(n>1?'s':'')+' to claim in the trophy room':'Trophies and daily challenges';
+}
+function achToast(kind,title,chips,cls){
+  if(ach.quiet)return;
+  var box=document.getElementById('ach-toasts');if(!box)return;
+  var t=document.createElement('button');t.className='ach-toast '+cls;t.onclick=function(){t.remove();achOpen();};
+  t.innerHTML='<span class="ach-medal sm"></span><span><small>'+kind+'</small><b>'+title+'</b></span><em>+'+fmtChips(chips)+'</em>';
+  box.appendChild(t);
+  while(box.children.length>3)box.firstChild.remove();
+  setTimeout(function(){t.classList.add('out');setTimeout(function(){t.remove();},400);},5200);
+}
+function achIsOpen(){var o=document.getElementById('ach-overlay');return !!o&&o.classList.contains('show');}
+function achOpen(){achRender();document.getElementById('ach-overlay').classList.add('show');}
+function achClose(){var o=document.getElementById('ach-overlay');if(o)o.classList.remove('show');}
+function achLeft(){var n=new Date(),m=new Date(n.getFullYear(),n.getMonth(),n.getDate()+1),mins=Math.max(1,Math.round((m-n)/60000));return (mins>=60?Math.floor(mins/60)+'h ':'')+(mins%60)+'m';}
+function achBar(v,goal){return '<div class="ach-bar"><i style="width:'+Math.min(100,v/goal*100).toFixed(1)+'%"></i></div><span class="ach-prog">'+fmtChips(Math.min(v,goal))+'/'+fmtChips(goal)+'</span>';}
+function achBtn(fn,chips,state){
+  if(state==='c')return '<span class="ach-done"><i class="fa-solid fa-check"></i> +'+fmtChips(chips)+'</span>';
+  if(state==='u')return '<button class="btn btn-primary ach-claim" onclick="'+fn+'">Claim '+fmtChips(chips)+'</button>';
+  return '<span class="ach-chips">+'+fmtChips(chips)+'</span>';
+}
+function achRender(){
+  var body=document.getElementById('ach-body');if(!body)return;
+  var D=achDaily(),defs=achDefs(),got=defs.filter(function(a){return ach.got[a.id];}).length,streak=achStreakNow();
+  document.getElementById('ach-sum').textContent=got+' of '+defs.length+' trophies'+(streak?' · '+streak+'-day streak':'')+' · rewards are paid in '+(achArc()?'arcade':'resolve')+' chips';
+  var h='<section class="ach-sec"><div class="ach-sec-head"><b>Today\'s challenges</b><small>New ones in '+achLeft()+'</small></div><div class="ach-chs">';
+  D.ids.forEach(function(id){
+    var d=DAILY_BY[id],v=D.prog[id]||0,done=v>=d.goal,st=D.claimed[id]?'c':done?'u':'';
+    h+='<div class="ach-ch'+(done?' done':'')+'"><span class="ach-game">'+ACH_GAMES[d.g]+'</span><b>'+d.text+'</b>'+achBar(v,d.goal)+achBtn("achClaimDaily('"+id+"')",achChips(DAILY_CHIPS),st)+'</div>';
+  });
+  var all=achAllDone(D),next=achStreakNext();
+  h+='</div><div class="ach-bonus'+(all?' done':'')+'"><span><b>Finish all three</b><small>'+(D.bonus?'Done for today. Come back tomorrow to keep your '+streak+'-day streak going.':
+    'A bonus that grows each day you keep it up'+(next>1?': day '+next+' of your streak':'')+'.')+'</small></span>'+
+    achBtn('achClaimBonus()',achChips(DAILY_BONUS+DAILY_STREAK*(Math.min(7,next)-1)),D.bonus?'c':all?'u':'')+'</div></section>';
+  var waiting=defs.filter(function(a){return ach.got[a.id]==='u';}).length;
+  h+='<section class="ach-sec"><div class="ach-sec-head"><b>Trophies</b><small>'+got+' of '+defs.length+'</small>'+(waiting>1?'<button class="rl-small-btn" onclick="achClaimAllTrophies()">Claim all '+waiting+'</button>':'')+'</div>';
+  Object.keys(ACH_GAMES).forEach(function(g){
+    var list=defs.filter(function(a){return a.g===g;});if(!list.length)return;
+    h+='<h3 class="ach-group">'+ACH_GAMES[g]+'</h3><div class="ach-grid">';
+    list.forEach(function(a){
+      var st=ach.got[a.id]||'',v=achVal(a.stat);
+      h+='<div class="ach-t t'+a.tier+(st?' got':'')+(st==='u'?' ready':'')+'"><span class="ach-medal" title="'+ACH_TIER[a.tier].name+'"></span><div class="ach-t-text"><b>'+a.name+'</b><small>'+a.desc+'</small>'+
+        (!st&&a.goal>1?achBar(v,a.goal):'')+'</div>'+achBtn("achClaim('"+a.id+"')",achChips(ACH_TIER[a.tier].chips),st)+'</div>';
+    });
+    h+='</div>';
+  });
+  body.innerHTML=h+'</section>';
+}
+function achClaimAllTrophies(){
+  var total=0;achDefs().forEach(function(a){if(ach.got[a.id]==='u'){ach.got[a.id]='c';total+=achChips(ACH_TIER[a.tier].chips);}});
+  if(total)achPay(total);
+}
+// ── Saving ── (each floor keeps its own, inside its save)
+function achSnap(){return {stats:ach.stats,got:ach.got,daily:ach.daily,streak:ach.streak};}
+function achRestore(s){
+  s=s&&typeof s==='object'?s:{};
+  var stats={},got={};
+  if(s.stats&&typeof s.stats==='object')Object.keys(s.stats).forEach(function(k){
+    var v=s.stats[k];
+    if(typeof v==='number'&&isFinite(v)&&v>=0)stats[k]=v;
+    else if(v&&typeof v==='object'&&!Array.isArray(v)){stats[k]={};Object.keys(v).forEach(function(x){if(v[x])stats[k][x]=1;});}
+  });
+  if(s.got&&typeof s.got==='object')Object.keys(s.got).forEach(function(k){if(ACH_BY[k]&&(s.got[k]==='u'||s.got[k]==='c'))got[k]=s.got[k];});
+  var D=s.daily&&typeof s.daily==='object'&&typeof s.daily.day==='string'&&Array.isArray(s.daily.ids)?s.daily:null,daily=null;
+  if(D){
+    daily={day:D.day,ids:D.ids.filter(function(id){return DAILY_BY[id];}).slice(0,3),prog:{},claimed:{},bonus:D.bonus?1:0};
+    daily.ids.forEach(function(id){var v=D.prog&&D.prog[id];if(typeof v==='number'&&v>0)daily.prog[id]=Math.min(DAILY_BY[id].goal,v);if(D.claimed&&D.claimed[id])daily.claimed[id]=1;});
+  }
+  var st=s.streak&&typeof s.streak==='object'?s.streak:{};
+  ach={stats:stats,got:got,daily:daily,streak:{last:typeof st.last==='string'?st.last:'',n:typeof st.n==='number'&&st.n>0?Math.floor(st.n):0},quiet:true};
+  // Anything earned before trophies existed (chips already held, items already bought) unlocks quietly
+  setTimeout(function(){achCheck();ach.quiet=false;},0);
 }
 
 // ═══ MODES ═══
@@ -4088,7 +4426,7 @@ window.addEventListener('resize',barLayout);
 function barBlackout(){
   if(mx.on)mxClose();
   var lost=Math.floor(balance*0.15);balance-=lost;updateBalance();
-  bar.drinks=[];bar.buzz=0;slState.auto=0;barHUD();saveGame();
+  bar.drinks=[];bar.buzz=0;slState.auto=0;barHUD();achBump('bar_blackout');saveGame();
   var b=document.getElementById('blackout'),t=document.getElementById('blackout-text');
   t.innerHTML='';b.classList.add('show');void b.offsetWidth;b.classList.add('dark');
   setTimeout(function(){
@@ -4436,6 +4774,7 @@ function mxNext(){
 // Serve: drink your own (its strength set by the score), or hand it to the customer for a wage and a tip
 function mxServe(){
   if(!mx.on||mx.step!=='serve'||mx.served)return;
+  achBump('bar_mix');if(mxGrade(mx.total)[1]>=5)achBump('bar_5star');
   if(!mx.cust){var id=mx.id,price=mx.price,q=mx.total;mx.price=0;mxClose();barServeAnim(DRINKS[id]);barServe(id,price,mxMult(q),q,q>=95);return;}
   var q=mx.total,wage=15,tip=Math.round(45*Math.max(0,Math.min(1,(q-40)/60))),g=mxGrade(q);
   balance+=wage+tip;updateBalance();bar.shift.earned+=wage+tip;bar.shift.scores.push(q);mx.served=true;
@@ -4459,7 +4798,9 @@ function barShiftNext(){
 }
 function barShiftEnd(s,early){
   if(!s)return;
-  var st=bar.stats;st.shifts++;st.earned+=s.earned;st.best=Math.max(st.best,s.earned);saveGame();barRender();
+  var st=bar.stats;st.shifts++;st.earned+=s.earned;st.best=Math.max(st.best,s.earned);
+  if(s.scores.length){achBump('bar_shift');if(s.earned>=300)achBump('bar_shift300');}
+  saveGame();barRender();
   var avg=s.scores.length?Math.round(s.scores.reduce(function(a,b){return a+b;},0)/s.scores.length):0;
   barSay(s.scores.length?(early?'Clocked out early. ':"Shift's over! ")+'You made '+s.scores.length+' drink'+(s.scores.length>1?'s':'')+' (average '+avg+'%) and earned '+fmtChips(s.earned)+' chips. 💼':'Clocked out before serving anyone. No harm done! 👋');
 }
@@ -4669,7 +5010,7 @@ function peccyBlinkPhase(svg){
 
 // ═══ BLACKJACK ═══
 var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false,bjTie=false,bjBust=null;
-var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1; // 1=main, 2=split
+var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1,bjDoubled=false; // 1=main, 2=split; bjDoubled: the main hand was doubled (for its trophy)
 var suits=['&spades;','&hearts;','&diams;','&clubs;'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
 
 function createDeck(){bjDeck=[];for(var d=0;d<6;d++)for(var s=0;s<suits.length;s++)for(var r=0;r<ranks.length;r++)bjDeck.push({suit:suits[s],rank:ranks[r]});for(var i=bjDeck.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=bjDeck[i];bjDeck[i]=bjDeck[j];bjDeck[j]=t;}}
@@ -4808,7 +5149,7 @@ function bjDeal(){
   barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');bjTie=!!barTake('oldfash');bjBust=barTake('bloody');
   document.getElementById('player-hands-container').classList.toggle('blurry',bjBlur);
   bjPlayerHand=[bjDeck.pop(),bjDeck.pop()];bjDealerHand=[bjDeck.pop(),bjDeck.pop()];
-  bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;
+  bjSplitHand=[];bjSplitBet=0;bjIsSplit=false;bjActiveHand=1;bjGameActive=true;bjDoubled=false;
   document.getElementById('bj-message').textContent='';
   bjShowGameBtns();
   renderBJHands(false);
@@ -4878,7 +5219,7 @@ function bjDouble(){
   var bet=bjActiveHand===1?bjBetAmount:bjSplitBet;
   if(bet>balance){setPeccySpeech('bj-peccy-speech',"Not enough chips to double! 😬");return;}
   balance-=bet;
-  if(bjActiveHand===1){bjBetAmount*=2;}else{bjSplitBet*=2;}
+  if(bjActiveHand===1){bjBetAmount*=2;bjDoubled=!bjIsSplit;}else{bjSplitBet*=2;}
   document.getElementById('bj-bet-display').textContent=(bjBetAmount+(bjIsSplit?bjSplitBet:0));
   updateBalance();bjRenderBet();
   hand.push(bjDeck.pop());
@@ -4959,6 +5300,13 @@ function bjResolveAll(){
 
   balance+=totalWin;updateBalance();
   var totalBet=bjBetAmount+bjSplitBet;
+  // Trophies: which of the two hands won (the same tests as above)
+  function bjHandWon(h,ps){return ps<=21&&(bjCharlie(h)||ds>21||ps>ds||(ps===ds&&bjTie));}
+  var won1=bjHandWon(bjPlayerHand,ps1),won2=bjHandWon(bjSplitHand,ps2);
+  achPlay('bj');achBump('bj_hand');
+  if(totalWin>totalBet){achBump('bj_win');achWin(totalWin-totalBet);}
+  if(won1&&won2)achBump('bj_split_both');
+  if((won1&&bjPlayerHand.length>=5)||(won2&&bjSplitHand.length>=5))achBump('bj_five_win');
   bjRenderBet(totalWin>totalBet?'won':totalWin<totalBet?'lost':'',totalWin-totalBet);
   if(totalWin>totalBet){showConfetti();peccyHop('.peccy-dealer-svg');setPeccySpeech('bj-peccy-speech',"Split pays off! Nice moves! 🎉");}
   else if(totalWin===totalBet){setPeccySpeech('bj-peccy-speech',"Broke even on the split. 🤝");}
@@ -4990,6 +5338,8 @@ function bjEndGame(r,m){
     setPeccySpeech('bj-peccy-speech',"House wins! Don't worry, try again! 😎");
   }
   balance+=w;updateBalance();
+  achPlay('bj');achBump('bj_hand');
+  if(w>bjBetAmount){achBump('bj_win');achWin(w-bjBetAmount);if(r==='blackjack')achBump('bj_natural');if(bjDoubled)achBump('bj_double_win');if(bjPlayerHand.length>=5)achBump('bj_five_win');}
   bjRenderBet(w>bjBetAmount?'won':w<bjBetAmount?'lost':'',w-bjBetAmount);
   if(w>bjBetAmount)peccyHop('.peccy-dealer-svg');
   var wt=r==='push'&&!bjTie?'Bet returned: '+w:w>bjBetAmount?'Won: +'+w:w>0?'Got back '+w+' of '+bjBetAmount:'Lost: -'+bjBetAmount;
@@ -5712,6 +6062,7 @@ async function slAnimate(m,st){
     var won={};st.grid.forEach(function(col){col.forEach(function(s){var v=s&&slVal(s);if(v&&m.jackpots[v])won[v]=1;});});
     if(st.grand)won.GRAND=1;
     slFlashJackpots(Object.keys(won));
+    slState.jpHit=(slState.jpHit||[]).concat(Object.keys(won));  // for the jackpot trophies
   }
   if(st.t==='bomb'){slBanner('×'+st.mult,'The bombs multiply this tumble win');await slWait(1300);slBannerHide();}
   if(st.grand){slBanner('GRAND JACKPOT','All 15 orbs filled!');await slWait(2000);slBannerHide();}
@@ -5736,7 +6087,7 @@ async function slSpin(){
   if(bet>balance){slSay("Not enough chips for that bet! Lower it or hit Reset. 😬");slState.auto=0;slUI();return;}
   balance-=bet;updateBalance();barRound();
   if(slState.auto)slState.autoN++;
-  slState.playing=true;slState.fast=false;slUI();
+  slState.playing=true;slState.fast=false;slState.jpHit=[];slUI();
   slSay(slRand(SL_SAY.spin));slWin(0,'');
   var steps=barSpinSteps(m,bet),run=0,featStart=0;
   for(var i=0;i<steps.length;i++){
@@ -5764,6 +6115,10 @@ async function slSpin(){
   if(comp)run=bet;
   slState.change+=run;var total=Math.floor(slState.change+1e-9),x=run/bet;slState.change-=total;
   balance+=total;updateBalance();
+  achPlay('slots');achMark('machines',slState.id);achBump('sl_spin');achWin(run-bet);
+  if(steps.some(function(s){return s.feature;}))achBump('sl_feature');
+  if(x>=10)achBump('sl_10x');if(x>=50)achBump('sl_50x');
+  if(slState.jpHit.length){achBump('sl_jackpot');if(slState.jpHit.some(function(k){return /grand/i.test(k);}))achBump('sl_grand');}
   if(x>=15){
     showConfetti();peccyHop('.peccy-small');slBanner(x>=150?'EPIC WIN':x>=50?'MEGA WIN':'BIG WIN',slFmt(run)+' chips · '+slX(x)+' your bet');
     await slWait(2400);slBannerHide();
@@ -6600,6 +6955,12 @@ function evalRoulette(num){
   var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k]&&!back[k])lostStake+=rlBets[k].amount;});
   if(lostStake>0&&barFind('mojito')){var mj=barTake('mojito');refund=Math.min(lostStake,Math.round(mj.cap));}
   balance+=tw+zeroBack+refund;updateBalance();
+  achPlay('rl');achBump('rl_spin');
+  if(tw>0){
+    achBump('rl_win');achWin(tw+zeroBack+refund-staked);
+    if(Object.keys(wins).some(function(k){var b=rlBets[k];return !b.out&&b.nums&&b.nums.length===1;}))achBump('rl_straight');
+    if(num===0)achBump('rl_zero_win');
+  }
   rlLastBets=JSON.parse(JSON.stringify(rlBets));
   rlResolved={bets:rlBets,wins:wins,back:back,t0:performance.now()};rlBets={};rlHistory=[];
   document.getElementById('rlc-'+num).classList.add('rl-win-num');
@@ -6731,7 +7092,7 @@ function saveLoad(){
 }
 
 // Esc closes whichever pop-up is open
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();saveClose();}});
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();saveClose();achClose();}});
 
 // ═══ PLINKO ═══
 // Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
@@ -6855,6 +7216,8 @@ function pkLand(b,now){
   if(b.lg){var add=Math.min(win*(b.lg.power||0.2),Math.max(0,b.lg.cap-b.lg.paid));b.lg.paid+=add;win+=add;}
   pk.change+=win;var paid=Math.floor(pk.change+1e-9);pk.change-=paid;
   balance+=paid;updateBalance();
+  achPlay('pk');achBump('pk_ball');achWin(win-b.bet);
+  if(b.mult>=5)achBump('pk_5x');if(b.k===0||b.k===b.rows)achBump('pk_edge');
   pk.land[b.rows+':'+b.k]=now;
   document.getElementById('pk-last').textContent=slFmt(win);
   pk.hist.unshift({m:b.mult,c:pkColor(b.k,b.rows)});pk.hist=pk.hist.slice(0,7);
@@ -6939,7 +7302,7 @@ function cfFlip(amount){
   var bet=amount||cfBet();
   if(bet>balance){cfSay(balance<1?"You're out of chips! Hit Reset"+(gameMode==='arcade'?', or work a shift at the bar. 🍸':'. 🔄'):"Not enough chips for that bet! 😬");return;}
   balance-=bet;updateBalance();barRound();cf.busy=true;cf.last=0;cfUI();
-  var res=Math.random()<0.5?'H':'T',win=res===cf.side;
+  var res=Math.random()<0.5?'H':'T',win=res===cf.side,dbl=!!amount;  // only Double it passes an amount
   // The coin spins over a few times in the air and lands showing the result
   cf.angle+=1440+(Math.random()<0.5?0:360)+(res!==cf.face?180:0);
   var coin=document.getElementById('cf-coin'),toss=document.getElementById('cf-toss');
@@ -6947,11 +7310,12 @@ function cfFlip(amount){
   document.getElementById('cf-result').textContent='Flipping…';
   cfSay(slRand(['Heads or tails... here it goes! 🪙','Up she goes! 🪙','Call it in the air! 🪙']));
   setTimeout(function(){
-    cf.face=res;cf.busy=false;
+    cf.face=res;cf.busy=false;achPlay('coin');achBump('cf_flip');
     var name=res==='H'?'Heads':'Tails',r=document.getElementById('cf-result');
     if(win){
       cf.change+=bet*CF_PAY[gameMode];var whole=Math.floor(cf.change+1e-9);cf.change-=whole;balance+=whole;updateBalance();
       cf.streak++;cf.best=Math.max(cf.best,cf.streak);cf.last=whole;
+      achWin(whole-bet);if(cf.streak===3)achBump('cf_streak3');if(cf.streak===5)achBump('cf_streak5');if(dbl)achBump('cf_double_win');
       r.innerHTML='<b class="w">'+name+'! You win '+fmtChips(whole)+'</b>';
       cfSay(cf.streak>=3?cf.streak+" in a row! You're on fire! 🔥":slRand(['Called it! 🎉','Lucky you! 🍀','Winner winner! 🪙']));
       if(cf.streak>=3)showConfetti();peccyHop('.cf-peccy');
@@ -7725,10 +8089,18 @@ function sbGrade(test){
     var hit=false;b.legs.forEach(function(l){if(l.st!=='open')return;var r=test(l);if(r!=null){l.st=r?'won':'lost';hit=true;}});
     if(b.st!=='open'||!hit)return;
     if(b.legs.some(function(l){return l.st==='lost';})){b.st='lost';b.paid=0;}
-    else if(b.legs.every(function(l){return l.st==='won';})){b.st='won';b.paid=Math.floor(b.amt*b.mult);balance+=b.paid;won+=b.paid;}
+    else if(b.legs.every(function(l){return l.st==='won';})){b.st='won';b.paid=Math.floor(b.amt*b.mult);balance+=b.paid;won+=b.paid;sbAchWon(b);}
   });
   if(won)updateBalance();
   return won;
+}
+// A winning bet, for the trophies: parlays, long shots, horses, exactas and the season champion
+function sbAchWon(b){
+  var sp=function(s,m){return b.legs.some(function(l){return l.sp===s&&(!m||l.m===m);});};
+  achBump('sb_won');achWin(b.paid-b.amt);
+  if(b.kind==='parlay'&&b.legs.length>=3)achBump('sb_parlay3');
+  if(b.mult>=10)achBump('sb_long');
+  if(sp('hr'))achBump('hr_won');if(sp('hr','exa'))achBump('hr_exacta');if(sp('fut'))achBump('sb_champ');
 }
 // Did a football leg win?
 function sbFbWins(l,g){
@@ -7825,6 +8197,7 @@ function sbSlipPlace(){
   if(parlay)sb.bets.push(Object.assign({id:sb.nextId++,kind:'parlay',legs:fresh,mult:sbParlayMult(fresh)},base));
   else fresh.forEach(function(l){sb.bets.push(Object.assign({id:sb.nextId++,kind:'single',legs:[l],mult:sbMult(l.p)},base));});
   if(sb.bets.length>80){var keep=sb.bets.filter(function(b){return b.st==='open';}),done=sb.bets.filter(function(b){return b.st!=='open';}).slice(-50);sb.bets=done.concat(keep).sort(function(a,b){return a.id-b.id;});}
+  achPlay('sports');achBump('sb_placed',parlay?1:fresh.length);
   saveGame();
   sbSay(parlay?fresh.length+'-leg parlay, '+fmtChips(amt)+' to win '+fmtChips(Math.floor(amt*sbParlayMult(fresh)))+'. Big swing! 🎯':(fresh.length>1?fresh.length+' bets':'Bet')+' placed. Good luck! 🍀');
   sbSlip.legs=[];sbRender();
