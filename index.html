@@ -77,8 +77,10 @@
   .game-area { display: none; position: relative; z-index: 1; padding: 22px 16px 48px; max-width: 980px; margin: 0 auto; }
   .game-area.active { display: block; animation: areaIn 0.45s ease; }
   @keyframes areaIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-  /* Table games: tighter around the table, and scaled down by fitTables() when the window is short */
+  /* Table games: tighter around the table, which fitTables() scales to the window (down on a small one, up on a
+     big one); the blackjack felt also widens to the screen, so its area has no width cap */
   #game-blackjack, #game-roulette { padding-top: 12px; padding-bottom: 14px; }
+  #game-blackjack { max-width: none; }
   .table-fit { transform-origin: top center; }
 
   /* ═══ BUTTONS ═══ */
@@ -438,7 +440,8 @@
   /* Slot hub: the Slots tab opens on every machine as a card, with a little view of its reels */
   #game-slots.show-hub .sl-cabinet { display: none; }
   #game-slots:not(.show-hub) .sl-hub { display: none; }
-  .sl-hub { max-width: 1500px; margin: 0 auto; padding: 0 2px 2px; }
+  /* The panel games run to 1880px wide, so a 1920 screen is filled edge to edge */
+  .sl-hub { max-width: 1880px; margin: 0 auto; padding: 0 2px 2px; }
   /* The title sits on the grid's left edge with its line beside it, not centred over the floor */
   .sl-hub-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 16px; margin: 0 0 12px; }
   .sl-hub-head h2 { font: 700 28px var(--display); letter-spacing: -0.01em; color: var(--text); }
@@ -453,10 +456,11 @@
   /* slHubLayout widens a card or three so the floor's rows always close: the house machine leads */
   .sl-card.wide { grid-column: span 2; }
   .sl-card-preview {
-    height: 134px; display: flex; align-items: center; justify-content: center; padding: 8px 10px;
+    height: var(--pv-h, 134px); display: flex; align-items: center; justify-content: center; padding: 8px 10px;
     background: radial-gradient(120% 110% at 50% 0%, color-mix(in srgb, var(--tile) 42%, #000) 0%, var(--card-bg) 78%);
     border-bottom: 1px solid color-mix(in srgb, var(--tile) 30%, transparent);
   }
+  .sl-card-preview .sl-mini { transform: scale(var(--pv-k, 1)); }  /* slHubGrow can grow the previews into spare height */
   .sl-mini { display: flex; gap: 3px; padding: 5px; border-radius: 10px; background: #05060a; box-shadow: inset 0 0 14px #000, 0 0 0 2px color-mix(in srgb, var(--tile) 50%, #222), 0 8px 18px rgba(0,0,0,0.5); }
   .sl-mini-col { display: flex; flex-direction: column; border-radius: 5px; overflow: hidden; background: linear-gradient(180deg, #161822, #0b0c12); }
   .sl-mini .sl-cell { --cell: var(--mc); }
@@ -472,7 +476,7 @@
   .sl-back-btn { display: inline-flex; align-items: center; gap: 7px; }
   /* Cabinet: fills the rest of the screen; the reel stage takes whatever height is left */
   .sl-cabinet {
-    position: relative; display: flex; flex-direction: column; max-width: 1500px; margin: 0 auto;
+    position: relative; display: flex; flex-direction: column; max-width: 1880px; margin: 0 auto;
     height: calc(100vh - 150px); height: calc(100dvh - 150px); min-height: 380px; padding: 12px 16px 14px; border-radius: 28px; text-align: center;
     background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
     border: 1px solid color-mix(in srgb, var(--acc) 55%, transparent);
@@ -862,7 +866,7 @@
   .rl-hint { text-align: center; font-size: 11.5px; color: rgba(255,255,255,0.55); max-width: 640px; margin: 10px auto 0; line-height: 1.55; }
 
   /* ═══ SHOP ═══ */
-  #game-shop.active { max-width: 1320px; padding-top: 14px; padding-bottom: 18px; }
+  #game-shop.active { max-width: 1880px; padding-top: 14px; padding-bottom: 18px; }
   .shop-head {
     display: flex; align-items: center; gap: 18px; padding: 12px 18px; margin-bottom: 12px; border-radius: 16px;
     background: var(--surface); border: 1px solid var(--line);
@@ -1072,7 +1076,7 @@
   /* ═══ PECCY'S BAR ═══ The Bar tab (Arcade only): Peccy behind the counter, the menu, and the mixing station */
   .game-tab.arcade-only { display: none; }
   body.arcade .game-tab.arcade-only { display: flex; }
-  #game-bar.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  #game-bar.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .bar-wrap { position: relative; height: 640px; }
   .bar-front { display: grid; grid-template-columns: minmax(290px, 0.72fr) 1.75fr; gap: 12px; height: 100%; }
   .bar-wrap.mixing .bar-front { display: none; }
@@ -1119,7 +1123,7 @@
   .bar-active { display: flex; flex-wrap: wrap; gap: 6px; }
   .bar-none { font-size: 12px; color: var(--faint); }
   /* Twelve drinks, three to a row: four rows that fill the column instead of three that stop halfway */
-  .bar-menu { flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: min-content; gap: 8px; padding: 1px 2px 1px 1px; }
+  .bar-menu { position: relative; flex: 1; min-height: 0; overflow-y: auto; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-auto-rows: min-content; gap: 8px; padding: 1px 2px 1px 1px; }
   .bar-note { flex: none; font-size: 11px; line-height: 1.4; color: var(--faint); }
   .drink {
     display: flex; flex-direction: column; gap: 6px; padding: 9px 10px; border-radius: 12px;
@@ -1333,7 +1337,7 @@
   .blackout-text button { margin-top: 18px; }
 
   /* ═══ PLINKO ═══ Controls on the left, the peg board filling the rest of the screen */
-  #game-plinko.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  #game-plinko.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .pk-wrap { display: grid; grid-template-columns: 290px minmax(0, 1fr); gap: 12px; height: 640px; }
   .pk-panel {
     display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 16px; overflow-y: auto;
@@ -1387,7 +1391,7 @@
   }
 
   /* ═══ COIN FLIP ═══ The controls on the left (the same panel as Plinko), the coin in the spotlight */
-  #game-coin.active { max-width: 1200px; padding-top: 12px; padding-bottom: 14px; }
+  #game-coin.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .cf-wrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 12px; height: 560px; }
   .cf-sides { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .cf-sides button { padding: 12px; border-radius: 12px; border: 1px solid var(--line-2); background: var(--well); color: var(--muted); font: 600 14px 'Inter', sans-serif; cursor: pointer; transition: color 0.15s, background 0.15s; }
@@ -1400,7 +1404,8 @@
     position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; min-height: 0; border-radius: 16px; overflow: hidden;
     background: #13110e; border: 1px solid var(--line);
   }
-  .cf-toss { --toss: -110px; width: 210px; height: 210px; perspective: 900px; }
+  /* The coin is sized by cfLayout to its stage (--coin), and everything on it scales with it */
+  .cf-toss { --toss: calc(var(--coin, 210px) * -0.52); width: var(--coin, 210px); height: var(--coin, 210px); perspective: 900px; }
   .cf-toss.go { animation: cfToss 1.6s cubic-bezier(.3,.6,.4,1); }
   @keyframes cfToss { 0% { transform: translateY(0) scale(1); } 45% { transform: translateY(var(--toss)) scale(1.12); } 100% { transform: translateY(0) scale(1); } }
   .cf-coin { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 1.6s cubic-bezier(.25,.7,.3,1); }
@@ -1410,10 +1415,10 @@
     box-shadow: inset 0 0 0 8px rgba(122,82,16,0.55), inset 0 0 0 12px rgba(255,231,160,0.5), 0 18px 40px rgba(0,0,0,0.5);
   }
   .cf-face svg { width: 44%; height: auto; opacity: 0.92; }
-  .cf-face span { font: 900 14px var(--display); letter-spacing: 3px; color: #6b4a0c; }
+  .cf-face span { font: 900 calc(var(--coin, 210px) * 0.067) var(--display); letter-spacing: calc(var(--coin, 210px) * 0.014); color: #6b4a0c; }
   .cf-t { transform: rotateY(180deg); }
-  .cf-t b { font: 900 92px var(--serif); line-height: 1; color: #7a5410; text-shadow: 0 2px 0 rgba(255,240,190,0.6); }
-  .cf-shadow { width: 150px; height: 16px; margin-top: -8px; border-radius: 50%; background: rgba(0,0,0,0.45); filter: blur(5px); }
+  .cf-t b { font: 900 calc(var(--coin, 210px) * 0.44) var(--serif); line-height: 1; color: #7a5410; text-shadow: 0 2px 0 rgba(255,240,190,0.6); }
+  .cf-shadow { width: calc(var(--coin, 210px) * 0.71); height: 16px; margin-top: -8px; border-radius: 50%; background: rgba(0,0,0,0.45); filter: blur(5px); }
   .cf-result { min-height: 26px; font: 700 20px var(--display); text-align: center; }
   .cf-result .w { color: #82dba6; } .cf-result .l { color: #ff8a80; }
   .cf-hist { display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; max-width: 440px; min-height: 26px; }
@@ -1427,7 +1432,7 @@
   }
 
   /* ═══ SPORTSBOOK ═══ This week's games on the left; the matchup, a team, or the broadcast on the right */
-  #game-sports.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  #game-sports.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .sb-wrap { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 12px; height: 640px; }
   .sb-side { display: flex; flex-direction: column; gap: 8px; min-height: 0; padding: 12px; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); }
   .sb-head { display: flex; align-items: center; gap: 10px; }
@@ -1651,13 +1656,13 @@
 
   /* ═══ HOLD'EM ═══ Two games: Ultimate Texas Hold'em on the blackjack-style felt, and a poker table */
   #game-holdem { position: relative; }
-  #game-holdem.active { max-width: 1500px; padding-top: 12px; padding-bottom: 14px; }
+  #game-holdem.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .he-view { display: none; }
   .he-view.active { display: flow-root; }  /* so the scaled table's negative margin shrinks this box instead of hanging out of it */
   /* Which game: sits on the wood wall, top left, in both */
   .he-switch { position: absolute; top: 24px; left: 30px; z-index: 30; background: rgba(12,10,8,0.88); }
   .he-switch button { padding: 7px 13px; font-size: 12.5px; }
-  #he-uth .table-fit { max-width: 980px; margin: 0 auto; }
+  #he-uth .table-fit { margin: 0 auto; }  /* heLayout sets its width, like the blackjack felt */
   /* Ultimate Texas Hold'em: the same room and felt as blackjack */
   .uth-felt { padding-top: 40px; }
   .uth-felt .hand-label .score { text-transform: none; letter-spacing: 0; }
@@ -1665,8 +1670,13 @@
   .uth-hand.folded .card { opacity: 0.4; }
   .uth-board { position: relative; z-index: 2; display: flex; justify-content: center; gap: 8px; min-height: 104px; margin: 6px 0 2px; }
   .he-slot { flex: none; width: 74px; height: 104px; border-radius: 9px; border: 1.5px dashed rgba(242,199,92,0.38); }
-  .card.best { box-shadow: 0 0 0 2px var(--gold), -2px 4px 12px rgba(0,0,0,0.45); }
-  .card.dim { filter: brightness(0.62) saturate(0.7); }
+  /* The winning hand at a showdown: its five cards lift on a gold rim, and every other card dims. (translate, not
+     transform, so it stacks with the deal and flip animations) */
+  .card.best { box-shadow: 0 0 0 3px var(--gold), -2px 8px 16px rgba(0,0,0,0.5); translate: 0 -8px; transition: translate 0.3s ease, box-shadow 0.3s ease; z-index: 1; }
+  .card.dim { filter: brightness(0.5) saturate(0.6); transition: filter 0.3s ease; }
+  .hand-label .score.win { color: #2a1a00; background: var(--gold); border-color: transparent; }
+  .bj-message small { display: block; margin-top: 2px; font: 600 13px 'Inter', sans-serif; color: var(--muted); }
+  .pt-pot { flex-wrap: wrap; max-width: 92%; row-gap: 6px; }
   .uth-mid { height: 64px; }
   .uth-mid .bj-arc { top: -6px; }
   .bj-message.lost { color: var(--loss); border-color: rgba(255,143,133,0.4); }
@@ -2049,6 +2059,79 @@
   .save-msg { min-height: 18px; margin-top: 8px; font-size: 12px; line-height: 1.45; color: var(--muted); }
   .save-msg.good { color: #82dba6; } .save-msg.bad { color: #ff8a80; }
   .save-split { height: 1px; margin: 16px 0 2px; background: var(--line-2); }
+  /* ═══ HOW TO PLAY ═══ The rules panel: topics down the left, the rules beside them, each scrolling on its own */
+  .bug-overlay.rules-over { z-index: 270; }
+  .bug-panel.rules-panel { display: flex; flex-direction: column; width: min(1000px, 100%); height: min(780px, calc(100dvh - 32px)); padding-bottom: 0; overflow: hidden; }
+  .rules-panel .rules-sum { margin-bottom: 12px; font-size: 12.5px; }
+  .rules-sum b { color: var(--text); font-weight: 600; }
+  .rules-pick { display: none; }
+  .rules-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 210px minmax(0, 1fr); border-top: 1px solid var(--line); }
+  .rules-nav { overflow-y: auto; padding: 4px 14px 16px 0; border-right: 1px solid var(--line); }
+  .rules-nav small { display: block; margin: 14px 0 4px 10px; font: 600 11px 'Inter', sans-serif; color: var(--faint); }
+  .rules-nav button { display: block; width: 100%; padding: 7px 10px; border: none; border-radius: 10px; background: transparent; color: var(--muted); font: 500 13.5px 'Inter', sans-serif; text-align: left; cursor: pointer; }
+  .rules-nav button:hover { color: var(--text); background: rgba(255,240,220,0.05); }
+  .rules-nav button.on { color: var(--text); background: var(--active); box-shadow: 0 0 0 1px var(--sel); }
+  .rules-text { overflow-y: auto; padding: 16px 4px 28px 24px; }
+  .rules-text h3 { margin-bottom: 6px; font: 700 24px var(--display); letter-spacing: -0.01em; }
+  .rules-text h4 { margin: 22px 0 6px; font: 700 16px var(--display); color: var(--text); border-radius: 8px; transition: background 0.4s; }
+  .rules-text h4 small { margin-left: 6px; font: 500 12px 'Inter', sans-serif; color: var(--faint); }
+  .rules-text p, .rules-text li { font-size: 14px; line-height: 1.55; color: var(--muted); }
+  .rules-text p + p { margin-top: 8px; }
+  .rules-text b { color: var(--text); font-weight: 600; }
+  .rules-text ul { display: flex; flex-direction: column; gap: 5px; margin: 6px 0 0; padding-left: 20px; }
+  .rules-text a { color: var(--gold-2); text-decoration: underline; text-underline-offset: 2px; }
+  .rules-text .rl-small-btn { margin-top: 8px; }
+  .rules-index { margin-top: 6px; font-size: 13px; }
+  .rules-meta { font-size: 12.5px !important; color: var(--faint) !important; }
+  .rules-tbl { width: 100%; margin: 8px 0 4px; border-collapse: collapse; font-size: 13.5px; }
+  .rules-tbl th, .rules-tbl td { padding: 7px 12px 7px 0; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; line-height: 1.45; }
+  .rules-tbl tr:first-child th { font: 500 12px 'Inter', sans-serif; color: var(--faint); }
+  .rules-tbl th { font-weight: 600; color: var(--text); }
+  .rules-tbl td { color: var(--muted); }
+  .rules-tbl td:last-child { font-variant-numeric: tabular-nums; }
+  .rules-tbl td.nw { white-space: nowrap; }
+  .rules-tbl tr { transition: background 0.4s; }
+  .rules-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; margin-top: 6px; }
+  .rules-text .rules-hl { background: rgba(242,199,92,0.16); }
+  .rules-now { margin-left: 6px; padding: 1px 7px; border-radius: 999px; font: 600 11px 'Inter', sans-serif; color: #1d1203; background: var(--gold); }
+  .rules-note { margin-top: 12px; padding: 9px 12px; border-radius: 10px; font-size: 13px; line-height: 1.5; color: var(--muted); background: var(--well); border: 1px solid var(--line); }
+  .rules-note.arc.on { color: #d7f8e6; background: rgba(61,220,132,0.1); border-color: rgba(61,220,132,0.3); }
+  .rules-note.ev { color: var(--text); background: rgba(242,199,92,0.08); border-color: rgba(242,199,92,0.35); }
+  .rules-go { margin-top: 22px; }
+  /* A game's Rules button, and the ? beside a bet or feature */
+  .rules-btn { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+  .rules-btn i { font-size: 11px; color: var(--muted); }
+  .rules-i {
+    position: relative; display: inline-flex; align-items: center; justify-content: center; flex: none; width: 17px; height: 17px; margin-left: 5px; padding: 0;
+    border-radius: 50%; border: 1px solid var(--line-2); background: transparent; color: var(--muted); font: 700 10.5px/1 var(--display); vertical-align: 1px; cursor: pointer;
+  }
+  .rules-i::after { content: ''; position: absolute; inset: -7px; }  /* a bigger target than it looks */
+  .rules-i:hover { color: var(--text); border-color: var(--sel); }
+  .rules-i.demo { cursor: default; }
+  /* Where the Rules buttons sit in each game */
+  .rl-topright { position: absolute; top: 14px; right: 16px; z-index: 6; display: flex; align-items: center; gap: 8px; }
+  .rl-topright .rl-board { position: static; }
+  .rl-topright .rules-btn { background: rgba(4,5,8,0.8); border-color: rgba(255,255,255,0.1); }
+  .rl-topright .rules-btn:hover { background: rgba(20,18,16,0.9); }
+  .sl-head-right { gap: 8px; }
+  .sl-hub-head .rules-btn { margin-left: auto; align-self: center; }
+  .pk-label-row { display: flex; align-items: center; }
+  .pk-label-row .rules-i { margin-top: 4px; }
+  .pk-rules { align-self: flex-start; margin-top: 10px; }
+  .sb-head .rules-btn { margin-left: auto; padding: 6px 11px; }
+  .shop-rules { flex: none; align-self: center; }
+  .bar-rules { margin-left: auto; padding: 6px 11px; }
+  .pt-side-head { position: relative; }
+  .pt-side-head .rules-btn { position: absolute; top: -2px; right: 0; padding: 6px 11px; }
+  .bar-job-text b .rules-i { border-color: rgba(255,247,214,0.4); color: #fff7d6; }
+  @media (max-width: 760px) {
+    .bug-panel.rules-panel { height: calc(100dvh - 32px); }
+    .rules-pick { display: block; width: 100%; margin-bottom: 10px; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line-2); background: var(--well); color: var(--text); font: 600 14px 'Inter', sans-serif; }
+    .rules-body { grid-template-columns: minmax(0, 1fr); }
+    .rules-nav { display: none; }
+    .rules-text { padding: 12px 2px 24px; }
+    .rules-cols { grid-template-columns: 1fr; }
+  }
   .confetti-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden; }
   .confetti { position: absolute; width: 10px; height: 10px; opacity: 0; }
   @keyframes confettiFall { 0% { transform: translateY(-10px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
@@ -2105,10 +2188,11 @@
     .sl-hub-head { margin-bottom: 8px; }
     .sl-hub-head p { display: none; }
     .sl-hub-grid { grid-template-columns: repeat(auto-fill, minmax(226px, 1fr)); gap: 10px; }
-    .sl-card-preview { height: 88px; padding: 5px 8px; }
-    .sl-card-preview .sl-mini { transform: scale(0.7); }
+    .sl-card-preview { height: var(--pv-h, 88px); padding: 5px 8px; }
+    .sl-card-preview .sl-mini { transform: scale(var(--pv-k, 0.7)); }
     .sl-card-body { gap: 4px; padding: 8px 12px 9px; }
     .sl-card-desc { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 11.5px; }
+    .sl-hub-grid.roomy .sl-card-desc { display: block; overflow: visible; }
     /* Shop: a slimmer header (its grid scrolls inside the window, see shopLayout) */
     .shop-head { padding: 8px 16px; margin-bottom: 8px; }
     .shop-host-peccy { width: 54px; height: 64px; }
@@ -2141,7 +2225,7 @@
   }
   @media (max-width: 640px) {
     .rl-top { --rail-top: 176px; --wheel-w: min(420px, calc(100vw - 40px)); }
-    .rl-board { top: 8px; right: 8px; padding: 5px 8px; }
+    .rl-topright { top: 8px; right: 8px; } .rl-board { padding: 5px 8px; }
     .rl-board small { display: none; }
     .rl-hist:nth-child(n+6) { display: none; }
     .rl-peccy-side { left: 10px; top: 36px; }
@@ -2279,6 +2363,7 @@
       <button class="clear-bet" onclick="bjClearBet()">Clear</button>
     </div>
     <div class="bj-actions" id="bj-actions">
+      <button class="rl-small-btn rules-btn" onclick="rulesOpen('blackjack')"><i class="fa-solid fa-book-open"></i> Rules</button>
       <button class="btn btn-primary" id="bj-deal-btn" onclick="bjDeal()"><i class="fa-solid fa-layer-group"></i> Deal</button>
       <button class="btn btn-primary" id="bj-newhand-btn" onclick="bjNewHand()" style="display:none"><i class="fa-solid fa-rotate-right"></i> New hand</button>
     </div>
@@ -2301,7 +2386,7 @@
         <div class="sl-name" id="sl-name"></div>
         <div class="sl-sub" id="sl-sub"></div>
       </div>
-      <div class="sl-head-right"><button class="rl-small-btn sl-back-btn" id="sl-back" onclick="slShowHub()"><i class="fa-solid fa-table-cells-large"></i> All machines</button></div>
+      <div class="sl-head-right"><button class="rl-small-btn rules-btn" onclick="rulesOpen('slots','m-'+slState.id)"><i class="fa-solid fa-book-open"></i> Rules</button><button class="rl-small-btn sl-back-btn" id="sl-back" onclick="slShowHub()"><i class="fa-solid fa-table-cells-large"></i> All machines</button></div>
     </div>
     <div class="sl-jackpots" id="sl-jackpots"></div>
     <div class="sl-status" id="sl-status"></div>
@@ -2342,7 +2427,7 @@
     <div class="rl-top">
       <div class="rl-felt-edge"></div>
       <div class="rl-rail"></div>
-      <div class="rl-board"><small>Last spins</small><div id="rl-history"><span class="rl-hist-empty">—</span></div></div>
+      <div class="rl-topright"><button class="rl-small-btn rules-btn" onclick="rulesOpen('roulette')"><i class="fa-solid fa-book-open"></i> Rules</button><div class="rl-board"><small>Last spins</small><div id="rl-history"><span class="rl-hist-empty">—</span></div></div></div>
       <div class="rl-peccy-side">
         <svg class="peccy-croupier-svg peccy-dealer" data-outfit="roulette" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
         <div class="peccy-speech" id="roulette-peccy-speech">Place your bets! Drag chips onto numbers, lines or corners. 🎡</div>
@@ -2466,6 +2551,7 @@
         <button class="clear-bet" onclick="uthClear()">Clear</button>
       </div>
       <div class="bj-actions">
+        <button class="rl-small-btn rules-btn" onclick="rulesOpen('uth')"><i class="fa-solid fa-book-open"></i> Rules</button>
         <button class="pt-tog" id="uth-tips" onclick="uthTips()" title="Peccy suggests the best move for each decision"><i></i>Peccy's tips</button>
         <button class="btn btn-primary" id="uth-deal-btn" onclick="uthDeal()"><i class="fa-solid fa-layer-group"></i> Deal</button>
       </div>
@@ -2510,9 +2596,9 @@
       <div class="pk-modes"><button class="on" id="pk-manual" onclick="pkSetAuto(false)">Manual</button><button id="pk-autotab" onclick="pkSetAuto(true)">Auto</button></div>
       <label class="pk-label" for="pk-bet">Bet amount</label>
       <div class="pk-amount"><input id="pk-bet" type="number" min="1" step="1" value="10" inputmode="numeric" oninput="pkBetInput()"><button onclick="pkBetScale(0.5)">½</button><button onclick="pkBetScale(2)">2×</button></div>
-      <label class="pk-label" for="pk-risk">Risk</label>
+      <div class="pk-label-row"><label class="pk-label" for="pk-risk">Risk</label><button type="button" class="rules-i" onclick="rulesOpen('plinko','risk')" title="How risk works" aria-label="How risk works">?</button></div>
       <select class="pk-select" id="pk-risk" onchange="pkSetRisk(this.value)"><option value="L">Low</option><option value="M" selected>Medium</option><option value="H">High</option></select>
-      <label class="pk-label" for="pk-rows">Rows</label>
+      <div class="pk-label-row"><label class="pk-label" for="pk-rows">Rows</label><button type="button" class="rules-i" onclick="rulesOpen('plinko','rows')" title="How rows work" aria-label="How rows work">?</button></div>
       <select class="pk-select" id="pk-rows" onchange="pkSetRows(+this.value)"></select>
       <div class="pk-auto-opts" id="pk-auto-opts">
         <label class="pk-label" for="pk-count">Number of balls</label>
@@ -2520,6 +2606,7 @@
       </div>
       <button class="pk-play" id="pk-play" onclick="pkPlay()">Drop ball</button>
       <div class="pk-note">🍀 Arcade board: the buckets under 1× pay a little more than Stake's.</div>
+      <button class="rl-small-btn rules-btn pk-rules" onclick="rulesOpen('plinko')"><i class="fa-solid fa-book-open"></i> Rules</button>
       <div class="pk-stats"><div><small>Last win</small><span id="pk-last">0</span></div><div><small>Balls dropped</small><span id="pk-count-done">0</span></div><div><small>Payback</small><span id="pk-rtp">99%</span></div></div>
     </div>
     <div class="pk-board" id="pk-board">
@@ -2543,6 +2630,7 @@
       <div class="cf-sides"><button id="cf-heads" class="on" onclick="cfPick('H')">Heads</button><button id="cf-tails" onclick="cfPick('T')">Tails</button></div>
       <button class="pk-play" id="cf-flip" onclick="cfFlip()">Flip the coin</button>
       <button class="cf-double" id="cf-double" onclick="cfDouble()" style="display:none"></button>
+      <button class="rl-small-btn rules-btn pk-rules" onclick="rulesOpen('coin')"><i class="fa-solid fa-book-open"></i> Rules</button>
       <div class="pk-stats"><div><small>Pays</small><span id="cf-pays">×1.96</span></div><div><small>Streak</small><span id="cf-streak">0</span></div><div><small>Best streak</small><span id="cf-best">0</span></div></div>
     </div>
     <div class="cf-stage">
@@ -2564,6 +2652,7 @@
       <div class="sb-head">
         <svg class="peccy-dealer peccy-small" data-outfit="slots" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
         <div class="sb-title"><b>Peccy's Sportsbook</b><small id="sb-week">Football</small></div>
+        <button class="rl-small-btn rules-btn" onclick="rulesOpen()"><i class="fa-solid fa-book-open"></i> Rules</button>
       </div>
       <div class="peccy-speech sb-say" id="sports-peccy-speech">Pick a game, check the odds and back a team! 🏈</div>
       <div class="sb-sports"><button id="sbs-fb" class="on" onclick="sbSport('fb')">Football</button><button id="sbs-hr" onclick="sbSport('hr')">Horse racing</button></div>
@@ -2584,6 +2673,7 @@
       <div class="peccy-speech" id="shop-peccy-speech">Welcome to the Boutique! Have a look around. 🛍️</div>
     </div>
     <div class="shop-title"><h2>Peccy's Boutique</h2><p>Dress Peccy up and kit out the tables. The more detailed the design, the more it costs, and everything you buy stays yours.</p></div>
+    <button class="rl-small-btn rules-btn shop-rules" onclick="rulesOpen('shop')"><i class="fa-solid fa-book-open"></i> Rules</button>
     <div class="shop-wallet"><small>Your chips</small><span id="shop-balance">100</span></div>
   </div>
   <div class="shop-cats" id="shop-cats"></div>
@@ -2604,14 +2694,15 @@
           <div class="bar-counter"><div class="bar-served" id="bar-served"></div></div>
         </div>
         <div class="bar-job">
-          <div class="bar-job-text"><b>Help wanted!</b><span>Work a shift behind the bar: mix drinks for 5 customers and earn wages and tips.</span><small id="bar-job-stats"></small></div>
+          <div class="bar-job-text"><b>Help wanted! <button type="button" class="rules-i" onclick="rulesOpen('bar','shift')" title="How shifts work" aria-label="How shifts work">?</button></b><span>Work a shift behind the bar: mix drinks for 5 customers and earn wages and tips.</span><small id="bar-job-stats"></small></div>
           <button class="btn btn-primary bar-job-btn" onclick="barShiftStart()">Work a shift</button>
         </div>
       </div>
       <div class="bar-right">
         <div class="bar-status">
-          <div class="bar-buzz" title="Each drink adds buzz; every spin, hand or ball wears a little off"><span>Your buzz</span><div class="buzz-bar big"><i id="bar-buzz-fill"></i></div><b id="bar-buzz-pct">0%</b></div>
+          <div class="bar-buzz" title="Each drink adds buzz; every spin, hand or ball wears a little off"><span>Your buzz <button type="button" class="rules-i" onclick="rulesOpen('bar','buzz')" title="How buzz works" aria-label="How buzz works">?</button></span><div class="buzz-bar big"><i id="bar-buzz-fill"></i></div><b id="bar-buzz-pct">0%</b></div>
           <div class="bar-active" id="bar-active"></div>
+          <button class="rl-small-btn rules-btn bar-rules" onclick="rulesOpen('bar')"><i class="fa-solid fa-book-open"></i> Rules</button>
         </div>
         <div class="bar-menu" id="bar-menu"></div>
         <div class="bar-note">Drink as many as your buzz can take: every spin, hand or ball wears a little off, and hit 100% and you black out. <b>Mix it</b> yourself and how well you make it sets how strong it is: up to 1.5× Peccy's, or weaker if you botch it.</div>
@@ -2621,6 +2712,7 @@
       <div class="mix-top">
         <div class="mix-host"><svg class="peccy-dealer peccy-small" data-outfit="bar" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg><div class="peccy-speech" id="mix-say"></div></div>
         <div class="mix-steps" id="mix-steps"></div>
+        <button class="rl-small-btn rules-btn" onclick="rulesOpen('bar','mix')"><i class="fa-solid fa-book-open"></i> Rules</button>
         <button class="clear-bet" id="mix-quit" onclick="mxQuit()">Cancel</button>
       </div>
       <div class="mix-body">
@@ -2634,7 +2726,7 @@
 <!-- Blacking out: the screen fades to black, then you come round on the casino floor -->
 <div class="blackout" id="blackout"><div class="blackout-text" id="blackout-text"></div></div>
 
-<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="saveOpen()">Save code</button><button class="bug-btn" onclick="bugOpen()">Report a bug</button></footer>
+<footer class="site-foot" id="site-foot">Just for fun: no real money. Chips can't be bought or cashed out, and the shop only takes chips. Fan-made, and not affiliated with Amazon or the makers of the games these are modelled on. <button class="bug-btn" onclick="rulesOpen()">How to play</button><button class="bug-btn" onclick="saveOpen()">Save code</button><button class="bug-btn" onclick="bugOpen()">Report a bug</button></footer>
 
 <!-- ═══ SAVE CODES ═══ Copy your save as a code, and paste it into another browser or device -->
 <div class="bug-overlay" id="save-overlay" onclick="if(event.target===this)saveClose()">
@@ -2675,6 +2767,16 @@
     <h2 id="ach-title">Rewards</h2>
     <p id="ach-sum"></p>
     <div id="ach-body"></div>
+  </div>
+</div>
+<!-- How to play: the rules of every game and feature, topics down the left (a menu on a phone). Above the rewards panel, which links into it -->
+<div class="bug-overlay rules-over" id="rules-overlay" onclick="if(event.target===this)rulesClose()">
+  <div class="bug-panel rules-panel" role="dialog" aria-labelledby="rules-title">
+    <button class="panel-close" onclick="rulesClose()" aria-label="Close">×</button>
+    <h2 id="rules-title">How to play</h2>
+    <p class="rules-sum" id="rules-sum"></p>
+    <select class="rules-pick" id="rules-pick" aria-label="Topic" onchange="rulesOpen(this.value)"></select>
+    <div class="rules-body"><nav class="rules-nav" id="rules-nav" aria-label="Topics"></nav><div class="rules-text" id="rules-text"></div></div>
   </div>
 </div>
 <div class="ach-toasts" id="ach-toasts" aria-live="polite"></div>
@@ -2741,28 +2843,64 @@ function switchGame(g) {
   // The Slots tab opens on the machine picker, unless a spin is still playing out
   if(g==='slots'){if(slState.playing)slLayout();else slShowHub();}
 }
-// Table games shrink to fit the window instead of scrolling. The scale is kept per game, so code that
-// turns screen positions into table positions (chip stacks, dealt cards) can divide it back out.
-var tableScale={blackjack:1,roulette:1};
+// Table games fit the window instead of scrolling or leaving a margin: shrunk on a small screen, grown on a big
+// one (up to TABLE_MAX times their drawn size). The scale is kept per game, so code that turns screen positions
+// into table positions (chip stacks, dealt cards) can divide it back out.
+var tableScale={blackjack:1,roulette:1},TABLE_MAX=1.4;
 // The footer line sits under every game, so the games leave room for it
 function footH(){var f=document.getElementById('site-foot');return f?f.offsetHeight:0;}
+// A panel whose contents stop short of its bottom: zoom them (they reflow to the narrower width) to the biggest
+// size, up to `max`, at which they still fit. `el` must be positioned, so its children's offsets are measured from it.
+function zoomFill(el,max){
+  el.style.zoom='';
+  function need(){var b=0;[].forEach.call(el.children,function(c){b=Math.max(b,c.offsetTop+c.offsetHeight);});return b+parseFloat(getComputedStyle(el).paddingBottom);}
+  for(var z=Math.min(max,el.clientHeight/need());z>1.03;z-=0.03){
+    el.style.zoom=z.toFixed(2);
+    if(need()<=el.clientHeight)return z;
+  }
+  el.style.zoom='';return 1;
+}
 // The height left for `el` before the bottom of the window: less its game area's bottom padding and the footer
 function roomBelow(el){var a=el.closest('.game-area'),pb=a?parseFloat(getComputedStyle(a).paddingBottom)||0:0;return innerHeight-el.getBoundingClientRect().top-window.scrollY-pb-footH()-2;}
 // `content` is true when it's the table's own contents that changed size (not the window): then the blackjack
 // table keeps its size while there are cards out, so it doesn't grow and shrink during a hand.
 function fitTables(content){
   ['blackjack','roulette'].forEach(function(g){
-    var area=document.getElementById('game-'+g),fit=area.querySelector('.table-fit'),s=1,h=fit.offsetHeight;
+    var area=document.getElementById('game-'+g),fit=area.querySelector('.table-fit');
     if(!area.classList.contains('active'))return;
     if(content===true&&g==='blackjack'&&bjPlayerHand.length)return;
-    if(innerWidth>760&&h)s=Math.max(0.45,Math.min(1,roomBelow(fit)/h));
-    tableScale[g]=s;
-    fit.style.transform=s<1?'scale('+s.toFixed(4)+')':'';
-    fit.style.marginBottom=s<1?(-(1-s)*h)+'px':'';
+    tableScale[g]=g==='blackjack'?tableFill(fit,1.9):tableGrow(fit);
   });
   if(document.getElementById('game-roulette').classList.contains('active'))rlRender();
 }
 window.addEventListener('resize',fitTables);
+// Scale a table by s about its top centre; its bottom margin takes up (or gives back) the difference in height
+function tableSet(fit,s,h){
+  fit.style.transform=s!==1?'scale('+s.toFixed(4)+')':'';
+  fit.style.marginBottom=s!==1?((s-1)*h)+'px':'';
+}
+// Roulette: the whole table scales evenly, as big as both the window's height and its width allow
+function tableGrow(fit){
+  var h=fit.offsetHeight,w=fit.offsetWidth,s=1;
+  if(innerWidth>760&&h)s=Math.max(0.45,Math.min(TABLE_MAX,roomBelow(fit)/h,(innerWidth-32)/w));
+  tableSet(fit,s,h);return s;
+}
+// Blackjack and Ultimate Texas Hold'em: the table is as tall as the window allows, and its felt widens to fill
+// the area, up to `aspect` times its height (the felt's height doesn't depend on its width, so widening it just
+// stretches the curve of the rail). It only grows past its drawn size on a screen at least 900px wide.
+function tableFill(fit,aspect){
+  if(innerWidth<=760){fit.style.width='';fit.style.marginLeft='';tableSet(fit,1,0);return 1;}
+  var area=fit.parentElement,cs=getComputedStyle(area),aw=area.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight);
+  var s=1,h=0,w=Math.round(fit._w||aw);
+  for(var i=0;i<3;i++){   // again, in case the new width rewraps the console under the table
+    fit.style.width=w+'px';fit.style.marginLeft=Math.round((aw-w)/2)+'px';
+    h=fit.offsetHeight;
+    s=Math.max(0.45,Math.min(TABLE_MAX,Math.max(1,aw/900),roomBelow(fit)/h));
+    w=Math.round(Math.min(aw/s,aspect*h));
+  }
+  fit._w=w;fit.style.width=w+'px';fit.style.marginLeft=Math.round((aw-w)/2)+'px';
+  tableSet(fit,s,h);return s;
+}
 // The shop's items scroll inside the window on a wide screen, so its header and tabs stay put
 function shopLayout(){
   var g=document.getElementById('shop-grid');if(!g||!g.offsetParent)return;
@@ -3632,11 +3770,20 @@ function uthSpot(id,amt,res,label){
 function uthRender(){
   var area=document.getElementById('he-uth');if(!area)return;
   var busy=uthBusy(),done=uth.st==='done',dealt=uth.c.length===9,q=[],arc=gameMode==='arcade',r=uth.res;
-  var best=done&&r&&!uth.fold?heBest5(uthHole().concat(uthBoard())):null,dBest=done&&r?heBest5(uth.c.slice(2,9)):null;
-  heDrawCards(document.getElementById('uth-dealer'),dealt?(done?uth.c.slice(2,4):['down','down']):[],q,1,null);
+  // At the showdown the winning five cards lift and light up (yours or Peccy's, both on a tie) and the rest dim.
+  // A fold has no showdown, so nothing is lit.
+  var best=null,pWin=false,dWin=false;
+  if(done&&r&&!uth.fold){
+    var pB=heBest5(uthHole().concat(uthBoard())),dB=heBest5(uth.c.slice(2,9));
+    pWin=r.ps>=r.ds;dWin=r.ds>=r.ps;
+    best=(pWin?pB:[]).concat(dWin?dB:[]);
+  }
+  heDrawCards(document.getElementById('uth-dealer'),dealt?(done?uth.c.slice(2,4):['down','down']):[],q,1,best);
   var shown=dealt?uthShown():0;
   heDrawCards(document.getElementById('uth-board'),dealt?uthBoard().map(function(c,i){return i<shown?c:'slot';}):['slot','slot','slot','slot','slot'],q,2,best);
   heDrawCards(document.getElementById('uth-player'),dealt?uthHole():[],q,0,best);
+  document.getElementById('uth-p-name').classList.toggle('win',pWin);
+  document.getElementById('uth-d-name').classList.toggle('win',dWin);
   document.getElementById('uth-player').classList.toggle('folded',!!uth.fold&&done);
   // Your hand so far, and Peccy's once it's shown
   var mine=dealt?heScore(uthHole().concat(uthBoard().slice(0,shown))):null;
@@ -3658,7 +3805,13 @@ function uthRender(){
   document.getElementById('uth-play-btns').innerHTML=btns;
   document.querySelector('#he-uth .bj-mid').classList.toggle('playing',busy);
   var msg=document.getElementById('uth-message');
-  msg.innerHTML=done&&r?(r.net>0?'You win '+fmtChips(r.net):r.net<0?(uth.fold?'Folded':'Peccy wins')+' <span>'+fmtChips(-r.net)+'</span>':'Push'):'';
+  // Under the result: which hand won, and what it beat
+  var why='';
+  if(done&&r&&!uth.fold){
+    var pn=heName(r.ps).toLowerCase(),dn=heName(r.ds).toLowerCase();
+    why=pWin&&dWin?'Both hands make '+pn:pWin?'Your '+pn+' beats '+dn:"Peccy's "+dn+' beats your '+pn;
+  }
+  msg.innerHTML=done&&r?(r.net>0?'You win '+fmtChips(r.net):r.net<0?(uth.fold?'Folded':'Peccy wins')+' <span>'+fmtChips(-r.net)+'</span>':'Push')+(why?'<small>'+why+'</small>':''):'';
   msg.className='bj-message'+(done&&r&&r.net<0?' lost':'');
   // The console: chips only between hands
   document.getElementById('uth-bet-controls').classList.toggle('off',busy);
@@ -3847,13 +4000,15 @@ function ptRender(){
     document.getElementById('pt-stack-'+i).textContent=fmtChips(s.stack);
     var cards=[];
     if(p&&p.in&&p.hole.length&&!(p.folded&&i!==0))cards=i===0||(showAll&&h.shown.indexOf(i)>=0)?p.hole:['down','down'];
-    heDrawCards(document.getElementById('pt-cards-'+i),cards,q,i,bestSet&&bestSet[i]?bestSet[i]:null);
+    // At a showdown the winners' cards that play light up; a hand that lost dims right down
+    var shownHere=showAll&&h.shown.indexOf(i)>=0;
+    heDrawCards(document.getElementById('pt-cards-'+i),cards,q,i,bestSet&&bestSet[i]?bestSet[i]:shownHere?[]:null);
     var bet=p&&!h.over?p.bet:0,be=document.getElementById('pt-bet-'+i);
     be.innerHTML=bet?'<div class="pt-pile" style="--s:24px">'+chipPileHTML(chipsFor(bet).slice(0,24),{s:24,gap:3,per:12})+'</div><span>'+fmtChips(bet)+'</span>':'';
     document.getElementById('pt-dbtn-'+i).style.display=h&&h.btn===i?'flex':'none';
     var act=document.getElementById('pt-act-'+i),txt='';
-    if(won)txt='Wins '+fmtChips(h.res.won[i]);
-    else if(showAll&&h.shown.indexOf(i)>=0)txt=heName(h.res.scores[i]);
+    if(won)txt='Wins '+fmtChips(h.res.won[i])+(shownHere?' · '+HE_CATS[heCat(h.res.scores[i])]:'');
+    else if(shownHere)txt=heName(h.res.scores[i]);
     else if(p)txt=p.last||'';
     act.textContent=txt;act.className='pt-act'+(won?' win':txt?' on':'');
     if(i===0)document.getElementById('pt-sub-0').textContent=p&&p.in&&p.hole.length?heName(heScore(p.hole.concat(h.board))):'';
@@ -3864,7 +4019,11 @@ function ptRender(){
   var mainBest=showAll&&h.res.pots[0]?bestSet[h.res.pots[0].winners[0]]:null;
   heDrawCards(document.getElementById('pt-board'),board,q,9,mainBest);
   var pot=h?ptPot(h)-(h.over?0:h.ps.reduce(function(s2,p){return s2+p.bet;},0)):0,potEl=document.getElementById('pt-pot');
-  if(h&&h.over&&h.res)potEl.innerHTML=h.res.pots.map(function(p,k){return '<span>'+(h.res.pots.length>1?(k?'Side pot ':'Main pot '):'Pot ')+'<b>'+fmtChips(p.amount)+'</b></span>';}).join('')+(h.res.rake?'<span class="rake">Rake '+fmtChips(h.res.rake)+'</span>':'');
+  // After the hand, each pot says who took it and, at a showdown, with what
+  if(h&&h.over&&h.res)potEl.innerHTML=h.res.pots.map(function(p,k){
+    var who=p.winners.map(function(j){return pt.seats[j]?pt.seats[j].name:'';}).join(' and ');
+    return '<span>'+(h.res.pots.length>1?(k?'Side pot ':'Main pot '):'Pot ')+'<b>'+fmtChips(p.amount)+'</b> · '+who+(h.res.showdown&&p.score>=0?', '+heName(p.score).toLowerCase():'')+'</span>';
+  }).join('')+(h.res.rake?'<span class="rake">Rake '+fmtChips(h.res.rake)+'</span>':'');
   else potEl.innerHTML=pot?'<div class="pt-pile" style="--s:28px">'+chipPileHTML(chipsFor(pot).slice(0,30),{s:28,gap:3,per:10})+'</div><span>Pot <b>'+fmtChips(pot)+'</b></span>':'';
   heDealQueue(q,area.querySelector('.peccy-dealer'),ptScale);
   document.getElementById('pt-felt-sub').textContent=arc?'NO RAKE ON THE ARCADE FLOOR':evOn('poker_week')?'POKER WEEK: NO RAKE':'RAKE 5%, UP TO 3 BIG BLINDS';
@@ -3910,7 +4069,7 @@ function ptRenderSide(){
   var el=document.getElementById('pt-side');if(!el)return;
   var st=pt.on?ptStake():PT_STAKES[pt.lobby.stakes],arc=gameMode==='arcade',h=pt.hand,s=pt.on?pt.seats[0]:null;
   var rake=arc?'No rake on the Arcade floor':evOn('poker_week')?'No rake this week (Poker Week)':'Rake 5% of pots that see a flop, up to '+fmtChips(st.bb*PT_RAKE_CAP);
-  var html='<div class="pt-side-head"><b>Peccy\'s Poker Room</b><small>No-limit Hold\'em · blinds '+fmtChips(st.sb)+'/'+fmtChips(st.bb)+'</small><small>'+rake+'</small></div>';
+  var html='<div class="pt-side-head">'+rulesBtn('poker')+'<b>Peccy\'s Poker Room</b><small>No-limit Hold\'em · blinds '+fmtChips(st.sb)+'/'+fmtChips(st.bb)+'</small><small>'+rake+'</small></div>';
   if(pt.on){
     var net=s.stack-pt.bought+(h&&!h.over?h.ps[0].total:0);
     html+='<div class="pt-me"><div><small>At the table</small><b>'+fmtChips(s.stack)+'</b></div><div><small>Bought in</small><b>'+fmtChips(pt.bought)+'</b></div><div><small>Session</small><b class="'+(net>0?'up':net<0?'down':'')+'">'+(net>0?'+':net<0?'−':'')+fmtChips(Math.abs(net))+'</b></div></div>'+
@@ -3921,7 +4080,7 @@ function ptRenderSide(){
   }else{
     html+='<div class="pt-how"><p>Sit down with up to four regulars. Each one plays their own way: watch who bluffs and who only bets the nuts.</p>'+
       '<p>Your buy-in comes out of your chips, and whatever you have at the table goes back when you leave.</p>'+
-      '<p>Hands rank from high card up to a royal flush. Your best five of the seven cards play.</p></div>';
+      '<p>Hands rank from high card up to a royal flush. Your best five of the seven cards play.'+rulesI('hands','','poker hands')+'</p></div>';
   }
   el.innerHTML=html;
 }
@@ -3932,35 +4091,48 @@ function ptRenderLobby(){
   var L=pt.lobby,st=PT_STAKES[L.stakes];
   if(!L.buy||L.buy<st.min||L.buy>st.max)L.buy=Math.max(st.min,Math.min(st.max,Math.floor(balance/st.bb)*st.bb));
   var can=balance>=st.min,buy=Math.min(L.buy,Math.max(st.min,balance));
-  el.innerHTML='<b class="pt-lob-title">Take a seat</b>'+
+  el.innerHTML='<b class="pt-lob-title">Take a seat'+rulesI('poker','seat','stakes and buy-ins')+'</b>'+
     '<div class="pt-lob-row"><small>Stakes</small><div class="pt-stakes">'+PT_STAKES.map(function(s,i){var ok=balance>=s.min;
       return '<button class="'+(i===L.stakes?'on':'')+(ok?'':' short')+'" onclick="ptLobbySet(\'stakes\','+i+')"><b>'+fmtChips(s.sb)+'/'+fmtChips(s.bb)+'</b><small>'+(ok?'buy in '+fmtChips(s.min)+'–'+fmtChips(s.max):'need '+fmtChips(s.min))+'</small></button>';}).join('')+'</div></div>'+
     '<div class="pt-lob-row"><small>Opponents</small><div class="sb-seg pt-nbots">'+[1,2,3,4].map(function(n){return '<button class="'+(n===L.bots?'on':'')+'" onclick="ptLobbySet(\'bots\','+n+');ptBuild();ptRender()">'+n+'</button>';}).join('')+'</div></div>'+
     (can?'<div class="pt-lob-row"><small>Buy in</small><div class="pt-buy"><input type="range" min="'+st.min+'" max="'+Math.min(st.max,Math.floor(balance/st.bb)*st.bb)+'" step="'+st.bb+'" value="'+buy+'" oninput="pt.lobby.buy=+this.value;document.getElementById(\'pt-buy-v\').textContent=fmtChips(this.value)" aria-label="Buy-in"><b id="pt-buy-v">'+fmtChips(buy)+'</b></div></div>':'')+
     '<button class="btn btn-primary" onclick="ptSit()"'+(can?'':' disabled')+'>'+(can?'Sit down':'Need '+fmtChips(st.min-balance)+' more chips')+'</button>';
 }
-// Both tables scale down to fit the window instead of scrolling
-function heLayout(){
+// Both tables fit the window instead of scrolling: shrunk on a small screen, grown to fill a big one
+function heLayout(e){
   var area=document.getElementById('game-holdem');if(!area||!area.classList.contains('active'))return;
   var wide=innerWidth>760;
   if(he.view==='uth'){
-    var fit=document.querySelector('#he-uth .table-fit'),h0=fit.offsetHeight,s=1;
-    if(wide&&h0&&!(uthBusy()&&fit._locked))s=Math.max(0.45,Math.min(1,roomBelow(fit)/h0));
-    else if(uthBusy()&&fit._locked)s=uthScale;
+    // The same felt as blackjack, filled the same way, but it keeps its size while a hand is out
+    // (unless the window itself changes size)
+    var fit=document.querySelector('#he-uth .table-fit');
+    if(wide&&uthBusy()&&fit._locked&&!(e&&e.type==='resize'))tableSet(fit,uthScale,fit.offsetHeight);
+    else uthScale=tableFill(fit,1.9);
     fit._locked=uthBusy();
-    uthScale=s;fit.style.transform=s<1?'scale('+s.toFixed(4)+')':'';fit.style.marginBottom=s<1?(-(1-s)*h0)+'px':'';
   }else{
     var wrap=document.getElementById('pt-wrap'),stage=document.getElementById('pt-stage'),box=document.getElementById('pt-fit');
     wrap.style.height=wide?Math.max(420,roomBelow(wrap))+'px':'';
     // On a phone the table is laid out as a column instead (see the phone styles), at full size
-    if(!wide){ptScale=1;box.style.transform='';box.style.left='';return;}
-    var W=box.offsetWidth,H=box.offsetHeight;
-    ptScale=Math.max(0.3,Math.min(1,stage.clientWidth/W,stage.clientHeight/H));
-    box.style.transform='scale('+ptScale.toFixed(4)+')';
-    box.style.left=Math.max(0,(stage.clientWidth-W*ptScale)/2)+'px';
+    if(!wide){ptScale=1;box.style.transform='';box.style.left='';box.style.top='';}
+    else{
+      // The table is drawn at 1000x600: as big as the stage allows (up to 1.5x), in the middle of it
+      var W=box.offsetWidth,H=box.offsetHeight;
+      ptScale=Math.max(0.3,Math.min(1.5,stage.clientWidth/W,stage.clientHeight/H));
+      box.style.transform='scale('+ptScale.toFixed(4)+')';
+      box.style.left=Math.max(0,(stage.clientWidth-W*ptScale)/2)+'px';
+      box.style.top=Math.max(0,(stage.clientHeight-H*ptScale)/2)+'px';
+    }
   }
+  heSwitchPlace();
 }
 window.addEventListener('resize',heLayout);
+// The switch between the two games sits on the wood wall, top left of whichever table is showing
+function heSwitchPlace(){
+  var sw=document.querySelector('.he-switch'),area=document.getElementById('game-holdem');
+  if(innerWidth<=760){sw.style.left='';sw.style.top='';return;}
+  var t=(he.view==='uth'?document.querySelector('#he-uth .bj-scene'):document.getElementById('pt-stage')).getBoundingClientRect(),a=area.getBoundingClientRect();
+  sw.style.left=Math.round(t.left-a.left+14)+'px';sw.style.top=Math.round(t.top-a.top+12)+'px';
+}
 // Chips out on the Hold'em tables: your stack at the poker table (and what's in the pot) and the bets on the felt
 function heHeld(){
   var n=0,h=pt.hand;
@@ -4204,7 +4376,7 @@ function achRender(){
   var body=document.getElementById('ach-body');if(!body||spinBusy)return;  // (not while the wheel is turning)
   var D=achDaily(),defs=achDefs(),got=defs.filter(function(a){return ach.got[a.id];}).length,streak=achStreakNow(),L=lvNow(),vip=vipOf(L.lv);
   document.getElementById('ach-sum').textContent='Level '+L.lv+(vip.lv>1?' · '+vip.name+' VIP':'')+' · '+got+' of '+defs.length+' trophies'+(streak?' · '+streak+'-day challenge streak':'')+' · rewards are paid in '+(achArc()?'arcade':'resolve')+' chips';
-  var h='<section class="ach-sec">'+spinCardHTML()+'<div class="ach-sec-head ch-head"><b>Today\'s challenges</b><small>New ones in '+achLeft()+'</small></div><div class="ach-chs">';
+  var h='<section class="ach-sec">'+spinCardHTML()+'<div class="ach-sec-head ch-head"><b>Today\'s challenges'+rulesI('rewards','challenges','daily challenges')+'</b><small>New ones in '+achLeft()+'</small></div><div class="ach-chs">';
   D.ids.forEach(function(id){
     var d=DAILY_BY[id],v=D.prog[id]||0,done=v>=d.goal,st=D.claimed[id]?'c':done?'u':'';
     h+='<div class="ach-ch'+(done?' done':'')+'"><span class="ach-game">'+ACH_GAMES[d.g]+'</span><b>'+d.text+'</b>'+achBar(v,d.goal)+achBtn("achClaimDaily('"+id+"')",achChips(DAILY_CHIPS),st)+'</div>';
@@ -4215,7 +4387,7 @@ function achRender(){
     achBtn('achClaimBonus()',achChips(DAILY_BONUS+DAILY_STREAK*(Math.min(7,next)-1)),D.bonus?'c':all?'u':'')+'</div></section>';
   h+=evCardHTML()+lvCardHTML();
   var waiting=defs.filter(function(a){return ach.got[a.id]==='u';}).length;
-  h+='<section class="ach-sec"><div class="ach-sec-head"><b>Trophies</b><small>'+got+' of '+defs.length+'</small>'+(waiting>1?'<button class="rl-small-btn" onclick="achClaimAllTrophies()">Claim all '+waiting+'</button>':'')+'</div>';
+  h+='<section class="ach-sec"><div class="ach-sec-head"><b>Trophies'+rulesI('rewards','trophies','trophies')+'</b><small>'+got+' of '+defs.length+'</small>'+(waiting>1?'<button class="rl-small-btn" onclick="achClaimAllTrophies()">Claim all '+waiting+'</button>':'')+'</div>';
   Object.keys(ACH_GAMES).forEach(function(g){
     var list=defs.filter(function(a){return a.g===g;});if(!list.length)return;
     h+='<h3 class="ach-group">'+ACH_GAMES[g]+'</h3><div class="ach-grid">';
@@ -4376,7 +4548,7 @@ function spinCardHTML(){
   if(achArc())parts.push('Arcade: ×'+ARCADE_PRICE_X);
   var result=!avail&&pr?(pr.chips?(pr.jackpot?'Jackpot! ':'')+'Today you won '+fmtChips(pr.chips)+' chips.':'Today you won '+pr.name+' ('+pr.kind.toLowerCase()+'). It\'s in the shop.'):'';
   return '<div class="sp-card"><div class="sp-wheel"><canvas id="sp-cv" width="440" height="440" style="transform:rotate('+spinRot+'deg)"></canvas><i class="sp-pin"></i></div>'+
-    '<div class="sp-info"><b>Peccy\'s daily spin</b><small>One free spin a day. Spin on days in a row and every chip prize grows, up to +60% on day seven.</small>'+
+    '<div class="sp-info"><b>Peccy\'s daily spin'+rulesI('rewards','spin','the daily spin')+'</b><small>One free spin a day. Spin on days in a row and every chip prize grows, up to +60% on day seven.</small>'+
     (parts.length?'<span class="sp-mult">'+parts.join(' · ')+'</span>':'')+
     (avail?'<button class="btn btn-primary" id="sp-btn" onclick="spinGo()">Spin the wheel</button>':'<span class="sp-done">'+result+' Next spin in '+achLeft()+'.</span><button class="btn btn-primary" id="sp-btn" disabled>Spun today</button>')+
     '<span class="sp-odds">Jackpot '+fmtChips(spinChips(500,n))+' (2%) · mystery item (8%) · '+fmtChips(spinChips(10,n))+' to '+fmtChips(spinChips(100,n))+' chips the rest</span></div></div>';
@@ -4407,11 +4579,11 @@ function evLeft(){var d=new Date(),next=evMonday(d);next.setDate(next.getDate()+
 function cfPay(){return evOn('coin_rush')?(gameMode==='arcade'?2.1:2):CF_PAY[gameMode];}
 function evCardHTML(){
   var e=evNow(),nx=evAt(evWeek()+1);
-  return '<section class="ach-sec ev-sec"><div class="ach-sec-head"><b>This week: '+e.name+'</b><small>Ends in '+evLeft()+'</small></div><p class="ev-desc">'+e.desc+'</p><small class="ev-next">Next week: '+nx.name+'</small></section>';
+  return '<section class="ach-sec ev-sec"><div class="ach-sec-head"><b>This week: '+e.name+rulesI('rewards','events','weekly events')+'</b><small>Ends in '+evLeft()+'</small></div><p class="ev-desc">'+e.desc+'</p><small class="ev-next">Next week: '+nx.name+'</small></section>';
 }
 function lvCardHTML(){
   var L=lvNow(),vip=vipOf(L.lv),nx=vipNext(L.lv);
-  var h='<section class="ach-sec"><div class="ach-sec-head"><b>Level '+L.lv+'</b><small>'+vip.name+(vip.lv>1?' VIP':'')+' · '+fmtChips(L.into)+' / '+fmtChips(L.need)+' XP to level '+(L.lv+1)+'</small></div>'+
+  var h='<section class="ach-sec"><div class="ach-sec-head"><b>Level '+L.lv+rulesI('rewards','levels','levels and VIP')+'</b><small>'+vip.name+(vip.lv>1?' VIP':'')+' · '+fmtChips(L.into)+' / '+fmtChips(L.need)+' XP to level '+(L.lv+1)+'</small></div>'+
     '<div class="lv-bar"><i style="width:'+(L.into/L.need*100).toFixed(1)+'%"></i></div><div class="lv-tiers">';
   VIP.slice(1).forEach(function(v){
     var on=L.lv>=v.lv,o=shopItem('outfit',v.outfit);
@@ -4649,8 +4821,10 @@ function barLayout(){
   w.style.height=innerWidth>760?Math.max(380,roomBelow(w))+'px':'';
   // Three drinks to a row when four rows fit; on a short screen, four to a row so the menu doesn't scroll
   var m=document.querySelector('.bar-menu');if(!m)return;
-  m.style.gridTemplateColumns='';
+  m.style.gridTemplateColumns='';m.style.zoom='';
   if(innerWidth>980&&m.scrollHeight>m.clientHeight+1)m.style.gridTemplateColumns='repeat(4, minmax(0, 1fr))';
+  // A tall screen: the drinks grow to fill the menu instead of stopping halfway down it
+  else if(innerWidth>980)zoomFill(m,1.4);
 }
 window.addEventListener('resize',barLayout);
 // 100% buzz: the screen goes black, the drinks wear off, and 15% of your chips wander off
@@ -6453,7 +6627,7 @@ var SL_BLURBS={
   dragon:'Lightning Link style. Six or more orbs lock for Hold & Spin, with Mini, Minor and Major jackpots, and the Grand for a full screen.'
 };
 function slBuildHub(){
-  var h='<div class="sl-hub-head"><h2>The Slot Floor</h2><p>Nine machines modelled on real casino favourites. Pick one to play.</p></div><div class="sl-hub-grid">';
+  var h='<div class="sl-hub-head"><h2>The Slot Floor</h2><p>Nine machines modelled on real casino favourites. Pick one to play.</p>'+rulesBtn('slots')+'</div><div class="sl-hub-grid">';
   for(var id in SLOT_MACHINES){
     var m=SLOT_MACHINES[id];slSetup(m);
     h+='<div class="sl-card" role="button" tabindex="0" id="sl-card-'+id+'" style="--tile:'+m.theme.acc+';--card-bg:'+m.theme.bg2+'" onclick="slOpen(\''+id+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();slOpen(\''+id+'\');}">'+
@@ -6470,8 +6644,33 @@ function slBuildHub(){
 function slHubLayout(){
   var g=document.querySelector('.sl-hub-grid');if(!g||!g.offsetParent)return;
   var on=innerWidth>760;g.classList.toggle('scrolls',on);
-  g.style.maxHeight=on?Math.max(220,roomBelow(g))+'px':'';
+  g.style.zoom='';g.style.removeProperty('--pv-h');g.style.removeProperty('--pv-k');g.classList.remove('roomy');
+  var room=Math.max(220,roomBelow(g));
+  g.style.maxHeight=on?room+'px':'';
   slHubClose(g);
+  if(on)slHubGrow(g,room);
+}
+// A big screen: rather than stopping halfway down it, the floor's cards grow (the grid is zoomed, so it also
+// drops a column or two) to the biggest size, up to 1.5x, at which every machine still fits without scrolling
+function slHubGrow(g,room){
+  var best=1;
+  for(var z=1.05;z<=1.5;z+=0.05){
+    g.style.zoom=z.toFixed(2);g.style.maxHeight=(room/z)+'px';slHubClose(g);
+    if(g.scrollHeight<=g.clientHeight+1)best=z;
+  }
+  g.style.zoom=best>1?best.toFixed(2):'';g.style.maxHeight=(room/best)+'px';slHubClose(g);
+  // Height still to spare (one more step would drop a column and stop fitting). On a short screen, where the
+  // blurbs are cut to two lines, it goes first to showing them whole, if they fit
+  g.classList.add('roomy');
+  if(g.scrollHeight>g.clientHeight+1)g.classList.remove('roomy');
+  // Then the reel previews grow into what's left, as far as the narrowest card's width lets the reels grow with them
+  var cards=[].slice.call(g.querySelectorAll('.sl-card'));if(!cards.length)return;
+  var rows={};cards.forEach(function(c){rows[c.offsetTop]=1;});
+  var spare=room/best-g.scrollHeight,pv=cards[0].querySelector('.sl-card-preview'),h0=pv.offsetHeight;
+  var k0=new DOMMatrix(getComputedStyle(pv.querySelector('.sl-mini')).transform).a||1,kMax=Infinity;
+  cards.forEach(function(c){var p=c.querySelector('.sl-card-preview'),m=p.querySelector('.sl-mini');kMax=Math.min(kMax,(p.clientWidth-20)/m.offsetWidth);});
+  var k=Math.min(kMax,k0*(h0+spare/Object.keys(rows).length-2)/h0);
+  if(spare>=12&&k>k0*1.02){g.style.setProperty('--pv-k',k.toFixed(3));g.style.setProperty('--pv-h',Math.floor(h0*k/k0)+'px');}
 }
 // Nine machines rarely fill a grid's rows, so widen a few cards (the house machine first, the rest
 // spread out) until every row ends on the grid's right edge, instead of leaving a hole after the last
@@ -6551,8 +6750,9 @@ function slLayout(){
   var ws=getComputedStyle(win),chrome=parseFloat(ws.paddingLeft)+parseFloat(ws.paddingRight)+parseFloat(ws.borderLeftWidth)+parseFloat(ws.borderRightWidth);
   var gap=parseFloat(getComputedStyle(reels).columnGap)||4,tall=m.colCells||m.rows;
   var W=stage.clientWidth-chrome,H=stage.clientHeight-chrome,cw=(W-gap*(m.cols-1))/m.cols;
-  // Rows are as tall as fits; reels may run up to 1.3× wider than a row so the window fills the cabinet
-  var row=Math.max(30,Math.floor(Math.min(cw,H/tall,m.maxCell)));
+  // Rows are as tall as fits; reels may run up to 1.3× wider than a row so the window fills the cabinet.
+  // A machine's biggest symbol grows on a tall screen (up to 1.4x), so the reels fill it instead of the cabinet shrinking.
+  var row=Math.max(30,Math.floor(Math.min(cw,H/tall,m.maxCell*Math.min(1.4,Math.max(1,innerHeight/864)))));
   var cell=Math.max(row,Math.floor(Math.min(cw,row*1.3)));
   reels.style.setProperty('--cell',cell+'px');reels.style.setProperty('--colh',Math.round(row*tall)+'px');
   // On a tall, narrow screen the reels run out of width first: drop the spare height instead of leaving a gap
@@ -7328,8 +7528,280 @@ function saveLoad(){
   });
 }
 
-// Esc closes whichever pop-up is open
-document.addEventListener('keydown',function(e){if(e.key==='Escape'){bugClose();saveClose();achClose();}});
+// ═══ HOW TO PLAY ═══
+// One panel with the rules of every game and feature. Each game's Rules button opens its topic, the ? beside a
+// bet or feature opens just its section, and the footer link opens the game you're on. The text is built from
+// the numbers the games themselves use, and follows the floor you're on and this week's event.
+var rulesTopic='start';
+var RULES_GAME={blackjack:'blackjack',roulette:'roulette',uth:'holdem',poker:'holdem',slots:'slots',plinko:'plinko',coin:'coin',football:'sports',racing:'sports',slip:'sports',bar:'bar',shop:'shop'};
+function rulesArc(){return gameMode==='arcade';}
+function rulesSec(id,title,body){return '<h4 id="rs-'+id+'">'+title+'</h4>'+body;}
+function rulesList(items){return '<ul>'+items.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>';}
+// A table: the first column is the row's name, the rest its values (a short one, like "35 to 1", never wraps)
+function rulesTable(head,rows){
+  return '<table class="rules-tbl">'+(head?'<tr>'+head.map(function(h){return '<th>'+h+'</th>';}).join('')+'</tr>':'')+
+    rows.map(function(r){return '<tr>'+r.map(function(c,i){return i?'<td'+(String(c).length<14?' class="nw"':'')+'>'+c+'</td>':'<th>'+c+'</th>';}).join('')+'</tr>';}).join('')+'</table>';
+}
+function rulesNote(cls,html){return '<div class="rules-note '+cls+'">'+html+'</div>';}
+// What the Arcade floor changes: shown on both floors, lit up on the Arcade one
+function rulesArcNote(html){return rulesNote(rulesArc()?'arc on':'arc','🍀 <b>On the Arcade floor'+(rulesArc()?' (where you are now)':'')+':</b> '+html);}
+// This week's event, on the topics it changes
+function rulesEvNote(ids){var e=evNow();return ids.indexOf(e.id)>=0?rulesNote('ev','📅 <b>This week, '+e.name+':</b> '+e.desc+' Ends in '+evLeft()+'.'):'';}
+function rulesLink(topic,sec,text){return '<a href="#" onclick="rulesOpen(\''+topic+'\',\''+(sec||'')+'\');return false">'+text+'</a>';}
+// The ? beside a bet or feature, opening its section of the rules
+function rulesI(topic,sec,what){return '<button type="button" class="rules-i" onclick="event.stopPropagation();rulesOpen(\''+topic+'\',\''+(sec||'')+'\')" title="How '+what+' works" aria-label="How '+what+' works">?</button>';}
+// A game's Rules button
+function rulesBtn(topic,sec){return '<button type="button" class="rl-small-btn rules-btn" onclick="rulesOpen(\''+topic+'\',\''+(sec||'')+'\')"><i class="fa-solid fa-book-open"></i> Rules</button>';}
+
+var RULES=[
+  {id:'start',group:'Start here',name:'How the casino works',html:function(){
+    var e=evNow();
+    return '<h3>How the casino works</h3><p>Everything here is played with chips, and they\'re just for fun: they can\'t be bought, cashed out or swapped for anything outside the casino.</p>'+
+      rulesSec('chips','Chips','<p>You start with 100 chips. Win more at the games, and from the rewards: a free daily spin, three daily challenges, trophies and levels (tap the level ring at the top). If you run out, the ↻ button beside your chips puts you back to 100.</p>')+
+      rulesSec('modes','Classic and Arcade','<p>Switch floors at the top of the screen.</p>'+rulesList([
+        '<b>Classic</b> plays at real casino odds, so over time the house keeps a small edge, the same as a real casino.',
+        '<b>Arcade</b> tips the odds a little your way (most games pay back about '+ARCADE_RTP+'% of what\'s bet), opens Peccy\'s Bar, where drinks change the games, and pays double rewards. Shop prices there are double too.',
+        'Each floor keeps its own chips, purchases, trophies and level, so the two never mix.'])+
+        '<p>You\'re on the <b>'+(rulesArc()?'Arcade':'Classic')+'</b> floor. Each game\'s rules say what Arcade changes.</p>')+
+      rulesSec('week','This week','<p><b>'+e.name+'</b>: '+e.desc+' A new event starts every Monday ('+rulesLink('rewards','events','see them all')+').</p>')+
+      rulesSec('saves','Your save','<p>The casino saves as you play, in this browser. To keep a copy, or to move it to another browser or device, use <b>Save code</b> at the bottom of the page.</p>')+
+      rulesSec('help','Help','<p>Every game has a <b>Rules</b> button, and the <span class="rules-i demo">?</span> beside a bet or feature explains just that one. If something\'s broken, use <b>Report a bug</b> at the bottom of the page.</p>');
+  }},
+  {id:'blackjack',group:'Table games',name:'Blackjack',html:function(){
+    var two=rulesArc()||evOn('bj_bonanza');
+    return '<h3>Blackjack</h3><p>Get closer to 21 than Peccy without going over.</p>'+rulesEvNote(['bj_bonanza'])+
+      rulesSec('hand','How a hand goes',rulesList([
+        'Tap chips to make your bet, then <b>Deal</b>. You and Peccy get two cards each, and one of Peccy\'s is face down.',
+        'Number cards count their number, jacks, queens and kings count 10, and an ace counts 11 or 1, whichever helps.',
+        '<b>Hit</b> to take another card, or <b>Stand</b> to keep your total. Go over 21 and you bust, which loses the bet straight away.',
+        'Then Peccy turns over the face-down card and draws until reaching 17 or more. Peccy stands on every 17.']))+
+      rulesSec('moves','Double and split',rulesList([
+        '<b>Double</b>: on your first two cards, double your bet and take exactly one more card. You can double after a split too.',
+        '<b>Split</b>: two cards of the same value (a 10 and a king count) become two hands, each with a bet the size of your first. You can split once a hand.',
+        'There\'s no insurance and no surrender.']))+
+      rulesSec('pays','What pays',rulesTable(['Result','Pays'],[
+        ['Blackjack: an ace and a 10, J, Q or K as your first two cards',two?'2 to 1':'3 to 2'],
+        ['A higher total than Peccy, or Peccy busts','1 to 1'],
+        ['A tie (a push)','Your bet back'],
+        ['You bust, or Peccy\'s total is higher','You lose the bet']])+
+        '<p>Every hand is dealt from a freshly shuffled six-deck shoe.</p>')+
+      rulesArcNote('blackjack pays 2 to 1, and five cards without busting win on the spot (a five-card Charlie). Drinks from the bar can help: a Dirty Martini shows Peccy\'s face-down card, an Old Fashioned turns ties into wins, and a Bloody Mary hands back half a busted bet.');
+  }},
+  {id:'roulette',group:'Table games',name:'Roulette',html:function(){
+    var royal=evOn('rl_royale');
+    return '<h3>Roulette</h3><p>European roulette: the numbers 1 to 36 and a single zero, 37 pockets in all. Bet on where the ball lands.</p>'+rulesEvNote(['rl_royale'])+
+      rulesSec('bet','Placing bets',rulesList([
+        'Pick a chip from the tray and tap the table, or drag the chip there. Bet on as many spots as you like, then <b>Spin</b>.',
+        '<b>Undo</b> takes back your last chip, <b>Clear</b> takes them all, and <b>Rebet</b> puts the last spin\'s bets back down. Drag a stack off the table to take it back.',
+        'A winning bet pays its odds and you keep the bet too: 10 chips on a single number that comes up gives you back '+(royal?370:360)+'.']))+
+      rulesSec('inside','Inside bets, on the numbers',rulesTable(['Bet','Where the chip goes','Pays'],[
+        ['Straight','On one number, 0 included',(royal?'36':'35')+' to 1'],
+        ['Split','On the line between two numbers','17 to 1'],
+        ['Street','On the outer edge of a column of three, covering all three','11 to 1'],
+        ['Trio','On the line against 0, between two rows: 0/1/2 or 0/2/3','11 to 1'],
+        ['Corner','Where four numbers meet','8 to 1'],
+        ['First four','At either end of the line against 0: 0/1/2/3','8 to 1'],
+        ['Six line','On the outer edge where two columns meet, covering six','5 to 1']]))+
+      rulesSec('outside','Outside bets',rulesTable(['Bet','Covers','Pays'],[
+        ['Dozen','1st 12, 2nd 12 or 3rd 12','2 to 1'],
+        ['Column','A whole row of the table (the 2 to 1 box at its end)','2 to 1'],
+        ['Low or high','1 to 18, or 19 to 36','1 to 1'],
+        ['Even or odd','Even or odd numbers','1 to 1'],
+        ['Red or black','The red or the black numbers','1 to 1']])+'<p>0 loses every outside bet.</p>')+
+      rulesArcNote('once your bets are down Peccy picks a lucky number (it glows green), and wins on it pay double. If the ball lands on 0, the bets it beat are handed back. A Hurricane from the bar adds two more lucky numbers, and a Mojito hands back a losing spin\'s bets.');
+  }},
+  {id:'uth',group:'Table games',name:'Ultimate Texas Hold\'em',html:function(){
+    var tt=UTH_TRIPS[rulesArc()?'arcade':'classic'];
+    function pay(x){return x===1.5?'3 to 2':x+' to 1';}
+    return '<h3>Ultimate Texas Hold\'em</h3><p>Your best five-card poker hand against Peccy\'s. You each have two cards of your own, and you share five on the board ('+rulesLink('hands','','which hands win')+').</p>'+rulesEvNote(['poker_week'])+
+      rulesSec('bets','The bets',rulesList([
+        '<b>Ante and Blind</b>: tap chips to make your Ante. The Blind is always the same amount, and the two go down together.',
+        '<b>Trips</b> (optional): a side bet that your own hand ends up three of a kind or better. Tap the Trips spot, then chips.',
+        '<b>Play</b>: the one raise you make during the hand, sized by when you make it.']))+
+      rulesSec('turns','When to bet',rulesList([
+        'With just your two cards: bet 3× or 4× your Ante, or check.',
+        'After the flop (three board cards): bet 2×, or check.',
+        'At the river (all five): bet 1×, or fold. Folding loses the Ante and Blind.',
+        'You only get one Play bet a hand, so once you\'ve bet, the rest is dealt out.']))+
+      rulesSec('pays','How it pays',rulesList([
+        '<b>You win</b>: Play pays 1 to 1. Ante pays 1 to 1 if Peccy opens (has a pair or better), and is handed back if not. Blind pays from its table below.',
+        '<b>Peccy wins</b>: you lose the Ante, Blind and Play.',
+        '<b>A tie</b>: the Ante, Blind and Play are all handed back.',
+        '<b>Trips</b> pays on your own hand, whatever Peccy holds, even if you fold.'])+
+        '<div class="rules-cols">'+rulesTable(['Blind, when you win','Pays'],[9,8,7,6,5,4].map(function(i){return [HE_CATS[i],pay(UTH_BLIND[i])];}).concat([['Anything less','Bet back']]))+
+        rulesTable(['Trips','Pays'],HE_CATS.map(function(n,i){return [n,tt[i]?pay(tt[i]):''];}).filter(function(r){return r[1];}).reverse())+'</div>')+
+      rulesSec('tips','Peccy\'s tips','<p>Turn on <b>Peccy\'s tips</b> and Peccy suggests the best move at each decision, using the usual strategy for the game.</p>')+
+      rulesArcNote('Peccy always opens, so the Ante pays on every win, and Trips pays 10 to 1 on a full house.');
+  }},
+  {id:'poker',group:'Table games',name:'Poker table',html:function(){
+    var arc=rulesArc(),pw=evOn('poker_week');
+    return '<h3>Poker table</h3><p>No-limit Texas Hold\'em against up to four regulars, for the chips you bring to the table.</p>'+rulesEvNote(['poker_week'])+
+      rulesSec('seat','Taking a seat','<p>Pick the stakes and how many opponents (1 to 4), choose your buy-in and sit down. The buy-in comes out of your chips, and whatever you have at the table goes back when you <b>Leave table</b>. <b>Top up</b> adds chips between hands, up to the table\'s maximum.</p>'+
+        rulesTable(['Blinds','Buy in'],PT_STAKES.map(function(s){return [fmtChips(s.sb)+'/'+fmtChips(s.bb),fmtChips(s.min)+' to '+fmtChips(s.max)];})))+
+      rulesSec('hand','A hand',rulesList([
+        'The two players after the dealer button post the small and big blinds, and everyone gets two cards.',
+        'There are four rounds of betting: before the flop, after the flop (three board cards), after the turn (a fourth) and after the river (a fifth).',
+        'On your turn: <b>Fold</b>, <b>Check</b> (when there\'s nothing to call), <b>Call</b>, or <b>Raise</b> any amount up to everything you have. The ½ pot, ¾ pot and Pot buttons size a raise for you.',
+        'Your best five cards from your two and the board\'s five win the pot ('+rulesLink('hands','','which hands win')+'). If everyone else folds, you win it without showing.',
+        'All in for less than a bet? You can only win what you put in from each player; the rest goes into a side pot for the others.']))+
+      rulesSec('bots','The regulars',rulesTable(null,PT_BOTS.map(function(b){return [b.name,b.style];}))+'<p>Each one plays their own way, so watch who bluffs and who only bets a big hand.</p>')+
+      rulesSec('rake','Rake','<p>'+(arc?'No rake on the Arcade floor.':pw?'No rake this week (Poker Week). Normally':'On the Classic floor')+(arc?'':' the house takes '+Math.round(PT_RAKE*100)+'% of every pot that sees a flop, up to '+PT_RAKE_CAP+' big blinds. Pots won before the flop pay none.')+'</p>')+
+      rulesSec('odds','Show my odds','<p><b>Show my odds</b> shows your chance of winning against the hands still in, worked out by dealing out the rest of the board many times, and what share of the time a call needs to win to pay for itself. <b>Fast bots</b> makes the bots act sooner.</p>');
+  }},
+  {id:'hands',group:'Table games',name:'Poker hands',html:function(){
+    var ex=[['Royal flush','A K Q J 10, all one suit'],['Straight flush','Five in a row, all one suit'],['Four of a kind','Four cards of one rank'],['Full house','Three of a kind and a pair'],
+      ['Flush','Any five of one suit'],['Straight','Five in a row, of any suits (an ace can be high, A K Q J 10, or low, 5 4 3 2 A)'],['Three of a kind','Three cards of one rank'],
+      ['Two pair','Two different pairs'],['Pair','Two cards of one rank'],['High card','None of the above: the highest card counts']];
+    return '<h3>Poker hands</h3><p>For both Hold\'em games. You always play the best five cards out of seven: your two and the five on the board, using both of yours, one or none.</p>'+
+      rulesSec('rank','From best to worst',rulesTable(null,ex))+
+      rulesSec('ties','Ties','<p>When two hands are the same kind, the higher cards win: a pair of kings beats a pair of queens, and with the same pair, the next highest card (the kicker) decides. Suits never break a tie, so identical hands split the pot.</p>');
+  }},
+  {id:'slots',group:'Slots',name:'Slot machines',html:function(){
+    var h='<h3>Slot machines</h3><p>Nine machines, each modelled on a real casino favourite. Pick one on the slot floor; <b>All machines</b> takes you back.</p>'+
+      '<p class="rules-index">'+Object.keys(SLOT_MACHINES).map(function(id){return rulesLink('slots','m-'+id,SLOT_MACHINES[id].name);}).join(' · ')+'</p>'+
+      rulesSec('bet','Your bet','<p>Your bet is the <b>denomination</b> (chips per credit: '+SL_DENOMS.join(', ')+') times the <b>credits</b> you set with − and + ('+SL_LEVELS.join(', ')+'). <b>Max bet</b> jumps to the most credits. Wins show as multiples of your bet.</p>'+
+        rulesList(['<b>Auto spin</b> keeps spinning until you tap it again.','<b>Paytable</b> shows what every symbol pays on that machine, its features, and how much it pays back.']))+
+      rulesSec('payback','Payback','<p>Each machine is tuned to its original\'s published return to player (the % on its card): the share of everything bet that it pays back over millions of spins. At 95%, every 100 chips bet bring back about 95 on average, though any one session can land far above or below that.</p>'+
+        rulesArcNote('some spins that win nothing are on the house (your bet comes back), more often on machines that pay less, so every machine pays back about '+ARCADE_RTP+'%. Drinks from the bar raise wins, refund losing spins or bring the bonus games round more often.'));
+    for(var id in SLOT_MACHINES){
+      var m=SLOT_MACHINES[id];
+      h+=rulesSec('m-'+id,m.icon+' '+m.name+' <small>'+m.type+'</small>','<p>'+m.rules+'</p><p class="rules-meta">Based on '+m.based+' · pays back '+(m.exact?'':'about ')+m.measured+'%'+
+        (gameMode==='arcade'?' (about '+ARCADE_RTP+'% on the Arcade floor)':'')+'</p>'+
+        '<button type="button" class="rl-small-btn" onclick="rulesGoSlot(\''+id+'\')">Play '+m.name+'</button>');
+    }
+    return h;
+  }},
+  {id:'plinko',group:'Quick games',name:'Plinko',html:function(){
+    var rows=pk.rows,T=(rulesArc()?PK_ARCADE:PK_PAYS)[rows];
+    function ends(a){return a[0]+'× at the edges, '+Math.min.apply(null,a)+'× in the middle';}
+    return '<h3>Plinko</h3><p>Drop a ball through the pegs. Each peg knocks it left or right, 50/50, and the bucket it lands in multiplies your bet.</p>'+rulesEvNote(['plinko_party'])+
+      rulesSec('risk','Risk','<p>Risk sets the buckets. Low pays little at the edges but rarely loses much; High pays far more at the edges, and the middle buckets hand back less of your bet. Most balls land near the middle.</p>'+
+        rulesTable(['On '+rows+' rows','Buckets'],[['Low',ends(T.L)],['Medium',ends(T.M)],['High',ends(T.H)]]))+
+      rulesSec('rows','Rows','<p>Pick 8 to 16 rows of pegs. More rows means more buckets, edges that come up more rarely, and bigger prizes on them.</p>')+
+      rulesSec('auto','Auto','<p>Switch to <b>Auto</b> and choose how many balls (10, 25, 50, 100, or until you stop), and they drop one after another at the same bet.</p>')+
+      rulesSec('payback','Payback','<p>The buckets are Stake\'s own tables, and every board pays back about 99% of what\'s bet over time. The Payback box shows the figure for the board you\'re on.</p>'+
+        rulesArcNote('the buckets under 1× pay a little more, so Medium and High boards pay back about '+ARCADE_RTP+'%. Low stays near 100%, so autobet can\'t farm chips. A Blue Lagoon raises every win, and a Cosmopolitan turns a bucket under 1× into your bet back.'));
+  }},
+  {id:'coin',group:'Quick games',name:'Coin flip',html:function(){
+    var p=cfPay();
+    return '<h3>Coin flip</h3><p>Call heads or tails, set your bet and flip. Call it right and you get ×'+p.toFixed(2)+' back: your bet plus '+Math.round((p-1)*100)+'% more.</p>'+rulesEvNote(['coin_rush'])+
+      rulesSec('pays','What it pays',rulesTable(['Floor','Pays'],[['Classic','×'+CF_PAY.classic.toFixed(2)+' (a 2% house edge)'],['Arcade','×'+CF_PAY.arcade.toFixed(2)]])+'<p>The coin is fair: heads and tails are always 50/50, whatever came up before.</p>')+
+      rulesSec('double','Double it and streaks','<p>After a win, <b>Double it</b> bets everything you just won on the next flip. Your streak counts wins in a row, and your best streak is kept.</p>');
+  }},
+  {id:'football',group:'Sportsbook',name:'Football',html:function(){
+    return '<h3>Football</h3><p>A league of '+SB_TEAMS.length+' made-up teams playing a '+SB_WEEKS+'-week season, '+(SB_TEAMS.length/2)+' games a week. Bet on this week\'s games, then watch them or sim them.</p>'+rulesEvNote(['race_week'])+
+      rulesSec('markets','The bets',rulesTable(['Bet','Wins when'],[
+        ['<span id="rs-m-ml"></span>Winner','Your team wins the game.'],
+        ['<span id="rs-m-sp"></span>Spread','The favourite (minus the line) wins by more than the line, or the underdog (plus the line) loses by less than it or wins. With −6.5, the favourite has to win by 7 or more. Lines end in .5, so there\'s never a tie.'],
+        ['<span id="rs-m-tot"></span>Total points','The two scores added together come out over, or under, the line.'],
+        ['<span id="rs-m-fs"></span>Scores first','Your team puts the first points on the board.'],
+        ['<span id="rs-m-ot"></span>Overtime','Yes: the game is tied at the end of regulation and goes to overtime. No: it doesn\'t.']]))+
+      rulesSec('odds','Reading the odds','<p>Each price is what a winning bet pays back per chip, your stake included: ×2.50 on 10 chips pays 25 (your 10 plus 15). Prices come from each side\'s chance of winning, worked out from '+fmtChips(SB_ODDS_RUNS)+' simulated games. On the Classic floor they pay '+Math.round(SB_RTP.classic*100)+'% of the fair price (the book\'s margin), so a 50% chance pays ×'+(Math.floor(SB_RTP.classic/0.5*100)/100).toFixed(2)+'; on the Arcade floor they pay '+Math.round(SB_RTP.arcade*100)+'% (×'+(Math.floor(SB_RTP.arcade/0.5*100)/100).toFixed(2)+').</p>')+
+      rulesSec('week','Playing out the week','<p><b>Kick off and watch</b> any game, as highlights or every play, at 1×, 2× or 4×, or skip to the result. <b>Sim the rest of the week</b> plays every other game at once. Bets settle the moment their game ends, and <b>Next week</b> opens once every game is final.</p>')+
+      rulesSec('futures','Futures: the champion','<p>On <b>Standings</b>, bet on who finishes the season top of the table (most wins, then points difference, then points scored). Title odds change every week, and futures pay out after week '+SB_WEEKS+'.</p>')+
+      '<p>Bets go on your '+rulesLink('slip','','bet slip')+', as singles or a parlay.</p>';
+  }},
+  {id:'racing',group:'Sportsbook',name:'Horse racing',html:function(){
+    return '<h3>Horse racing</h3><p>'+HR_PER_DAY+' races a day, '+HR_RUNNERS+' runners in each, from '+fmtChips(HR_DISTS[0])+'m sprints to the '+fmtChips(HR_DISTS[HR_DISTS.length-1])+'m Peccy\'s Cup.</p>'+rulesEvNote(['race_week'])+
+      rulesSec('bets','The bets',rulesTable(['Bet','Wins when'],[
+        ['Win','Your horse finishes first.'],['Place','Your horse finishes first or second.'],['Show','Your horse finishes in the top three.'],
+        ['Exacta','You pick the first two in the right order (use the Exacta box under the runners).']]))+
+      rulesSec('card','Reading the race card',rulesList([
+        '<b>Spd</b> (speed) wins sprints, <b>Sta</b> (stamina) wins the long races, and consistent horses run close to their best more often.',
+        '<b>Form</b> is the horse\'s last three finishes.',
+        'Front-runners go to the lead, stalkers sit just behind it, and closers come from the back.',
+        'Odds are each horse\'s chance from '+fmtChips(HR_RUNS)+' runs of the race, priced the same way as '+rulesLink('football','odds','football odds')+'.']))+
+      rulesSec('watch','Watching','<p><b>Go to the post</b> to watch a race, in real time at 1×, or faster at 2× or 4×. <b>Run the rest of today\'s races</b> settles the others at once, and <b>Next race day</b> brings four new races.</p>');
+  }},
+  {id:'slip',group:'Sportsbook',name:'Bet slips and parlays',html:function(){
+    return '<h3>Bet slips and parlays</h3><p>Tap any odds, in football or racing, to add them to your bet slip. Set the amount and place the bet.</p>'+
+      rulesSec('single','Singles','<p>Each pick is a bet of its own at the amount you set, so three picks at 25 cost 75. Each one wins or loses by itself.</p>')+
+      rulesSec('parlay','Parlays','<p>All your picks become one bet: their prices multiply together, so a parlay pays far more, but every pick has to win. A parlay takes 2 to '+SB_LEGS_MAX+' picks, each from a different game or race, with no futures, and pays at most ×'+fmtChips(SB_PARLAY_MAX)+'.</p>')+
+      rulesSec('mine','My bets','<p><b>My bets</b> lists every bet and how it went, with what you\'ve wagered, won back and your net.</p>');
+  }},
+  {id:'bar',group:'Arcade floor',name:'Peccy\'s Bar',html:function(){
+    return '<h3>Peccy\'s Bar</h3>'+(rulesArc()?'':rulesNote('arc','🍀 The bar is on the Arcade floor: switch to <b>Arcade</b> at the top of the screen to visit.'))+
+      '<p>Drinks are short-lived buffs for the other games. Each one adds buzz, and if your buzz hits 100% you black out.</p>'+
+      rulesSec('menu','The menu',rulesTable(['Drink','For','What it does'],Object.keys(DRINKS).map(function(k){var d=DRINKS[k];return [d.icon+' '+d.name,d.game,d.desc];})))+
+      rulesSec('buzz','Buzz','<p>Each drink adds its buzz. Every spin, hand or ball wears 4% of it off. Hit 100% and you black out: you lose 15% of your chips and every drink wears off. An Espresso Martini takes 30% off your buzz.</p>')+
+      rulesSec('price','Prices','<p>A drink costs its base price plus a small share of your chips (the bartender sizes you up). Drinks that pay out chips pay at most 8× what they cost.</p>')+
+      rulesSec('mix','Peccy pours, or mix it','<p><b>Peccy pours</b> it at standard strength. <b>Mix it</b> yourself by following the recipe: the glass, the ice, each pour, shaking or stirring, and the garnish. Made well, it\'s up to 1.5× as strong; botched, as weak as 0.5×. Get it 95% right or better and it goes down smooth, with half the buzz.</p>')+
+      rulesSec('long','Long Island','<p>A free random buff, or a curse:</p>'+rulesTable(null,Object.keys(CURSES).map(function(k){var c=CURSES[k];return [c.icon+' '+c.name,c.desc];})))+
+      rulesSec('shift','Working a shift','<p><b>Work a shift</b> behind the bar: mix drinks for 5 customers and earn a wage of 15 chips a drink, plus a tip of up to 45 for how well you made it.</p>');
+  }},
+  {id:'rewards',group:'Rewards',name:'Spin, challenges and levels',html:function(){
+    var tot=SPIN.reduce(function(s,x){return s+x.w;},0),x2=rulesArc()?' (doubled on the Arcade floor)':'';
+    return '<h3>Spin, challenges and levels</h3><p>All of these live in the rewards panel: tap the level ring at the top of the screen.</p>'+
+      rulesSec('spin','Daily spin','<p>One free spin a day. Each slice is sized by its real chance:</p>'+
+        rulesTable(['Prize, before bonuses','Chance'],SPIN.slice().sort(function(a,b){return b.w-a.w;}).map(function(s){return [s.item?'A mystery item from the shop':fmtChips(s.v)+' chips'+(s.jackpot?' (the jackpot)':''),Math.round(s.w/tot*100)+'%'];}))+
+        '<p>Spin on days in a row and chip prizes grow 10% a day, up to +60% on day seven. Your VIP tier multiplies them again'+x2+'. The mystery item is something from the shop you don\'t own yet.</p>')+
+      rulesSec('challenges','Daily challenges','<p>Three new challenges each day. Each pays '+DAILY_CHIPS+' chips; finish all three and claim a bonus of '+DAILY_BONUS+', plus '+DAILY_STREAK+' more for each day in a row (up to seven)'+x2+'. Claim them in the rewards panel.</p>')+
+      rulesSec('events','Weekly events','<p>A new twist every Monday, in this order:</p>'+rulesTable(null,EVENTS.map(function(e){return [e.name+(evNow().id===e.id?' <span class="rules-now">this week</span>':''),e.desc];})))+
+      rulesSec('levels','Levels and VIP','<p>Every bet earns XP: bigger bets earn a little more, and trophies and challenges earn extra. Going from level L to the next takes 100 + 60 × (L − 1) XP, and each new level pays 10 chips times its number'+x2+'. VIP tiers multiply your daily spin and hand you an outfit:</p>'+
+        rulesTable(['Level','Tier','Spin prizes'],VIP.map(function(v){return [v.lv,v.name+(v.outfit?' (and its outfit)':''),'×'+v.mult];})))+
+      rulesSec('trophies','Trophies','<p>Trophies mark milestones in every game. '+[1,2,3].map(function(t){return ACH_TIER[t].name+' pays '+ACH_TIER[t].chips;}).join(', ')+' chips'+x2+'.</p>');
+  }},
+  {id:'shop',group:'Rewards',name:'The shop',html:function(){
+    return '<h3>The shop</h3><p>Peccy\'s Boutique sells looks, not luck: outfits for Peccy, card decks, and blackjack and roulette tables, wheels and balls. Nothing in it changes the odds.</p>'+rulesEvNote(['shop_sale'])+
+      rulesSec('buy','Buying','<p>Tap <b>Buy</b>, then <b>Tap again to buy</b>, so nothing is bought by accident. What you buy is yours for good, and you can switch between everything you own. Seasonal sets, like Halloween, get a tab of their own.</p>')+
+      rulesSec('vip','VIP outfits','<p>VIP outfits can\'t be bought: each comes free when you reach its '+rulesLink('rewards','levels','VIP tier')+'.</p>')+
+      rulesArcNote('the Arcade floor has its own wardrobe, and prices there are double.');
+  }}
+];
+var RULES_BY={};RULES.forEach(function(t){RULES_BY[t.id]=t;});
+// Which topic a game's Rules button (and the footer link) opens
+function rulesFor(){
+  var a=document.querySelector('.game-area.active'),g=a?a.id.replace('game-',''):'';
+  if(g==='holdem')return he.view==='pt'?'poker':'uth';
+  if(g==='sports')return sbView&&sbView.sport==='hr'?'racing':'football';
+  return RULES_BY[g]?g:'start';
+}
+function rulesIsOpen(){var o=document.getElementById('rules-overlay');return !!o&&o.classList.contains('show');}
+// Open the rules at a topic (the game you're on if none), scrolled to one of its sections
+function rulesOpen(topic,sec){
+  if(!topic){topic=rulesFor();if(topic==='slots'&&!document.getElementById('game-slots').classList.contains('show-hub'))sec='m-'+slState.id;}
+  rulesTopic=RULES_BY[topic]?topic:'start';
+  rulesRender();
+  document.getElementById('rules-overlay').classList.add('show');
+  // A section opens scrolled to its heading (or table row), which glows for a moment
+  var box=document.getElementById('rules-text'),el=sec&&document.getElementById('rs-'+sec),hl=el&&(el.closest('tr')||el);
+  box.scrollTop=0;
+  if(hl){
+    box.scrollTop=hl.getBoundingClientRect().top-box.getBoundingClientRect().top-12;
+    hl.classList.add('rules-hl');setTimeout(function(){hl.classList.remove('rules-hl');},1600);
+  }
+}
+function rulesClose(){var o=document.getElementById('rules-overlay');if(o)o.classList.remove('show');}
+function rulesRender(){
+  var t=RULES_BY[rulesTopic],e=evNow(),nav='',pick='',group='';
+  RULES.forEach(function(r){
+    if(r.group!==group){nav+='<small>'+r.group+'</small>';if(group)pick+='</optgroup>';pick+='<optgroup label="'+r.group+'">';group=r.group;}
+    nav+='<button type="button" class="'+(r.id===rulesTopic?'on':'')+'" onclick="rulesOpen(\''+r.id+'\')">'+r.name+'</button>';
+    pick+='<option value="'+r.id+'"'+(r.id===rulesTopic?' selected':'')+'>'+r.name+'</option>';
+  });
+  document.getElementById('rules-nav').innerHTML=nav;
+  document.getElementById('rules-pick').innerHTML=pick+'</optgroup>';
+  document.getElementById('rules-sum').innerHTML='You\'re on the <b>'+(rulesArc()?'Arcade':'Classic')+'</b> floor · this week: <b>'+e.name+'</b>';
+  // A button to the game at the end, unless you're already there (or it's the bar and you're on the Classic floor).
+  // The bet slip belongs to both sports; the two Hold'em games and the two sports each get their own button.
+  var g=RULES_GAME[rulesTopic],a=document.querySelector('.game-area.active');
+  var here=a&&a.id==='game-'+g&&(rulesTopic==='slip'||(g!=='holdem'&&g!=='sports')||rulesFor()===rulesTopic);
+  var go=RULES_GO[rulesTopic]&&!here&&!(g==='bar'&&!rulesArc())?'<div class="rules-go"><button type="button" class="btn btn-primary" onclick="rulesGo(\''+rulesTopic+'\')">'+RULES_GO[rulesTopic]+'</button></div>':'';
+  document.getElementById('rules-text').innerHTML=t.html()+go;
+}
+var RULES_GO={blackjack:'Play blackjack',roulette:'Play roulette',uth:'Play Ultimate Texas Hold\'em',poker:'Go to the poker table',plinko:'Play Plinko',coin:'Flip a coin',
+  football:'Go to the football',racing:'Go to the races',slip:'Go to the sportsbook',bar:'Go to the bar',shop:'Go to the shop'};
+// Close the rules and go to a topic's game
+function rulesGo(topic){
+  var g=RULES_GAME[topic];if(!g)return;
+  rulesClose();achClose();switchGame(g);
+  if(topic==='uth'||topic==='poker')heShow(topic==='uth'?'uth':'pt');
+  if(topic==='football'||topic==='racing')sbSport(topic==='football'?'fb':'hr');
+}
+function rulesGoSlot(id){rulesClose();achClose();switchGame('slots');slOpen(id);}
+
+// Esc closes whichever pop-up is open (the rules first, since they can sit over the rewards panel)
+document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(rulesIsOpen()){rulesClose();return;}bugClose();saveClose();achClose();}});
 
 // ═══ PLINKO ═══
 // Stake-style Plinko. Pick a risk and 8 to 16 rows of pegs; each ball bounces left or right off every row
@@ -7564,7 +8036,14 @@ function cfFlip(amount){
   },1650);
 }
 function cfDouble(){if(cf.last>0&&!cf.busy)cfFlip(cf.last);}
-function cfLayout(){var w=document.getElementById('cf-wrap');if(!w||!w.offsetParent)return;w.style.height=innerWidth>760?Math.max(360,roomBelow(w))+'px':'';}
+function cfLayout(){
+  var w=document.getElementById('cf-wrap');if(!w||!w.offsetParent)return;
+  var wide=innerWidth>760,st=w.querySelector('.cf-stage');
+  w.style.height=wide?Math.max(360,roomBelow(w))+'px':'';
+  // The coin grows with its stage, leaving room above it for the toss and under it for the result
+  if(wide)w.style.setProperty('--coin',Math.round(Math.max(210,Math.min(380,st.clientWidth*0.36,(st.clientHeight-110)/2.2)))+'px');
+  else w.style.removeProperty('--coin');
+}
 window.addEventListener('resize',function(){if(document.getElementById('game-coin').classList.contains('active'))cfLayout();});
 
 // ═══ SPORTSBOOK: FOOTBALL ═══
@@ -8406,7 +8885,7 @@ function sbRenderSlip(){
   var L=sbSlip.legs;
   if(!L.length){box.innerHTML='<div class="sb-slip-empty">🎟 Tap any odds to add them to your bet slip</div>';box.classList.remove('full');sbLayout();return;}
   box.classList.add('full');
-  box.innerHTML='<div class="sb-slip-head"><b>Bet slip ('+L.length+')</b><div class="sb-seg"><button id="sb-sm-single" onclick="sbSlipMode(\'single\')">Single'+(L.length>1?'s':'')+'</button><button id="sb-sm-parlay" onclick="sbSlipMode(\'parlay\')">Parlay</button></div><button class="sb-slip-x" onclick="sbSlipClear()" title="Clear the slip">Clear</button></div>'+
+  box.innerHTML='<div class="sb-slip-head"><b>Bet slip ('+L.length+')'+rulesI('slip','','singles and parlays')+'</b><div class="sb-seg"><button id="sb-sm-single" onclick="sbSlipMode(\'single\')">Single'+(L.length>1?'s':'')+'</button><button id="sb-sm-parlay" onclick="sbSlipMode(\'parlay\')">Parlay</button></div><button class="sb-slip-x" onclick="sbSlipClear()" title="Clear the slip">Clear</button></div>'+
     '<div class="sb-slip-legs">'+L.map(function(l,i){return '<div class="sb-leg"><span><b>'+l.lab+'</b><small>'+l.ev+'</small></span><em>×'+sbMult(l.p).toFixed(2)+'</em><button onclick="sbSlipRemove('+i+')" aria-label="Remove">×</button></div>';}).join('')+'</div>'+
     '<div class="sb-slip-foot"><div class="pk-amount"><input id="sb-slip-amt" type="number" min="1" step="1" value="'+(sbSlip.amt||25)+'" inputmode="numeric" oninput="sbSlip.amt=+this.value;sbSlipTotals()"><button onclick="sbSlipScale(0.5)">½</button><button onclick="sbSlipScale(2)">2×</button></div>'+
     '<div class="sb-slip-tot" id="sb-slip-tot"></div><button class="btn btn-gold" id="sb-slip-go" onclick="sbSlipPlace()">Place bet</button></div>';
@@ -8553,7 +9032,7 @@ function sbRenderSide(){
     var open=sb.games.filter(function(g){return g.st!=='final';}).length;
     f.innerHTML=open?'<button class="rl-small-btn" onclick="sbSimRest()">Sim the rest of the week ('+open+')</button>':'<button class="btn btn-primary" onclick="sbNextWeek()">'+(sb.week>=SB_WEEKS?'Finish the season 🏆':'Next week ▶')+'</button>';
   }else{
-    h='<div class="sb-hint">Title odds: bet on who finishes top of the table this season (futures pay at the end of the season).</div><table class="sb-table"><tr><th></th><th>Team</th><th>W-L</th><th>+/-</th><th>Title</th></tr>'+sbStandings().map(function(t,i){var r=sb.rec[t],p=sb.fut[t]||0,l=sbFutLeg(t);
+    h='<div class="sb-hint">'+rulesI('football','futures','futures')+' Title odds: bet on who finishes top of the table this season (futures pay at the end of the season).</div><table class="sb-table"><tr><th></th><th>Team</th><th>W-L</th><th>+/-</th><th>Title</th></tr>'+sbStandings().map(function(t,i){var r=sb.rec[t],p=sb.fut[t]||0,l=sbFutLeg(t);
       return '<tr onclick="sbOpenTeam('+t+')"'+(sbView.main==='team'&&sbView.ti===t?' class="on"':'')+'><td>'+(i+1)+'</td><td>'+sbBadge(t)+' '+SB_TEAMS[t].name+'</td><td>'+r.w+'-'+r.l+'</td><td>'+(r.pf-r.pa>0?'+':'')+(r.pf-r.pa)+'</td><td>'+
         (p>=0.003?'<button class="sb-odd sm" data-leg="'+sbLegKey(l)+'" onclick="event.stopPropagation();sbAddFut('+t+')"><b>×'+sbMult(p).toFixed(p<0.05?0:2)+'</b></button>':'<span class="sb-out">out</span>')+'</td></tr>';}).join('')+'</table>';
     f.innerHTML='';
@@ -8588,7 +9067,10 @@ function sbRenderMain(){
   var h2h=sb.rec[g.h].g.filter(function(x){return x[1]===g.a;}),hw=h2h.filter(function(x){return x[3]>x[4];}).length;
   function side(t,s){return '<div class="sb-mteam" onclick="sbOpenTeam('+t+')">'+sbBadge(t,true)+'<div><b>'+SB_TEAMS[t].city+' '+SB_TEAMS[t].name+'</b><small>'+sbRecord(t)+(s?' · away':' · home')+' · streak '+sbStreak(t)+'</small></div></div>';}
   function sp(x){return (x>0?'+':'')+x;}
-  function mk(label,a,b){return '<div class="sb-mk"><span>'+label+'</span>'+a+b+'</div>';}
+  function mk(label,a,b){
+    var k={Winner:'ml',Spread:'sp','Total points':'tot','Scores first':'fs',Overtime:'ot'}[label];
+    return '<div class="sb-mk"><span>'+label+rulesI('football','m-'+k,'the '+label.toLowerCase()+' bet')+'</span>'+a+b+'</div>';
+  }
   var html='<div class="sb-match">'+side(g.a,1)+'<span class="sb-at">@</span>'+side(g.h,0)+'</div>'+
     '<div class="sb-odds"><div class="sb-obar"><i style="width:'+pa+'%;background:'+A.c1+'"></i><i style="width:'+ph+'%;background:'+H.c1+'"></i></div><div class="sb-olab"><span>'+A.ab+' '+pa+'% to win</span><span>Projected odds</span><span>'+H.ab+' '+ph+'% to win</span></div></div>';
   if(open)html+='<div class="sb-mks">'+
@@ -8618,7 +9100,14 @@ function sbCastHTML(race){
 function sbLayout(){
   var w=document.getElementById('sb-wrap');if(!w||!w.offsetParent)return;
   w.style.height=innerWidth>900?Math.max(420,roomBelow(w))+'px':'';
-  sbFitCast();
+  sbFill();sbFitCast();
+}
+// On a big screen a match, team or race card would stop well short of the bottom of its panel, so the panel's
+// contents grow to fill it (zoomFill). The broadcast sizes its own screen instead (sbFitCast).
+function sbFill(){
+  var m=document.getElementById('sb-main');if(!m)return;
+  m.style.zoom='';
+  if(innerWidth>900&&!m.querySelector('.sb-cast,.sb-loading'))zoomFill(m,1.4);
 }
 function sbFitCast(){
   var scr=document.getElementById('sb-screen'),main=document.getElementById('sb-main'),cast=main&&main.querySelector('.sb-cast');if(!scr||!cast)return;
@@ -8818,14 +9307,14 @@ function hrRenderMain(){
   }
   var ri=sbView.ri,race=H.races[ri];if(!race){el.innerHTML='';return;}
   var open=race.st==='open',n=race.run.length,html='<div class="hr-head"><div><h2>Race '+race.no+': '+race.name+'</h2><div class="sb-tline">'+fmtChips(race.dist)+'m '+hrKind(race.dist)+' · race day '+H.day+' · '+n+' runners</div></div></div>';
-  html+='<table class="sb-table hr-table"><tr><th></th><th>Horse</th><th>Form</th><th>Spd</th><th>Sta</th><th>Win</th><th>Place</th><th>Show</th></tr>'+race.run.map(function(h,k){
+  html+='<table class="sb-table hr-table"><tr><th></th><th>Horse</th><th>Form</th><th>Spd</th><th>Sta</th><th>Win</th><th>Place</th><th>Show'+rulesI('racing','bets','win, place and show')+'</th></tr>'+race.run.map(function(h,k){
     var HH=HR_HORSES[h],fin=race.st==='final'?race.order.indexOf(k)+1:0;
     return '<tr><td>'+hrSilk(k,h)+'</td><td><a onclick="hrOpenHorse('+h+')">'+HH.n+'</a><small>'+hrStyle(h)+'</small></td><td>'+hrFormStr(h)+'</td><td>'+HH.spd+'</td><td>'+HH.sta+'</td>'+
       (open?'<td>'+hrOdd(ri,'win',k,race.pw[k])+'</td><td>'+hrOdd(ri,'place',k,race.pp[k])+'</td><td>'+hrOdd(ri,'show',k,race.ps[k])+'</td>':
         '<td colspan="3">'+(fin?'<b class="hr-fin p'+Math.min(fin,4)+'">'+sbcOrd(fin)+'</b>':'🔴 Running')+' <small>win was '+Math.round(race.pw[k]*100)+'%</small></td>')+'</tr>';}).join('')+'</table>';
   if(open){
     var opts=race.run.map(function(h,k){return '<option value="'+k+'">#'+(k+1)+' '+HR_HORSES[h].n+'</option>';}).join('');
-    html+='<div class="hr-exa"><b>Exacta</b><span>Pick the first two in order:</span><select id="hr-ex1" onchange="hrExUI('+ri+')">'+opts+'</select><span>then</span><select id="hr-ex2" onchange="hrExUI('+ri+')">'+opts.replace('value="1"','value="1" selected')+'</select>'+
+    html+='<div class="hr-exa"><b>Exacta'+rulesI('racing','bets','an exacta')+'</b><span>Pick the first two in order:</span><select id="hr-ex1" onchange="hrExUI('+ri+')">'+opts+'</select><span>then</span><select id="hr-ex2" onchange="hrExUI('+ri+')">'+opts.replace('value="1"','value="1" selected')+'</select>'+
       '<em id="hr-ex-odds"></em><button class="rl-small-btn" onclick="hrAddExacta('+ri+')">Add to slip</button></div>'+
       '<div class="sb-hint">Win: your horse finishes first. Place: first or second. Show: anywhere in the top three. The odds are every horse\'s chance from 2,000 runs of this race.</div>'+
         (evOn('race_week')?'<div class="sb-hint ev-note">Race Week: winning race bets pay 10% extra on top of these odds.</div>':'');
