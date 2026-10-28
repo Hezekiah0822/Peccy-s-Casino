@@ -6063,7 +6063,7 @@ function slPickOrder(target){
 var SLOT_MACHINES={
   pharaoh:{
     name:'Pharaoh Peccy',icon:'🏺',type:'Free spins',sub:'5 reels · 20 lines · 3 Sphinx = 15 free spins at ×3',
-    based:'IGT Cleopatra',rtp:95.02,rtpNote:'IGT\'s published 95.02%',measured:95.0,hit:33.6,
+    based:'IGT Cleopatra',rtp:95.02,rtpNote:'IGT\'s published 95.02%',measured:94.9,hit:34.3,bonus:{every:138,real:"1 in 138",src:"the Wizard of Odds, worked out from the reel strips"},
     theme:{acc:'#d4af37',bg1:'#3b2a12',bg2:'#120a03'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',wildMult:'once',scatter:'SC',maxCell:170,k:1,
     sym:slWithRoyals({W:{wild:1,name:'Pharaoh Peccy'},SC:{e:'🦁',name:'Sphinx'},scb:{e:'🪲',name:'Scarab'},lot:{e:'🪷',name:'Lotus'},tab:{e:'📜',name:'Golden Tablet'},
@@ -6071,7 +6071,7 @@ var SLOT_MACHINES={
     pay:{W:{2:10,3:200,4:2000,5:10000},scb:{2:2,3:25,4:100,5:750},lot:{2:2,3:25,4:100,5:750},tab:{3:15,4:100,5:400},crk:{3:15,4:75,5:250},eye:{3:15,4:50,5:250},
       A:{3:10,4:50,5:125},K:{3:5,4:50,5:100},Q:{3:5,4:25,5:100},J:{3:5,4:25,5:100},T:{3:5,4:25,5:100},N:{3:2,4:5,5:25}},
     scatterPay:{2:2,3:5,4:20,5:100},
-    weights:{W:1.6,SC:2,scb:3,lot:3,tab:3.5,crk:3.8,eye:4,A:6,K:6.5,Q:7,J:7,T:7.5,N:7.5},knob:['A','K','Q','J','T','N'],f:0.9924,
+    weights:{W:1.6,SC:1.3095,scb:3,lot:3,tab:3.5,crk:3.8,eye:4,A:6,K:6.5,Q:7,J:7,T:7.5,N:7.5},knob:['A','K','Q','J','T','N'],f:0.6643,
     rules:'20 lines, paid left to right, at the original Cleopatra pays (shown as × your total bet). Pharaoh Peccy is wild and doubles any win it helps make; five of them pay 10,000× the line bet. Two or more Sphinx scatters pay anywhere; three or more start 15 free spins where every win is tripled, and three more during the feature add another 15, up to 180.',
     say:{intro:"Welcome to the tomb! Three Sphinx and every win is tripled. 🏺",feature:"The Sphinx awakens... FREE SPINS! 🦁"},
     play:function(bet){
@@ -6096,14 +6096,14 @@ var SLOT_MACHINES={
   },
   book:{
     name:'Book of Peccy',icon:'📖',type:'Expanding symbol',sub:'5 reels · 10 lines · 3 Books = 10 free spins with an expanding symbol',
-    based:'Play\'n GO Book of Dead',rtp:96.21,rtpNote:'Play\'n GO\'s published 96.21%',measured:96.2,hit:26.7,
+    based:'Play\'n GO Book of Dead',rtp:96.21,rtpNote:'Play\'n GO\'s published 96.21%',measured:96.3,hit:27.2,bonus:{every:174,real:"about 1 in 174",src:"Gamblington; other reviews quote 1 in 150 to 200"},
     theme:{acc:'#2ec4b6',bg1:'#0f3a3a',bg2:'#031414'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES10,wild:'BK',scatter:'BK',maxCell:170,k:1,
     sym:slWithRoyals({BK:{e:'📖',name:'Book',wild:0},exp:{e:'🤠',name:'Explorer Peccy'},osi:{e:'👑',name:'Osiris'},anu:{e:'🐺',name:'Anubis'},hor:{e:'🦅',name:'Horus'}},['A','K','Q','J','T']),
     pay:{exp:{2:10,3:100,4:1000,5:5000},osi:{2:5,3:40,4:400,5:2000},anu:{2:5,3:30,4:100,5:750},hor:{2:5,3:30,4:100,5:750},
       A:{3:5,4:40,5:150},K:{3:5,4:40,5:150},Q:{3:5,4:25,5:100},J:{3:5,4:25,5:100},T:{3:5,4:25,5:100}},
     scatterPay:{3:2,4:20,5:200},specials:['exp','osi','anu','hor','A','K','Q','J','T'],
-    weights:{BK:1.75,exp:1.6,osi:2.4,anu:3.2,hor:3.2,A:6,K:6,Q:7,J:7,T:7.5},knob:['A','K','Q','J','T'],f:1.0778,stick:0.3,
+    weights:{BK:1.012,exp:1.6,osi:2.4,anu:3.2,hor:3.2,A:6,K:6,Q:7,J:7,T:7.5},knob:['A','K','Q','J','T'],f:0.6571,stick:0.3,
     rules:'10 lines, paid left to right, at the original Book of Dead pays. The Book is both wild and scatter: three or more anywhere pay 2×, 20× or 200× your bet and start 10 free spins. One symbol is picked to expand during the free spins: whenever it lands on enough reels to pay, it fills those reels and pays on all 10 lines, even on reels that are not next to each other. Three Books during the feature add 10 more spins.',
     say:{intro:"Find three Books and a symbol expands across the reels! 📖",feature:"The Book is open... FREE SPINS! 📖"},
     play:function(bet){
@@ -6165,16 +6165,16 @@ var SLOT_MACHINES={
   },
   stampede:{
     name:'Serverless Stampede',icon:'🦬',type:'1024 ways',sub:'5 reels · 4 rows · 1024 ways · multiplying wilds in free spins',
-    based:'Aristocrat Buffalo',rtp:94.85,rtpNote:'Aristocrat\'s commonly quoted 94.85%',measured:94.9,hit:45.0,
+    based:'Aristocrat Buffalo',rtp:94.85,rtpNote:'Aristocrat\'s commonly quoted 94.85%',measured:95.2,hit:44.9,bonus:{every:144,real:"about 1 in 130 to 160",src:"the figure quoted for Buffalo Gold"},
     theme:{acc:'#ff7043',bg1:'#3e1f12',bg2:'#140703'},
     cols:5,rows:4,kind:'ways',wild:'W',scatter:'SC',maxCell:150,k:1/40,
     sym:slWithRoyals({W:{wild:1,name:'Sunset Peccy'},SC:{e:'🪙',name:'Gold coin'},bis:{e:'🦬',name:'Buffalo'},eag:{e:'🦅',name:'Eagle'},cou:{e:'🐆',name:'Cougar'},wol:{e:'🐺',name:'Wolf'},elk:{e:'🦌',name:'Elk'}}),
     pay:{bis:{3:40,4:100,5:300},eag:{3:30,4:80,5:200},cou:{3:25,4:60,5:150},wol:{3:20,4:50,5:125},elk:{3:15,4:40,5:100},
       A:{3:10,4:20,5:80},K:{3:10,4:20,5:80},Q:{3:5,4:15,5:60},J:{3:5,4:15,5:50},T:{3:5,4:10,5:40},N:{3:5,4:10,5:40}},
     scatterPay:{3:2,4:10,5:100},fsAward:{3:8,4:15,5:20},fsRetrigger:{2:5,3:8,4:15,5:20},
-    weights:function(c){return {W:c>=1&&c<=3?2:0,SC:1.4,bis:3,eag:3.5,cou:4,wol:4.5,elk:5,A:6,K:6,Q:7,J:7,T:8,N:8};},
+    weights:function(c){return {W:c>=1&&c<=3?2:0,SC:1.338,bis:3,eag:3.5,cou:4,wol:4.5,elk:5,A:6,K:6,Q:7,J:7,T:8,N:8};},
     fsWeights:function(c){return {W:c>=1&&c<=3?3.5:0,SC:1.4,bis:3,eag:3.5,cou:4,wol:4.5,elk:5,A:6,K:6,Q:7,J:7,T:8,N:8};},
-    knob:['bis','eag','cou','wol','elk','A','K','Q','J','T','N'],f:1.0622,
+    knob:['bis','eag','cou','wol','elk','A','K','Q','J','T','N'],f:1.0401,
     rules:'1024 ways: matching symbols on adjacent reels from the left pay, times the number of ways they connect, on a 40-credit bet like the original (pays shown per way). Sunset Peccy is wild on reels 2 to 4. Three, four or five coins pay 2×, 10× or 100× your bet and award 8, 15 or 20 free spins. In free spins every wild is ×2 or ×3, multipliers on the same way multiply together, and two or more coins add 5, 8, 15 or 20 more spins. Buffalo\'s own symbol table isn\'t published, so the animal and card pays here are close stand-ins.',
     say:{intro:"Hear that rumble? 1024 ways to win. Coins start the stampede! 🦬",feature:"STAMPEDE! The wilds are multiplying! 🦬🦬🦬"},
     play:function(bet){
@@ -6202,7 +6202,7 @@ var SLOT_MACHINES={
   },
   candy:{
     name:'Candy Cloud Bonanza',icon:'🍭',type:'Tumble',sub:'6 × 5 · pays anywhere · tumbling wins · bomb multipliers',
-    based:'Pragmatic Play Sweet Bonanza',rtp:96.48,rtpNote:'Pragmatic Play\'s published 96.48%',measured:96.5,hit:48.0,
+    based:'Pragmatic Play Sweet Bonanza',rtp:96.48,rtpNote:'Pragmatic Play\'s published 96.48%',measured:96.5,hit:48.0,bonus:{every:460,real:"about 1 in 450",src:"Bigwinboard, for the Sweet Bonanza games"},
     theme:{acc:'#ff5fa2',bg1:'#4a1d4f',bg2:'#170717'},
     cols:6,rows:5,kind:'any',scatter:'SC',maxCell:130,k:1,
     sym:{SC:{e:'🍭',name:'Lollipop'},B:{e:'💣',name:'Bomb'},hrt:{e:'💖',name:'Heart candy'},sqr:{e:'🍬',name:'Wrapped candy'},cup:{e:'🧁',name:'Cupcake'},don:{e:'🍩',name:'Donut'},
@@ -6249,14 +6249,14 @@ var SLOT_MACHINES={
   },
   dragon:{
     name:"Dragon's Hoard",icon:'🐉',type:'Hold & Spin',sub:'5 reels · 20 lines · 6+ orbs start Hold & Spin · 4 jackpots',
-    based:'Aristocrat Lightning Link',rtp:95,rtpNote:'Lightning Link titles are quoted around 95%',measured:95.0,hit:16.8,
+    based:'Aristocrat Lightning Link',rtp:95,rtpNote:'Lightning Link titles are quoted around 95%',measured:95.1,hit:17.1,bonus:{every:118,real:"about 1 in 120",src:"player reports; it varies by title and setting"},
     theme:{acc:'#ff3d3d',bg1:'#3a0d0d',bg2:'#120202'},
-    cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',maxCell:170,k:1,
+    cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',maxCell:170,k:2.5,
     sym:slWithRoyals({W:{wild:1,name:'Golden Peccy'},O:{e:'🔮',name:'Orb'},drg:{e:'🐉',name:'Dragon'},tig:{e:'🐅',name:'Tiger'},lan:{e:'🏮',name:'Lantern'},env:{e:'🧧',name:'Red envelope'},bag:{e:'💰',name:'Gold bag'}}),
     pay:{W:{3:50,4:200,5:1000},drg:{3:50,4:150,5:500},tig:{3:30,4:100,5:300},lan:{3:20,4:60,5:200},env:{3:15,4:50,5:150},bag:{3:15,4:40,5:120},
       A:{3:10,4:25,5:100},K:{3:10,4:25,5:100},Q:{3:5,4:20,5:80},J:{3:5,4:20,5:80},T:{3:5,4:15,5:60},N:{3:5,4:15,5:60}},
-    weights:{W:1.5,O:10,drg:3,tig:3.5,lan:4,env:4.5,bag:5,A:6,K:6,Q:7,J:7,T:8,N:8},knob:['A','K','Q','J','T','N'],f:0.9054,
-    values:{O:{1:30,2:24,3:16,5:10,8:6,10:4,MINI:3,MINOR:1,MAJOR:0.2}},
+    weights:{W:1.5,O:8.7,drg:3,tig:3.5,lan:4,env:4.5,bag:5,A:6,K:6,Q:7,J:7,T:8,N:8},knob:['A','K','Q','J','T','N'],f:0.877,
+    values:{O:{1:20,2:24,3:18,5:13,8:8,10:6,15:2,MINI:3,MINOR:1,MAJOR:0.2}},
     jackpots:{MINI:10,MINOR:25,MAJOR:100,GRAND:500},holdChance:0.094,
     rules:'20 lines, paid left to right. Golden Peccy is wild. Orbs carry chip prizes or a jackpot. Six or more orbs start Hold &amp; Spin, just like Lightning Link: the orbs lock, you get 3 respins, and every new orb resets the respins to 3. At the end every orb pays, and filling all 15 spots wins the Grand. Jackpots here are fixed: Mini 10×, Minor 25×, Major 100×, Grand 500× your bet (on the real machines the Major and Grand are progressive). The base-game symbol pays are close stand-ins.',
     say:{intro:"Six orbs wake the dragon's Hold & Spin. Fill the screen for the Grand! 🐉",feature:"The orbs are glowing... HOLD & SPIN! 🔮"},
@@ -6285,7 +6285,7 @@ var SLOT_MACHINES={
   },
   huff:{
     name:'Huff N\' Peccy',icon:'🐺',type:'Build and blow down',sub:'5 reels · 243 ways · 6+ hard hats build houses for the wolf to blow down',
-    based:'Light & Wonder Huff N\' Puff',rtp:96,rtpNote:'the online Huff N\' Puff games are quoted at 96.0%',measured:95.7,hit:26.9,
+    based:'Light & Wonder Huff N\' Puff',rtp:96,rtpNote:'the online Huff N\' Puff games are quoted at 96.0%',measured:96.4,hit:26.2,bonus:{every:117,real:"about 1 in 120",src:"reported for Huff N' Even More Puff"},
     theme:{acc:'#f2b134',bg1:'#33260d',bg2:'#100b02'},
     cols:5,rows:3,kind:'ways',wild:'W',scatter:'HH',maxCell:160,k:2.5,
     sym:slWithRoyals({W:{wild:1,name:'Builder Peccy'},HH:{e:'⛑️',name:'Hard hat'},wlf:{e:'🐺',name:'Big bad wolf'},pg3:{e:'🐽',name:'Brick pig'},pg2:{e:'🐖',name:'Stick pig'},
@@ -6295,9 +6295,9 @@ var SLOT_MACHINES={
     jackpots:{MINI:10,MINOR:25,MAJOR:150,GRAND:1000},
     // What a house turns out to hold when the wolf blows it down, by how far it was built (1 straw, 2 sticks, 3 bricks)
     houses:{1:{0.5:35,1:35,1.5:20,2:10},2:{2:30,3:30,5:20,8:10,MINI:8,MINOR:2},3:{10:35,15:25,20:18,30:10,50:6,100:3,250:1,MINI:4,MINOR:2,MAJOR:0.5,GRAND:0.08}},
-    weights:function(c){return {W:c>=1&&c<=3?4:0,HH:7.5,wlf:2.5,pg3:3,pg2:3.5,pg1:4,ham:4.5,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
+    weights:function(c){return {W:c>=1&&c<=3?4:0,HH:8.85,wlf:2.5,pg3:3,pg2:3.5,pg1:4,ham:4.5,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
     fsWeights:function(c){return {W:c>=1&&c<=3?4:0,HH:5,wlf:2.5,pg3:3,pg2:3.5,pg1:4,ham:4.5,A:5,K:5,Q:5.5,J:5.5,T:6,N:6};},
-    knob:['A','K','Q','J','T','N'],f:1.0582,
+    knob:['A','K','Q','J','T','N'],f:1.19,
     ptExtra:[['HH','Six or more hard hats, anywhere','6 free spins that build houses'],['H1','Straw house','0.5× to 2× your bet'],['H2','Stick house','2× to 8×, or the Mini or Minor'],['H3','Brick house','10× to 250×, or the Mini, Minor, Major or Grand']],
     rules:'243 ways: matching symbols on adjacent reels from the left pay per way. Builder Peccy is wild on reels 2 to 4. Six or more hard hats anywhere start 6 free spins, and each of their spots gets a straw frame. In the free spins every hard hat builds on its spot: straw becomes sticks, sticks become bricks, and a hat on bricks adds a brick house to another spot. Three or more hats in one free spin add a spin. When the spins run out, the wolf huffs and puffs three times, blowing down the straw houses, then the stick houses, then the brick ones, and each pays what it hides: straw 0.5× to 2× your bet, sticks 2× to 8× or a small jackpot, bricks 10× to 250× or any jackpot. Jackpots are fixed: Mini 10×, Minor 25×, Major 150×, Grand 1,000× your bet. The symbol pays are close stand-ins for the original\'s.',
     say:{intro:"Six hard hats start the build... and then the wolf comes knocking. 🐺",feature:"Hard hats on! Let's build some houses! ⛑️"},
@@ -6336,15 +6336,15 @@ var SLOT_MACHINES={
   },
   cosmic:{
     name:'Cosmic Clusters',icon:'🪐',type:'Cluster tumble',sub:'7 × 7 · clusters of 5+ tumble away · multiplier spots up to ×128',
-    based:'Pragmatic Play Sugar Rush',rtp:96.5,rtpNote:'Pragmatic Play\'s published 96.50%',measured:96.6,hit:42.0,
+    based:'Pragmatic Play Sugar Rush',rtp:96.5,rtpNote:'Pragmatic Play\'s published 96.50%',measured:96.5,hit:42.0,bonus:{every:320,real:"1 in 323",src:"Bigwinboard"},
     theme:{acc:'#8c6cff',bg1:'#1b1045',bg2:'#06030f'},
-    cols:7,rows:7,kind:'cluster',scatter:'SC',maxCell:100,k:2.2,
+    cols:7,rows:7,kind:'cluster',scatter:'SC',maxCell:100,k:2.217,
     sym:{SC:{e:'🌀',name:'Wormhole'},ali:{e:'👽',name:'Alien'},ufo:{e:'🛸',name:'Saucer'},pla:{e:'🪐',name:'Ringed planet'},rkt:{e:'🚀',name:'Rocket'},
       moo:{e:'🌙',name:'Moon'},com:{e:'☄️',name:'Comet'},sat:{e:'🛰️',name:'Satellite'}},
     // Pays by cluster size: 5-6, 7-8, 9-10, 11-12, 13-14, 15 or more
     pay:{ali:[1.5,3,7,15,40,150],ufo:[1,2,5,10,25,100],pla:[0.8,1.5,3,8,20,60],rkt:[0.6,1.2,2.5,5,12,40],moo:[0.4,0.8,1.5,3,8,25],com:[0.3,0.6,1.2,2.5,6,18],sat:[0.25,0.5,1,2,5,15]},
     fsAward:{3:10,4:12,5:15,6:20,7:30},
-    weights:{SC:0.22,ali:4,ufo:4.4,pla:4.8,rkt:5.2,moo:5.6,com:6,sat:6.4},f:1,stick:0.06,
+    weights:{SC:0.2134,ali:4,ufo:4.4,pla:4.8,rkt:5.2,moo:5.6,com:6,sat:6.4},f:1,stick:0.06,
     ptExtra:[['SC','Wormhole (scatter)','3, 4, 5, 6 or 7 start 10, 12, 15, 20 or 30 free spins']],
     rules:'No lines: 5 or more matching symbols touching up, down, left or right make a cluster, which pays by its size. Winning clusters burst and new symbols tumble in, again and again while there are wins. Every spot a cluster bursts on is marked; the next burst on a marked spot turns it into a ×2 multiplier, and each burst after that doubles it, up to ×128. A cluster pays times the total of the multipliers it covers. In the base game the spots clear after each spin. Three or more wormholes start 10 to 30 free spins, where the spots stay for the whole feature, and three more add spins.',
     say:{intro:"Clusters of five pop, and the spots they leave behind start multiplying! 🪐",feature:"A wormhole opens! The multiplier spots stay for the whole feature! 🌀"},
@@ -6380,7 +6380,7 @@ var SLOT_MACHINES={
   },
   parcels:{
     name:'Parcel Party',icon:'📦',type:'Two bonus games',sub:'5 reels · 20 lines · parcels start a pick bonus · three wheels spin the prize wheel',
-    based:'pick-and-match jackpot and bonus-wheel slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.2,hit:36.6,
+    based:'pick-and-match jackpot and bonus-wheel slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.2,hit:36.6,bonus:{every:181},
     theme:{acc:'#ff9900',bg1:'#33200a',bg2:'#0f0802'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',scatter:'PK',maxCell:170,k:2.5,
     sym:slWithRoyals({W:{wild:1,name:'Courier Peccy'},PK:{e:'📦',name:'Parcel'},WH:{e:'🎡',name:'Prize wheel'},trk:{e:'🚚',name:'Delivery truck'},pln:{e:'✈️',name:'Cargo plane'},
@@ -6414,7 +6414,7 @@ var SLOT_MACHINES={
   },
   skyhigh:{
     name:'Sky High Scale-Up',icon:'🏗️',type:'Expanding reels',sub:'5 reels · 3 rows up to 7 · every win adds a row and respins',
-    based:'expanding-reel ways slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.7,hit:26.5,
+    based:'expanding-reel ways slots',generic:1,rtp:96,rtpNote:'a typical figure for the type',measured:96.7,hit:26.5,bonus:{every:91},
     theme:{acc:'#4fc3f7',bg1:'#0d2c44',bg2:'#030f19'},
     cols:5,rows:7,grow:true,kind:'ways',wild:'W',scatter:'SC',maxCell:140,k:1/6,
     sym:slWithRoyals({W:{wild:1,name:'Hard-hat Peccy'},SC:{e:'🏗️',name:'Crane'},sky:{e:'🏙️',name:'Skyline'},twr:{e:'🗼',name:'Tower'},hel:{e:'🚁',name:'Helicopter'},ves:{e:'🦺',name:'Safety vest'}}),
@@ -6453,16 +6453,16 @@ var SLOT_MACHINES={
   },
   fishing:{
     name:'Reel Big Catch',icon:'🎣',type:'Cash collect',sub:'5 reels · 10 lines · in free spins Fisherman Peccy reels in every fish',
-    based:'Pragmatic Play Big Bass Bonanza',rtp:96.71,rtpNote:'Pragmatic Play\'s published 96.71%',measured:97.0,hit:27.6,
+    based:'Pragmatic Play Big Bass Bonanza',rtp:96.71,rtpNote:'Pragmatic Play\'s published 96.71%',measured:95.9,hit:26.3,bonus:{every:116,real:"about 1 in 114",src:"the Big Bass games; no figure is published for the original"},
     theme:{acc:'#29b6c8',bg1:'#0b3140',bg2:'#021118'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES10,wild:'W',scatter:'SC',maxCell:170,k:2,
     sym:slWithRoyals({W:{wild:1,name:'Fisherman Peccy'},SC:{e:'🛥️',name:'Fishing boat'},F:{e:'🐟',name:'Money fish',cash:1},rod:{e:'🎣',name:'Fishing rod'},box:{e:'🧰',name:'Tackle box'},dck:{e:'🦆',name:'Decoy duck'}},['A','K','Q','J','T']),
     pay:{rod:{2:2,3:20,4:50,5:200},box:{2:2,3:15,4:40,5:150},dck:{2:1,3:10,4:30,5:100},F:{2:1,3:5,4:20,5:200},A:{3:5,4:10,5:50},K:{3:5,4:10,5:50},Q:{3:3,4:10,5:40},J:{3:3,4:10,5:40},T:{3:3,4:8,5:30}},
     scatterPay:{3:2,4:20,5:200},fsAward:{3:10,4:15,5:20},
     values:{F:{2:35,5:25,10:16,15:9,20:6,25:4,50:2.5}},
-    weights:{SC:1.05,F:4,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
+    weights:{SC:1.2408,F:4,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
     fsWeights:{W:0.65,F:6,rod:3,box:3.5,dck:4,A:6,K:6,Q:7,J:7,T:8},
-    knob:['A','K','Q','J','T'],f:0.714,wildNote:'Free spins only: substitutes for every pay symbol, and reels in every money fish',
+    knob:['A','K','Q','J','T'],f:0.7914,wildNote:'Free spins only: substitutes for every pay symbol, and reels in every money fish',
     ptExtra:[['F:10','Money fish','Worth 2× to 50× your bet, but only when Fisherman Peccy reels them in during free spins']],
     rules:'10 lines, paid left to right. Every money fish shows a cash value (2× to 50× your bet), but that value only pays when Fisherman Peccy reels it in during the free spins, as in Big Bass Bonanza. Outside the free spins, fish pay only as a line symbol, like any other. Three, four or five fishing boats pay 2×, 20× or 200× and start 10, 15 or 20 free spins. In the free spins Fisherman Peccy is wild, and every one that lands reels in the value of every fish on screen. Every fourth fisherman adds 10 more spins and raises what fish pay: ×2, then ×3, then ×10.',
     say:{intro:"Fish are worth cash, but you need Fisherman Peccy to reel them in! 🎣",feature:"All aboard! Fisherman Peccy's on the water! 🛥️"},
@@ -6497,7 +6497,7 @@ var SLOT_MACHINES={
   },
   beanstalk:{
     name:'Peccy and the Beanstalk',icon:'🌱',type:'Walking wilds',sub:'5 reels · 20 lines · every wild walks one reel left with a free respin',
-    based:'NetEnt Jack and the Beanstalk',rtp:96.28,rtpNote:'NetEnt\'s published 96.28%',measured:96.6,hit:35.9,
+    based:'NetEnt Jack and the Beanstalk',rtp:96.28,rtpNote:'NetEnt\'s published 96.28%',measured:96.6,hit:35.9,bonus:{every:135,src:"no figure is published for the original"},
     theme:{acc:'#7cc95a',bg1:'#15361a',bg2:'#051107'},
     cols:5,rows:3,kind:'lines',lines:SL_LINES20,wild:'W',scatter:'SC',maxCell:170,k:1,
     sym:slWithRoyals({W:{wild:1,name:'Climbing Peccy'},SC:{e:'🪺',name:'Golden nest'},gse:{e:'🪿',name:'Golden goose'},cas:{e:'🏰',name:'Giant\'s castle'},cow:{e:'🐄',name:'Cow'},
@@ -6978,6 +6978,8 @@ function slRenderPaytable(){
   (m.ptExtra||[]).forEach(function(x){h+=row(x[0],x[1],x[2]);});
   h+='</div><div class="sl-pt-rules">'+m.rules+'</div>';
   h+='<div class="sl-pt-rtp"><b>Payback:</b> this machine returns '+(m.exact?'exactly':'about')+' <b>'+(m.measured!=null?m.measured+'%':'—')+'</b> of what is bet'+(m.exact?' (worked out from the reel odds)':' over millions of spins')+', tuned to '+(m.generic?'':'the original\'s ')+'<b>'+m.rtp+'%</b> ('+m.rtpNote+').';
+  // How often the bonus comes round (measured over millions of spins), next to the original's where one is known
+  if(m.bonus)h+='<br><b>Bonus:</b> about 1 in <b>'+m.bonus.every+'</b> spins'+(m.bonus.real?', like the original\'s '+m.bonus.real:'')+(m.bonus.src?' ('+m.bonus.src+')':'')+'.';
   if(slCompChance(m))h+='<br>🍀 <b>Arcade:</b> about 1 in '+Math.round(1/slCompChance(m))+' spins that win nothing are on the house (you get your bet back), so here it returns about <b>'+ARCADE_RTP+'%</b>.';
   h+='</div>';
   document.getElementById('sl-paytable').innerHTML=h;
@@ -8045,7 +8047,7 @@ var RULES=[
     for(var id in SLOT_MACHINES){
       var m=SLOT_MACHINES[id];
       h+=rulesSec('m-'+id,m.icon+' '+m.name+' <small>'+m.type+'</small>','<p>'+m.rules+'</p><p class="rules-meta">Based on '+m.based+' · pays back '+(m.exact?'':'about ')+m.measured+'%'+
-        (gameMode==='arcade'?' (about '+ARCADE_RTP+'% on the Arcade floor)':'')+'</p>'+
+        (gameMode==='arcade'?' (about '+ARCADE_RTP+'% on the Arcade floor)':'')+(m.bonus?' · bonus about 1 in '+m.bonus.every+' spins'+(m.bonus.real?' (the original: '+m.bonus.real+')':''):'')+'</p>'+
         '<button type="button" class="rl-small-btn" onclick="rulesGoSlot(\''+id+'\')">Play '+m.name+'</button>');
     }
     return h;
