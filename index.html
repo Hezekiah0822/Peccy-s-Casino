@@ -111,6 +111,7 @@
   .clear-bet:hover, .rl-small-btn:hover { background: rgba(255,240,220,0.07); }
 
   /* ═══ CASINO CHIPS (shared) ═══ */
+  /* A chip is a shine, a face centred in the chip (so the edge spots show all the way round) and the edge spots */
   .c5 { --c: var(--chip-red); } .c10 { --c: var(--chip-blue); } .c25 { --c: var(--chip-green); } .c50 { --c: var(--chip-black); --spot: var(--gold); }
   .c100 { --c: #7a3fc8; } .c500 { --c: #e8730c; } .c1000 { --c: #d8a21c; --spot: #3a2400; }
   /* Odd chips that only turn up in stacks: 1s for change, and the big ones a huge win is coloured up into */
@@ -121,7 +122,8 @@
     --spot-c: var(--spot, #fff); position: relative; flex: none; width: 56px; height: 56px; border-radius: 50%; cursor: pointer; user-select: none;
     display: flex; align-items: center; justify-content: center; font: 800 15px var(--display); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.6);
     background:
-      radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--c) 72%, #fff) 0, var(--c) 46%, color-mix(in srgb, var(--c) 78%, #000) 57%, transparent 58%),
+      radial-gradient(ellipse 34% 28% at 50% 38%, color-mix(in srgb, var(--c) 72%, #fff), transparent),
+      radial-gradient(circle closest-side, var(--c) 60%, color-mix(in srgb, var(--c) 78%, #000) 77%, transparent 78.5%),
       repeating-conic-gradient(from 8deg, var(--spot-c) 0 13deg, var(--c) 13deg 45deg);
     box-shadow: inset 0 0 0 2px rgba(0,0,0,0.2), 0 3px 0 color-mix(in srgb, var(--c) 50%, #000), 0 8px 16px rgba(0,0,0,0.45);
     transition: transform 0.15s, box-shadow 0.2s;
@@ -141,7 +143,8 @@
      and winnings drop on one chip at a time */
   .pile-chip {
     position: absolute; width: var(--s); height: var(--s); border-radius: 50%; --spot-c: var(--spot, #fff);
-    background: radial-gradient(circle at 50% 38%, color-mix(in srgb, var(--c) 72%, #fff) 0, var(--c) 46%, color-mix(in srgb, var(--c) 78%, #000) 57%, transparent 58%),
+    background: radial-gradient(ellipse 34% 28% at 50% 38%, color-mix(in srgb, var(--c) 72%, #fff), transparent),
+      radial-gradient(circle closest-side, var(--c) 60%, color-mix(in srgb, var(--c) 78%, #000) 77%, transparent 78.5%),
       repeating-conic-gradient(from 8deg, var(--spot-c) 0 13deg, var(--c) 13deg 45deg);
     box-shadow: 0 2px 0 color-mix(in srgb, var(--c) 45%, #000), 0 3px 6px rgba(0,0,0,0.45);
     /* Each chip carries its value, like the ones you bet with; in a pile only the top one shows */
@@ -283,6 +286,13 @@
     border: 2px solid rgba(242,199,92,0.65); box-shadow: inset 0 0 0 5px rgba(0,0,0,0.12), inset 0 0 18px rgba(0,0,0,0.3), 0 0 0 4px rgba(242,199,92,0.12);
     display: flex; align-items: center; justify-content: center; transition: box-shadow 0.3s, opacity 0.3s;
   }
+  /* Your hand and your betting circle share a row, the circle to the right of your cards, so a tall stack climbs up
+     beside them instead of over them. The middle column holds five cards before the circle has to move over */
+  .bj-you { display: grid; grid-template-columns: 1fr minmax(300px, auto) 1fr; align-items: end; }
+  .bj-you #player-hands-container { grid-column: 2; grid-row: 1; }
+  .bj-you .bj-bet-spot { grid-column: 3; grid-row: 1; justify-self: start; margin: 0 0 4px 18px; }
+  /* A phone has no room beside the hand, so the circle goes back under it (and the stacks fan out early) */
+  @media (max-width: 760px) { .bj-you { display: block; } .bj-you .bj-bet-spot { margin: 10px auto 0; } }
   .bj-bet-spot.won { box-shadow: inset 0 0 0 5px rgba(0,0,0,0.12), 0 0 0 4px rgba(242,199,92,0.5), 0 0 28px rgba(242,199,92,0.6); }
   .bj-bet-spot.lost .bj-stack { opacity: 0.25; transform: translateY(6px); }
   .bj-spot-label { font: 700 12px var(--serif); letter-spacing: 3px; color: rgba(242,199,92,0.6); }
@@ -536,11 +546,11 @@
   .sl-reels { --cell: 80px; --colh: 240px; display: flex; gap: 5px; }
   .sl-col {
     --n: 3; --ch: calc(var(--colh) / var(--n));
-    width: var(--cell); height: var(--colh); overflow: hidden; border-radius: 10px; position: relative;
+    width: var(--cell); height: var(--colh); overflow: hidden; border-radius: 10px; position: relative; isolation: isolate;
     background: linear-gradient(180deg, #0c0f16 0%, #1e2331 50%, #0c0f16 100%);
     box-shadow: inset 0 14px 16px -10px rgba(0,0,0,0.85), inset 0 -14px 16px -10px rgba(0,0,0,0.85), inset 0 0 0 1px rgba(255,255,255,0.04);
   }
-  .sl-strip { display: flex; flex-direction: column; will-change: transform; }
+  .sl-strip { position: relative; z-index: 1; display: flex; flex-direction: column; will-change: transform; }
   .sl-cell {
     --sz: min(var(--cell), var(--ch));
     width: var(--cell); height: var(--ch); flex: none; position: relative; user-select: none;
@@ -566,7 +576,7 @@
   /* Anticipation: the reel that could complete a feature spins longer inside a pulsing glow */
   .sl-col.sl-tease { z-index: 2; animation: slTease 0.45s ease-in-out infinite alternate; }
   .sl-col.sl-tease::after {
-    content: ''; position: absolute; inset: 0; pointer-events: none; mix-blend-mode: screen;
+    content: ''; position: absolute; inset: 0; z-index: 3; pointer-events: none; mix-blend-mode: screen;
     background: linear-gradient(180deg, transparent 0%, rgba(255,215,0,0.25) 42%, rgba(255,255,255,0.45) 50%, rgba(255,215,0,0.25) 58%, transparent 100%);
     background-size: 100% 220%; animation: slTeaseSweep 0.7s linear infinite;
   }
@@ -640,15 +650,18 @@
     background: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 10px, transparent 10px 20px), linear-gradient(180deg, #0a1722, #05090e); }
   .sl-reels.grow .sl-col { --ch: calc(var(--colh) / 7); height: calc(var(--ch) * var(--n)); }
   .sl-reels.grow.growing .sl-col { transition: height 0.45s cubic-bezier(.3,1.2,.5,1); }  /* only while a spin adds or drops rows */
-  /* Cosmic Clusters' spots: marked (a faint ring), then multipliers (a badge) */
-  .sl-cell.sp1::before, .sl-cell.spx::before, .sl-cell.fr::before { content: ''; position: absolute; inset: 5%; border-radius: 12px; pointer-events: none; }
-  .sl-cell.sp1::before { box-shadow: inset 0 0 0 2px rgba(180,160,255,0.45); background: rgba(140,108,255,0.12); }
-  .sl-cell.spx::before { box-shadow: inset 0 0 0 2px #c4b5ff; background: rgba(140,108,255,0.32); }
+  /* Spot marks sit in the reel, not on a symbol: the box behind the symbols, a label (.top) in front, and both stay
+     put while the reel spins. Cosmic Clusters' spots: marked (a faint ring), then multipliers (a badge) */
+  .sl-spot { --sz: min(var(--cell), var(--ch)); position: absolute; left: 0; top: calc(var(--ch) * var(--r)); width: 100%; height: var(--ch); pointer-events: none; }
+  .sl-spot.top { z-index: 2; }
+  .sl-spot.sp1::before, .sl-spot.spx::before, .sl-spot.fr::before { content: ''; position: absolute; inset: 5%; border-radius: 12px; pointer-events: none; }
+  .sl-spot.sp1::before { box-shadow: inset 0 0 0 2px rgba(180,160,255,0.45); background: rgba(140,108,255,0.12); }
+  .sl-spot.spx::before { box-shadow: inset 0 0 0 2px #c4b5ff; background: rgba(140,108,255,0.32); }
   .sl-mark { position: absolute; top: 4%; right: 5%; z-index: 3; padding: 0 4px; border-radius: 5px; font: 900 calc(var(--sz) * 0.2) var(--display); line-height: 1.25; color: #fff; background: #7c4dff; }
   /* Huff N' Peccy's frames: straw, then sticks, then bricks */
-  .sl-cell.fr1::before { border: 3px dashed #e8c75a; background: rgba(232,199,90,0.08); }
-  .sl-cell.fr2::before { border: 4px solid #a0652f; background: rgba(160,101,47,0.16); }
-  .sl-cell.fr3::before { border: 5px solid #c0452f; background: repeating-linear-gradient(0deg, rgba(192,69,47,0.24) 0 8px, rgba(0,0,0,0.14) 8px 10px); }
+  .sl-spot.fr1::before { border: 3px dashed #e8c75a; background: rgba(232,199,90,0.08); }
+  .sl-spot.fr2::before { border: 4px solid #a0652f; background: rgba(160,101,47,0.16); }
+  .sl-spot.fr3::before { border: 5px solid #c0452f; background: repeating-linear-gradient(0deg, rgba(192,69,47,0.24) 0 8px, rgba(0,0,0,0.14) 8px 10px); }
   /* Peccy and the Beanstalk: walking wilds float over the reels while they respin underneath */
   .sl-walkers { position: absolute; top: 10px; left: 10px; z-index: 3; pointer-events: none; }
   .sl-walker { position: absolute; display: flex; align-items: center; justify-content: center; font-size: calc(var(--sz) * 0.52);
@@ -2417,7 +2430,7 @@
             <button class="btn btn-blue" id="bj-split-btn" onclick="bjSplit()" style="display:none"><i class="fa-solid fa-code-branch"></i> Split</button>
           </div>
         </div>
-        <div class="bj-zone">
+        <div class="bj-zone bj-you">
           <div id="player-hands-container">
             <div id="player-hand-1-wrapper">
               <div class="hand-area" id="player-hand"></div>
@@ -2450,6 +2463,7 @@
       <button class="rl-small-btn rules-btn" onclick="rulesOpen('blackjack')"><i class="fa-solid fa-book-open"></i> Rules</button>
       <button class="btn btn-primary" id="bj-deal-btn" onclick="bjDeal()"><i class="fa-solid fa-layer-group"></i> Deal</button>
       <button class="btn btn-primary" id="bj-newhand-btn" onclick="bjNewHand()" style="display:none"><i class="fa-solid fa-rotate-right"></i> New hand</button>
+      <button class="btn btn-secondary" id="bj-rebet-btn" onclick="bjRebet()" style="display:none" title="Bet the same again and deal"><i class="fa-solid fa-repeat"></i> Rebet <b>0</b></button>
     </div>
   </div>
   </div>
@@ -3023,13 +3037,13 @@ function chipsPaid(betChips,mult,amount){
   return out.reverse();  // small to large, so the biggest chips land on top as the pile finishes
 }
 // Every chip drawn: columns of `per` chips, extra columns fanning out left and right of the first
-// (or only to the right with o.right).
+// (or only to the right with o.right, only to the left with o.left).
 // Chips from index `fresh` on drop in one at a time, timed from `t0`, so redrawing mid-payout carries on.
 function chipPileHTML(chips,o){
   var h='',n=chips.length,cols=Math.ceil(n/o.per),fresh=o.fresh==null?n:o.fresh,step=n>fresh?(chipPileMs(n-fresh)-240)/(n-fresh):0,
       gone=o.t0==null?1e9:performance.now()-o.t0;
   for(var i=0;i<n;i++){
-    var col=Math.floor(i/o.per),row=i%o.per,x=(o.right?col:(col%2?1:-1)*Math.ceil(col/2))*o.s*0.94,d=(i-fresh)*step-gone,anim=i>=fresh&&d>-240;
+    var col=Math.floor(i/o.per),row=i%o.per,x=(o.right?col:o.left?-col:(col%2?1:-1)*Math.ceil(col/2))*o.s*0.94,d=(i-fresh)*step-gone,anim=i>=fresh&&d>-240;
     // Higher chips cover lower ones; the first column stands in front of the ones beside it
     h+='<span class="pile-chip c'+chips[i]+(anim?' pile-new':'')+'" style="left:'+x.toFixed(1)+'px;bottom:'+(row*o.gap)+'px;z-index:'+((cols-col)*(o.per+1)+row)+
       (anim?';animation-delay:'+Math.max(0,Math.round(d))+'ms':'')+'">'+chipLabel(chips[i])+'</span>';
@@ -3044,8 +3058,10 @@ function chipPileMs(n){return n>0?Math.min(3200,240+n*45):0;}
 function chipCount(el,from,to,ms,fmt){
   if(!el)return;var t0=performance.now();fmt=fmt||String;
   if(document.hidden||ms<=0){el.textContent=fmt(to);return;}
-  (function tick(now){var p=Math.min(1,(now-t0)/ms);el.textContent=fmt(Math.round(from+(to-from)*p));if(p<1)requestAnimationFrame(tick);})(t0);
-  setTimeout(function(){el.textContent=fmt(to);},ms+60);
+  // Timed by the clock, not the frame's timestamp (which can lag behind it), and the last word is the final amount
+  var over=false;
+  (function tick(){if(over)return;var p=Math.min(1,(performance.now()-t0)/ms);el.textContent=fmt(Math.round(from+(to-from)*p));if(p<1)requestAnimationFrame(tick);})();
+  setTimeout(function(){over=true;el.textContent=fmt(to);},ms+60);
 }
 function showConfetti() {
   var c = document.getElementById('confetti-container');
@@ -5517,7 +5533,7 @@ function peccyBlinkPhase(svg){
 }
 
 // ═══ BLACKJACK ═══
-var bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false,bjTie=false,bjBust=null;
+var bjLastBet=0,bjDeck=[],bjPlayerHand=[],bjDealerHand=[],bjBetAmount=0,bjGameActive=false,bjPeek=false,bjBlur=false,bjTie=false,bjBust=null;
 var bjSplitHand=[],bjSplitBet=0,bjIsSplit=false,bjActiveHand=1,bjDoubled=false,bjDealerTurn=false; // 1=main, 2=split; bjDoubled: the main hand was doubled (for its trophy)
 // bjDealerTurn: Peccy is drawing, so nothing you press can start the dealer's turn (and its payout) a second time
 var suits=['&spades;','&hearts;','&diams;','&clubs;'],ranks=['A','2','3','4','5','6','7','8','9','10','J','Q','K'];
@@ -5572,14 +5588,20 @@ function bjDealQueue(q){
 // The wager sits in the betting circle as a pile of every chip in it. A win (`profit` chips) is paid
 // the way a dealer pays: a second pile set down beside the bet, built chip by chip while its amount counts up.
 function bjRenderBet(state,profit){
+  bjRebetSync();
   var spot=document.getElementById('bj-bet-spot'),amt=bjBetAmount+bjSplitBet;
   spot.classList.remove('won','lost');if(state)spot.classList.add(state);
   if(!amt){spot.innerHTML='<span class="bj-spot-label">BET</span>';return;}
   // A huge bet is coloured up so it stays clear of the cards; the winnings are paid in ordinary chips
   var chips=chipsFor(amt),paid=profit>0?chipsFor(profit).reverse():null;
   if(chips.length>40)chips=chipsFor(amt,true);
-  var h='<div class="bj-stack" style="--s:50px">'+chipPileHTML(chips,{s:50,gap:4,per:20})+'</div><div class="bj-stack-amt">'+amt+'</div>';
-  if(paid)h+='<div class="bj-stack bj-paid" style="--s:50px">'+chipPileHTML(paid,{s:50,gap:4,per:50,fresh:0,t0:performance.now(),right:true})+'</div><div class="bj-stack-amt bj-paid-amt">+0</div>';
+  // Beside your hand a stack has the felt's height to climb. Under it (on a phone) the columns stay short enough to
+  // clear your cards and fan out to the left, leaving the right for the winnings. The winnings sit past any columns
+  // the bet fanned out to the right.
+  var side=getComputedStyle(spot.parentElement).display==='grid',per=side?20:7,off=22+(side?Math.floor(Math.ceil(chips.length/per)/2)*47:0);
+  var h='<div class="bj-stack" style="--s:50px">'+chipPileHTML(chips,{s:50,gap:4,per:per,left:!side})+'</div><div class="bj-stack-amt">'+amt+'</div>';
+  if(paid)h+='<div class="bj-stack bj-paid" style="--s:50px;left:calc(100% + '+off+'px)">'+chipPileHTML(paid,{s:50,gap:4,per:side?50:9,fresh:0,t0:performance.now(),right:true})+'</div>'+
+    '<div class="bj-stack-amt bj-paid-amt" style="left:calc(100% + '+(off+25)+'px)">+0</div>';
   spot.innerHTML=h;
   if(paid)chipCount(spot.querySelector('.bj-paid-amt'),0,profit,chipPileMs(paid.length),function(v){return '+'+v;});
 }
@@ -5634,6 +5656,19 @@ function bjAllIn(){
   setPeccySpeech('bj-peccy-speech',"All in! Everything rides on this hand! 🔥");
 }
 function bjClearBet(){if(bjGameActive)return;bjBetAmount=0;document.getElementById('bj-bet-display').textContent='0';bjRenderBet();}
+// Rebet: the last hand's bet again, dealt straight away. Offered once a hand settles, and before any new chips go down
+function bjRebetSync(){
+  var b=document.getElementById('bj-rebet-btn'),settled=document.getElementById('bj-newhand-btn').style.display!=='none';
+  b.style.display=!bjGameActive&&bjLastBet>0&&(settled||!bjBetAmount)?'':'none';
+  b.querySelector('b').textContent=bjLastBet;
+}
+function bjRebet(){
+  if(bjGameActive||!bjLastBet)return;
+  if(bjLastBet>balance){setPeccySpeech('bj-peccy-speech',balance>0?"Not enough chips to bet "+bjLastBet+" again. Pick a smaller bet. 😬":"You're out of chips! Hit Reset for a fresh stack. 😅");return;}
+  if(document.getElementById('bj-newhand-btn').style.display!=='none')bjNewHand();
+  bjBetAmount=bjLastBet;document.getElementById('bj-bet-display').textContent=bjBetAmount;bjRenderBet();
+  bjDeal();
+}
 
 // Your moves, in the middle of the felt; off while Peccy plays out the hand and once it's settled
 function bjPlayBtns(on){
@@ -5648,11 +5683,12 @@ function bjShowGameBtns(){
   document.getElementById('bj-double-btn').style.display=(bjActiveHand===1?bjPlayerHand:bjSplitHand).length===2?'':'none';
   document.getElementById('bj-split-btn').style.display=canSplit()?'':'none';
   document.getElementById('bj-newhand-btn').style.display='none';
+  document.getElementById('bj-rebet-btn').style.display='none';
 }
 
 function bjDeal(){
   if(bjBetAmount<=0||bjBetAmount>balance){setPeccySpeech('bj-peccy-speech','You need to place a bet first! 🃏');return;}
-  balance-=bjBetAmount;updateBalance();createDeck();
+  bjLastBet=bjBetAmount;balance-=bjBetAmount;updateBalance();createDeck();
   // Arcade: a Dirty Martini lets you see the hole card this hand; Double Vision blurs your cards; an Old
   // Fashioned turns a tie into a win; a Bloody Mary hands back half a busted bet
   barRound();bjPeek=!!barTake('martini');bjBlur=!!barTake('blurry');bjTie=!!barTake('oldfash');bjBust=barTake('bloody');
@@ -6650,8 +6686,9 @@ function slTeaseReels(m,g,tz){
 }
 // Spin every reel not held: each strip holds the new symbols, blurred filler, then the old symbols,
 // and slides down so the old ones leave at the bottom. Reels stop left to right; a teased reel stops
-// SL_TEASE_MS after the one before it, with filler to match so it keeps its speed.
-function slSpinTo(m,grid,wm,tz,hold){
+// SL_TEASE_MS after the one before it, with filler to match so it keeps its speed. stand {"reel,row":1} spins those
+// spots in empty (a walking wild is standing over them); the real symbols are drawn once the reels stop.
+function slSpinTo(m,grid,wm,tz,hold,stand){
   return new Promise(function(done){
     var cols=slCols(),reels=document.getElementById('sl-reels'),prev=slState.grid,speed=slState.fast?0.45:1;
     var tease=slTeaseReels(m,grid,tz),stopAt=[],t=0,said=false,last=0,c;
@@ -6662,7 +6699,7 @@ function slSpinTo(m,grid,wm,tz,hold){
       if(hold&&hold[c])continue;
       var n=grid[c].length,dur=stopAt[c],K=n+Math.max(6,Math.round(dur/70)),strip=cols[c].firstChild,h='',r,pc=prev&&prev[c]?prev[c]:[];
       cols[c].style.setProperty('--n',n);
-      for(r=0;r<n;r++)h+=slCellHTML(m,grid[c][r],wm&&wm[c][r]);
+      for(r=0;r<n;r++)h+=slCellHTML(m,stand&&stand[c+','+r]?null:grid[c][r],wm&&wm[c][r]);
       for(r=n;r<K;r++)h+=slCellHTML(m,slDrawSym(m,m.tables,c),0,'sl-blur');
       for(r=0;r<n;r++)h+=slCellHTML(m,pc.length?pc[r%pc.length]:null);
       strip.style.transition='none';strip.innerHTML=h;
@@ -6725,13 +6762,19 @@ function slWheelSpin(m,idx){
   });
 }
 // Marks that belong to a spot on the reels rather than a symbol (Cosmic Clusters' multiplier spots, the house
-// frames in Huff N' Peccy): {"reel,row":{cls,label}}, drawn onto whatever cell is there now
+// frames in Huff N' Peccy): {"reel,row":{cls,label}}. They live in the reel itself, the box behind the symbols and
+// its label in front, so they stay put while the reel spins through them. These replace any shown; none clears them.
 function slShowMarks(m,marks){
+  document.querySelectorAll('#sl-reels .sl-spot').forEach(function(e){e.remove();});
   if(!marks)return;
+  var cols=slCols();
   for(var k in marks){
-    var p=k.split(','),e=slCellEl(+p[0],+p[1]),mk=marks[k];if(!e)continue;
-    mk.cls.split(' ').forEach(function(x){e.classList.add(x);});
-    if(mk.label){var t=document.createElement('span');t.className='sl-mark';t.textContent=mk.label;e.appendChild(t);}
+    var p=k.split(','),col=cols[+p[0]],mk=marks[k];if(!col)continue;
+    var e=document.createElement('div');e.className='sl-spot '+mk.cls;e.style.setProperty('--r',p[1]);col.appendChild(e);
+    if(mk.label){
+      var t=document.createElement('div');t.className='sl-spot top';t.style.setProperty('--r',p[1]);
+      t.innerHTML='<span class="sl-mark"></span>';t.firstChild.textContent=mk.label;col.appendChild(t);
+    }
   }
 }
 // Walking wilds (Peccy and the Beanstalk): each [reel, row, to] steps a wild one reel left, over the reels, before
@@ -6789,9 +6832,17 @@ async function slAnimate(m,st){
   if(st.status!==undefined)slStatus(st.status);
   if(st.t==='spin'){
     slClearMarks();
-    // A walking wild leaves its spot empty, so the reel doesn't show it there again as it starts to spin
-    if(st.walk){var pg=slCopy(slState.grid);st.walk.forEach(function(mv){pg[mv[0]][mv[1]]=null;});slState.grid=pg;await slWalk(m,st.walk);}
-    await slSpinTo(m,st.grid,st.wildMults,st.tease,st.hold);
+    // Spot marks that carry on into this spin stay up while the reels spin; a spin without any clears them now
+    if(!st.marks||!Object.keys(st.marks).length)slShowMarks(m,null);
+    // A walking wild leaves its spot empty, so the reel doesn't show it there again as it starts to spin, and the
+    // spot it walks to spins in empty, so a second wild doesn't slide in behind it
+    var stand=null;
+    if(st.walk){
+      var pg=slCopy(slState.grid);stand={};
+      st.walk.forEach(function(mv){pg[mv[0]][mv[1]]=null;if(mv[2]>=0)stand[mv[2]+','+mv[1]]=1;});
+      slState.grid=pg;await slWalk(m,st.walk);
+    }
+    await slSpinTo(m,st.grid,st.wildMults,st.tease,st.hold,stand);
     slWalkersClear();slShowMarks(m,st.marks);slMarkWins(m,st.wins);return;
   }
   if(st.t==='tumble'){
@@ -6808,7 +6859,7 @@ async function slAnimate(m,st){
   if(st.t==='huff'){
     var NM=['','straw','stick','brick'];
     slBanner('🐺 HUFF... AND PUFF!','Down come the '+NM[st.level]+' houses');await slWait(1500);slBannerHide();
-    slClearMarks();slSetGrid(m,st.grid,null,function(c,r){var s=st.grid[c][r];return s?(slBase(s)==='H'+st.level?'locked sl-land':'locked'):'';});
+    slClearMarks();slShowMarks(m,null);slSetGrid(m,st.grid,null,function(c,r){var s=st.grid[c][r];return s?(slBase(s)==='H'+st.level?'locked sl-land':'locked'):'';});
     slMarkWins(m,st.wins);
     var jp={};st.wins[0].cells.forEach(function(p){var v=slVal(st.grid[p[0]][p[1]]);if(m.jackpots[v])jp[v]=1;});
     jp=Object.keys(jp);if(jp.length){slFlashJackpots(jp);slState.jpHit=(slState.jpHit||[]).concat(jp);}
@@ -7955,7 +8006,8 @@ var RULES=[
         'Tap chips to make your bet, then <b>Deal</b>. You and Peccy get two cards each, and one of Peccy\'s is face down.',
         'Number cards count their number, jacks, queens and kings count 10, and an ace counts 11 or 1, whichever helps.',
         '<b>Hit</b> to take another card, or <b>Stand</b> to keep your total. Go over 21 and you bust, which loses the bet straight away.',
-        'Then Peccy turns over the face-down card and draws until reaching 17 or more. Peccy stands on every 17.']))+
+        'Then Peccy turns over the face-down card and draws until reaching 17 or more. Peccy stands on every 17.',
+        '<b>Rebet</b> bets the same as your last hand and deals straight away. It shows once a hand is over, and before you put any chips down.']))+
       rulesSec('moves','Double and split',rulesList([
         '<b>Double</b>: on your first two cards, double your bet and take exactly one more card. You can double after a split too.',
         '<b>Split</b>: two cards of the same value (a 10 and a king count) become two hands, each with a bet the size of your first. You can split once a hand.',
