@@ -257,7 +257,8 @@
   .bj-arc .arc-main { font: 700 21px var(--serif); letter-spacing: 3px; fill: var(--print, rgba(242,199,92,0.82)); }
   .bj-arc .arc-sub { font: 600 11.5px var(--serif); letter-spacing: 2.5px; fill: var(--print2, rgba(255,255,255,0.45)); }
   .bj-message {
-    position: absolute; left: 50%; top: 50%; z-index: 5; transform: translate(-50%, -50%); min-width: 220px; max-width: 92%; padding: 9px 20px;
+    /* max-content: centred from left 50%, it would otherwise wrap at half the felt's width and grow down over the cards */
+    position: absolute; left: 50%; top: 50%; z-index: 5; transform: translate(-50%, -50%); width: max-content; min-width: 220px; max-width: 92%; padding: 9px 20px;
     border-radius: 16px; text-align: center; background: rgba(12,10,8,0.94);
     border: 1px solid rgba(242,199,92,0.45); box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     font: 700 18px var(--display); color: var(--gold-2); line-height: 1.3; animation: msgIn 0.4s cubic-bezier(0.3, 1.4, 0.5, 1);
@@ -1855,7 +1856,7 @@
   .uth-hand.folded .card { opacity: 0.4; }
   .uth-board { position: relative; z-index: 2; display: flex; justify-content: center; gap: 8px; min-height: 104px; margin: 6px 0 2px; }
   .he-slot { flex: none; width: 74px; height: 104px; border-radius: 9px; border: 1.5px dashed rgba(242,199,92,0.38); }
-  /* The winning hand at a showdown: its five cards lift on a gold rim, and every other card dims. (translate, not
+  /* The winning hand at a showdown: the cards that decided it lift on a gold rim, and every other card dims. (translate, not
      transform, so it stacks with the deal and flip animations) */
   .card.best { box-shadow: 0 0 0 3px var(--gold), -2px 8px 16px rgba(0,0,0,0.5); translate: 0 -8px; transition: translate 0.3s ease, box-shadow 0.3s ease; z-index: 1; }
   .card.dim { filter: brightness(0.5) saturate(0.6); transition: filter 0.3s ease; }
@@ -3544,6 +3545,19 @@ function heBest5(cs){
   }
   return pick||cs.slice();
 }
+// The cards that decided a win, to light up: of the best five, the ones that make the hand (the pair, both pairs,
+// the trips, the four, or the top card), plus kickers only as far down as it took to beat `vs` (the best hand
+// beaten; -1 or an equal score for none). Straights, flushes and full houses need all five, so all five light.
+function heDeciders(cs,vs){
+  var b=heBest5(cs),sc=heScore(b,5),cat=sc>>20;
+  if(cat===4||cat===5||cat===6||cat===8)return b;
+  // The five grouped by rank, most cards then highest first: the order the score lists them in
+  var g={};b.forEach(function(c){(g[c>>2]=g[c>>2]||[]).push(c);});
+  var groups=Object.keys(g).map(function(r){return g[r];}).sort(function(x,y){return y.length-x.length||(y[0]>>2)-(x[0]>>2);});
+  var need=cat===2?2:1;
+  if(vs>=0&&vs!==sc&&(vs>>20)===cat)for(var i=0;i<5;i++)if(((sc>>(16-4*i))&15)!==((vs>>(16-4*i))&15)){need=Math.max(need,i+1);break;}
+  return [].concat.apply([],groups.slice(0,need));
+}
 // Starting hands come in 169 kinds (AA, AKs, AKo...). heClass gives a kind's index: pairs on the diagonal,
 // suited above it, offsuit below, so the index is hi*13+lo for suited and lo*13+hi for offsuit.
 function heClass(c1,c2){var r1=c1>>2,r2=c2>>2,hi=Math.max(r1,r2),lo=Math.min(r1,r2);return (c1&3)===(c2&3)&&r1!==r2?hi*13+lo:lo*13+hi;}
@@ -4016,11 +4030,11 @@ function uthSpot(id,amt,res,label){
 function uthRender(){
   var area=document.getElementById('he-uth');if(!area)return;
   var busy=uthBusy(),done=uth.st==='done',dealt=uth.c.length===9,q=[],arc=gameMode==='arcade',r=uth.res;
-  // At the showdown the winning five cards lift and light up (yours or Peccy's, both on a tie) and the rest dim.
+  // At the showdown the cards that won it lift and light up (yours or Peccy's, both on a tie) and the rest dim.
   // A fold has no showdown, so nothing is lit.
   var best=null,pWin=false,dWin=false;
   if(done&&r&&!uth.fold){
-    var pB=heBest5(uthHole().concat(uthBoard())),dB=heBest5(uth.c.slice(2,9));
+    var pB=heDeciders(uthHole().concat(uthBoard()),r.ds),dB=heDeciders(uth.c.slice(2,9),r.ps);
     pWin=r.ps>=r.ds;dWin=r.ds>=r.ps;
     best=(pWin?pB:[]).concat(dWin?dB:[]);
   }
@@ -4056,6 +4070,12 @@ function uthRender(){
   if(done&&r&&!uth.fold){
     var pn=heName(r.ps).toLowerCase(),dn=heName(r.ds).toLowerCase();
     why=pWin&&dWin?'Both hands make '+pn:pWin?'Your '+pn+' beats '+dn:"Peccy's "+dn+' beats your '+pn;
+    // Same hand by name, so a lower card settled it: say which
+    if(pn===dn&&r.ps!==r.ds){
+      var hi=Math.max(r.ps,r.ds),lo=Math.min(r.ps,r.ds);
+      for(var ki=1;ki<5;ki++){var kr=(hi>>(16-4*ki))&15;if(kr!==((lo>>(16-4*ki))&15)){
+        why='Both '+pn+': '+(pWin?'your ':"Peccy's ")+HE_ONE[kr].toLowerCase()+(heCat(hi)===5?' wins it':' kicker wins');break;}}
+    }
   }
   msg.innerHTML=done&&r?(r.net>0?'You win '+fmtChips(r.net):r.net<0?(uth.fold?'Folded':'Peccy wins')+' <span>'+fmtChips(-r.net)+'</span>':'Push')+(why?'<small>'+why+'</small>':''):'';
   msg.className='bj-message'+(done&&r&&r.net<0?' lost':'');
@@ -4236,7 +4256,14 @@ function ptRender(){
   area.classList.toggle('seated',pt.on);
   var h=pt.hand,q=[],showAll=h&&h.over&&h.res&&h.res.showdown,arc=gameMode==='arcade',st=pt.on?ptStake():PT_STAKES[pt.lobby.stakes];
   var bestSet=showAll?{}:null;
-  if(showAll)h.res.pots.forEach(function(p){p.winners.forEach(function(j){bestSet[j]=heBest5(h.ps[j].hole.concat(h.board));});});
+  // Each winner lights the cards it took to beat the best hand in each pot they won (kickers only if it came to that)
+  if(showAll)h.res.pots.forEach(function(p){
+    var beat=-1;(p.elig||[]).forEach(function(j){var s=h.res.scores[j];if(s!=null&&s<p.score&&s>beat)beat=s;});
+    p.winners.forEach(function(j){
+      var d=heDeciders(h.ps[j].hole.concat(h.board),beat);
+      if(!bestSet[j]||d.length>bestSet[j].length)bestSet[j]=d;
+    });
+  });
   if(pt.on)pt.seats.forEach(function(s,i){
     var el=document.getElementById('pt-seat-'+i);if(!el)return;
     var p=h&&h.ps[i],live=p&&p.in&&!p.folded,won=h&&h.over&&h.res&&((h.res.won[i]||0)>0);
@@ -4926,7 +4953,7 @@ var DRINKS={
     desc:'Bust at blackjack and Peccy hands back half your bet, for 4 hands.',
     recipe:{glass:'highball',ice:'cubes',pour:[['vodka',2],['tomato',4],['lemon',1]],mix:['stir',35],garnish:['celery','lemon']}},
   mojito:{name:'Mojito',short:'Mojito',icon:'🌿',color:'#3ddc84',game:'Roulette',buzz:20,base:100,pct:0.02,left:1,unit:'spin',capX:8,scales:['cap'],
-    desc:'If your next roulette spin loses, your losing bets come back to you.',
+    desc:'Your next roulette spin\'s losing bets come back to you, up to 8× what the drink cost.',
     recipe:{glass:'highball',ice:'crushed',pour:[['rum',2],['lime',1],['syrup',1],['soda',3]],mix:['stir',35],garnish:['mint','lime']}},
   hurricane:{name:'Hurricane',short:'Hurricane',icon:'🌀',color:'#ff5f8f',game:'Roulette',buzz:30,base:120,pct:0.015,left:5,unit:'spin',power:2,scales:['left'],
     desc:'Two extra lucky numbers on each roulette spin, for 5 spins.',
@@ -5016,6 +5043,8 @@ function barRound(n){if(gameMode!=='arcade'||!bar.buzz)return;bar.buzz=Math.max(
 function barBadge(e){
   var d=barEffectDef(e.id),tip=d.desc;
   if(e.q!=null)tip+=' You mixed it yourself ('+e.q+'%): '+mxStrength(mxMult(e.q))+' strength'+((d.scales||[]).indexOf('power')>=0&&d.power?', so +'+Math.round(e.power*100)+'% instead of +'+Math.round(d.power*100)+'%':'')+'.';
+  // A payout buff pays out at most 8x its price: say how much of that is left
+  if(d.capX&&e.cap>0)tip+=' It can still pay out up to '+fmtChips(Math.max(0,Math.round(e.cap-(e.paid||0))))+' chips.';
   return '<span class="hud-drink'+(CURSES[e.id]?' curse':'')+(e.q!=null?' mixed':'')+'" title="'+tip.replace(/"/g,'&quot;')+'">'+d.icon+' '+d.short+' · '+e.left+' '+d.unit+(e.left===1?'':'s')+'</span>';
 }
 // The buzz meter in the header and the bar, and the sway that goes with it
@@ -5094,8 +5123,9 @@ function barBlackout(){
 function barWake(){var b=document.getElementById('blackout');b.classList.remove('dark');setTimeout(function(){b.classList.remove('show');},1400);}
 
 // Bar buffs in the games. Tequila Sunrise: a spin with no bonus gets a second roll, kept if that one has a bonus.
+// A machine with no bonus game (Star Peccy) counts its expanding-wild respin as one.
 function barSpinSteps(m,bet){
-  var s=m.play(bet),feat=function(st){return st.some(function(x){return x.feature;});};
+  var s=m.play(bet),feat=function(st){return st.some(function(x){return x.feature||x.respin;});};
   if(barTake('sunrise')&&!feat(s)){var s2=m.play(bet);if(feat(s2))s=s2;}
   return s;
 }
@@ -7517,10 +7547,11 @@ function rlRender(){
   if(!layer||!document.querySelector('.rl-number-grid').getBoundingClientRect().width)return;
   var src=rlResolved?rlResolved.bets:rlBets,s=rlChipSize(),html='',counts=[];
   Object.keys(src).forEach(function(k){
-    var b=src[k],p=rlAnchorXY(b),cls='rl-stack',tag='',chips=b.chips,w=rlResolved&&rlResolved.wins[k],back=rlResolved&&rlResolved.back&&rlResolved.back[k];
-    if(rlResolved)cls+=w||back?' win':' lose';
-    // A bet that 0 handed back (Arcade) stays put with a tag saying so
-    if(back)tag='<span class="rl-win-tag back" style="bottom:'+((Math.min(chips.length,RL_PER)-1)*RL_GAP+s+8)+'px">↩ back</span>';
+    var b=src[k],p=rlAnchorXY(b),cls='rl-stack',tag='',chips=b.chips,w=rlResolved&&rlResolved.wins[k],back=rlResolved&&rlResolved.back&&rlResolved.back[k],
+      mjb=rlResolved&&rlResolved.mj&&rlResolved.mj[k];
+    if(rlResolved)cls+=w||back||mjb?' win':' lose';
+    // A bet that 0 or a Mojito handed back (Arcade) stays put with a tag saying so
+    if(back||mjb)tag='<span class="rl-win-tag back" style="bottom:'+((Math.min(chips.length,RL_PER)-1)*RL_GAP+s+8)+'px">'+(back?'↩ back':mjb>=b.amount?'🌿 back':'🌿 +'+rlFmt(mjb))+'</span>';
     // A winning stack gets its payout dropped on, in the same chips as the bet, and grows with it
     // (the lucky number's double pay means twice the chips)
     if(w){
@@ -7953,9 +7984,13 @@ function evalRoulette(num){
     else if(arc&&num===0){back[k]=b.amount;zeroBack+=b.amount;}
   });
   rlLucky=[];
-  // Arcade: a Mojito hands back the losing bets of a spin that loses (up to its cap)
-  var lostStake=0,refund=0;Object.keys(rlBets).forEach(function(k){if(!wins[k]&&!back[k])lostStake+=rlBets[k].amount;});
-  if(lostStake>0&&barFind('mojito')){var mj=barTake('mojito');refund=Math.min(lostStake,Math.round(mj.cap));}
+  // Arcade: a Mojito hands back the losing bets of a spin that loses (up to its cap), bet by bet, so each one
+  // it covers stays on the table marked as back
+  var lostStake=0,refund=0,mjBack={};Object.keys(rlBets).forEach(function(k){if(!wins[k]&&!back[k])lostStake+=rlBets[k].amount;});
+  var mj=lostStake>0&&barFind('mojito')?barTake('mojito'):null;
+  if(mj){var mjLeft=Math.max(0,Math.round(mj.cap));Object.keys(rlBets).forEach(function(k){
+    if(wins[k]||back[k]||mjLeft<=0)return;var a=Math.min(mjLeft,rlBets[k].amount);mjBack[k]=a;refund+=a;mjLeft-=a;
+  });}
   balance+=tw+zeroBack+refund;updateBalance();
   achPlay('rl');achBump('rl_spin');lvXP('rl',staked);
   if(tw>0){
@@ -7964,7 +7999,7 @@ function evalRoulette(num){
     if(num===0)achBump('rl_zero_win');
   }
   rlLastBets=JSON.parse(JSON.stringify(rlBets));
-  rlResolved={bets:rlBets,wins:wins,back:back,t0:performance.now()};rlBets={};rlHistory=[];
+  rlResolved={bets:rlBets,wins:wins,back:back,mj:mjBack,t0:performance.now()};rlBets={};rlHistory=[];
   document.getElementById('rlc-'+num).classList.add('rl-win-num');
   rlRender();
   clearTimeout(rlResolvedTimer);rlResolvedTimer=setTimeout(function(){rlClearResolved();rlRender();},tw?6000:3500);  // winnings stay up long enough to watch them pile on
@@ -7974,8 +8009,13 @@ function evalRoulette(num){
     setPeccySpeech('roulette-peccy-speech',q[Math.floor(Math.random()*q.length)]);
   }else if(zeroBack){document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">0 is on the house: your bets come back. +'+zeroBack+'</span>';
     setPeccySpeech('roulette-peccy-speech',"Zero! On the Arcade floor that one's on the house. 🍀");
+  }else if(refund){
+    // The Mojito caught it: all of it, or as much as it covers
+    var all=refund>=lostStake;
+    document.getElementById('roulette-message').innerHTML='<span class="rl-lucky-msg">🌿 The Mojito hands '+(all?'your bets back':fmtChips(refund)+' of your '+fmtChips(lostStake)+' back')+'. +'+refund+'</span>'+
+      (all?'':'<div class="rl-result-detail">This Mojito covered losing bets up to '+fmtChips(Math.round(mj.cap))+' chips</div>');
+    setPeccySpeech('roulette-peccy-speech',all?"No luck, but that Mojito's got your back. Have your chips! 🌿":"The Mojito covers what it can. Big bets! 🌿");
   }else{document.getElementById('roulette-message').innerHTML='<span style="color:#e63946">No luck this time. -'+staked+'</span>';
-    if(refund)document.getElementById('roulette-message').innerHTML+='<div class="rl-result-detail">🌿 Mojito handed back '+fmtChips(refund)+' of it</div>';
     var lq=["The wheel is a fickle service... Try again! 🎡","Even S3 has occasional errors. Spin again! ☁️","Availability zones of luck shift! 🔄","A 503 from Lady Luck. Retry with exponential backoff! 😄"];
     setPeccySpeech('roulette-peccy-speech',lq[Math.floor(Math.random()*lq.length)]);
   }
@@ -8222,7 +8262,8 @@ var RULES=[
       ['Two pair','Two different pairs'],['Pair','Two cards of one rank'],['High card','None of the above: the highest card counts']];
     return '<h3>Poker hands</h3><p>For both Hold\'em games. You always play the best five cards out of seven: your two and the five on the board, using both of yours, one or none.</p>'+
       rulesSec('rank','From best to worst',rulesTable(null,ex))+
-      rulesSec('ties','Ties','<p>When two hands are the same kind, the higher cards win: a pair of kings beats a pair of queens, and with the same pair, the next highest card (the kicker) decides. Suits never break a tie, so identical hands split the pot.</p>');
+      rulesSec('ties','Ties','<p>When two hands are the same kind, the higher cards win: a pair of kings beats a pair of queens, and with the same pair, the next highest card (the kicker) decides. Suits never break a tie, so identical hands split the pot.</p>'+
+        '<p>At a showdown only the cards that won it light up: the pair, say, plus a kicker only if it took one to win. Straights, flushes and full houses need all five, so all five light.</p>');
   }},
   {id:'slots',group:'Slots',name:'Slot machines',html:function(){
     var h='<h3>Slot machines</h3><p>'+slCountWord()+' machines, most modelled on a real casino favourite. Pick one on the slot floor; <b>All machines</b> takes you back.</p>'+
