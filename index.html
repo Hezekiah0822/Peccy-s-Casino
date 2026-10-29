@@ -1526,6 +1526,96 @@
     .cf-toss { --toss: -60px; width: 170px; height: 170px; }
   }
 
+  /* ═══ FOUR IN A ROW ═══ The Coin Flip panel on the left; the board in the spotlight, sized to its stage by c4Layout
+     (--cs is one cell). The discs fall behind the board's face, which is wood with a hole cut in every cell. */
+  #game-four.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
+  .c4-wrap { display: grid; grid-template-columns: 300px minmax(0, 1fr); gap: 12px; height: 560px; }
+  .c4-ladder { display: flex; flex-direction: column; gap: 4px; }
+  .c4-ladder div {
+    display: grid; grid-template-columns: 1fr auto 52px; gap: 10px; align-items: baseline; padding: 8px 10px; border-radius: 10px;
+    background: var(--well); border: 1px solid transparent; font: 500 13px 'Inter', sans-serif; color: var(--muted); transition: opacity 0.2s;
+  }
+  .c4-ladder b { font: 700 14px var(--display); color: var(--text); }
+  .c4-ladder em { font: 700 14px var(--display); font-style: normal; color: var(--gold-2); text-align: right; font-variant-numeric: tabular-nums; }
+  .c4-ladder .on { color: var(--text); border-color: var(--sel); background: var(--active); box-shadow: 0 0 0 1px var(--sel); }
+  .c4-ladder .gone { opacity: 0.38; }
+  .c4-ladder p { margin: 2px 2px 0; font: 500 12px 'Inter', sans-serif; color: var(--muted); }
+  /* How hard Peccy is playing you: a thin bar, cream to orange as it sharpens */
+  .c4-form { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; margin-top: 8px; font: 500 12px 'Inter', sans-serif; color: var(--muted); }
+  .c4-form span { display: flex; align-items: center; gap: 4px; white-space: nowrap; }
+  .c4-form i { height: 6px; border-radius: 999px; background: var(--well); overflow: hidden; }
+  .c4-form b { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, #f3e3c3, var(--aws-orange)); transition: width 0.6s ease; }
+  .c4-form em { font: 700 13px var(--display); font-style: normal; color: var(--text); }
+  .c4-quit { border-color: var(--line-2); color: var(--loss); }
+  .c4-quit:hover { background: rgba(255,120,110,0.08); }
+  .c4-quit.sure { border-color: var(--loss); }
+  .c4-quit:disabled { opacity: 0.45; cursor: default; }
+  .c4-stage {
+    position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; min-height: 0;
+    border-radius: 16px; overflow: hidden; background: #13110e; border: 1px solid var(--line);
+  }
+  .c4-status { min-height: 26px; display: flex; align-items: center; gap: 9px; font: 600 15px 'Inter', sans-serif; color: var(--text); }
+  .c4-dot { width: 16px; height: 16px; border-radius: 50%; flex: none; }
+  .c4-dot.p1, .c4-disc.p1 b { background: radial-gradient(circle at 38% 32%, #9cc6ff 0%, #3a7fe6 42%, #1d4fa6 82%); }
+  .c4-dot.p2, .c4-disc.p2 b { background: radial-gradient(circle at 38% 32%, #ffd796 0%, #ff9900 42%, #bf6400 82%); }
+  .c4-result { min-height: 28px; font: 600 16px 'Inter', sans-serif; color: var(--muted); text-align: center; }
+  .c4-result b { font: 700 20px var(--display); color: var(--text); }
+  .c4-result .w { color: #82dba6; } .c4-result .l { color: #ff8a80; }
+  .c4-board { --cs: 64px; --pad: calc(var(--cs) * 0.18); position: relative; flex: none; width: calc(var(--cs) * 7 + var(--pad) * 2); height: calc(var(--cs) * 6 + var(--pad) * 2); margin-top: var(--cs); }
+  .c4-back { position: absolute; inset: calc(var(--pad) + 3px); background: #0c0906; box-shadow: inset 0 0 calc(var(--cs) * 0.5) #000; }
+  .c4-discs { position: absolute; left: var(--pad); top: var(--pad); width: calc(var(--cs) * 7); height: calc(var(--cs) * 6); z-index: 1; }
+  .c4-front {
+    position: absolute; inset: 0; z-index: 2; display: grid; grid-template-columns: repeat(7, var(--cs)); grid-template-rows: repeat(6, var(--cs));
+    border: var(--pad) solid #7a4824; border-radius: calc(var(--pad) * 1.3); pointer-events: none;
+    box-shadow: 0 calc(var(--cs) * 0.22) calc(var(--cs) * 0.5) rgba(0,0,0,0.6);
+  }
+  .c4-front i { background: radial-gradient(circle, transparent 0 39%, #2a1608 40% 42.5%, #7a4824 45%); }
+  /* Lacquer on the wood: light from above, a darker foot */
+  .c4-front::after {
+    content: ''; position: absolute; inset: calc(var(--pad) * -1); border-radius: inherit; pointer-events: none;
+    background: linear-gradient(180deg, rgba(255,226,180,0.16), transparent 34%, transparent 70%, rgba(0,0,0,0.22));
+    box-shadow: inset 0 2px 0 rgba(255,226,180,0.22), inset 0 -3px 0 rgba(0,0,0,0.3);
+  }
+  .c4-disc { position: absolute; left: calc(var(--cs) * var(--c)); top: calc(var(--cs) * (5 - var(--r))); width: var(--cs); height: var(--cs); padding: calc(var(--cs) * 0.06); }
+  .c4-disc b {
+    display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 50%;
+    box-shadow: inset 0 0 0 calc(var(--cs) * 0.07) rgba(255,255,255,0.16), inset 0 calc(var(--cs) * -0.05) calc(var(--cs) * 0.1) rgba(0,0,0,0.35);
+  }
+  .c4-disc.p2 svg { width: 66%; height: 66%; }
+  .c4-disc.ghost { top: calc(var(--cs) * -1 - var(--pad)); opacity: 0.6; transition: left 0.12s ease; }
+  .c4-disc.drop { animation: c4Fall var(--t, 500ms) both; }
+  @keyframes c4Fall {
+    0% { transform: translateY(calc(var(--cs) * var(--d) * -1)); animation-timing-function: cubic-bezier(.5,0,1,1); }
+    74% { transform: translateY(0); animation-timing-function: cubic-bezier(0,0,.4,1); }
+    87% { transform: translateY(calc(var(--cs) * -0.1)); animation-timing-function: cubic-bezier(.6,0,1,1); }
+    100% { transform: translateY(0); }
+  }
+  .c4-disc.win b { animation: c4Win 0.6s ease-in-out infinite alternate; }
+  @keyframes c4Win { to { filter: brightness(1.35); } }
+  .c4-disc.dim { opacity: 0.45; }
+  /* The four, struck through in gold over the board (in its own layer, above the wood) */
+  .c4-over { position: absolute; left: var(--pad); top: var(--pad); width: calc(var(--cs) * 7); height: calc(var(--cs) * 6); z-index: 3; pointer-events: none; }
+  .c4-line { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3; overflow: visible; pointer-events: none; }
+  .c4-line line { stroke: var(--gold-2); stroke-width: 0.13; stroke-linecap: round; opacity: 0.9; stroke-dasharray: 1; stroke-dashoffset: 1; animation: c4Strike 0.5s 0.15s ease-out forwards; filter: drop-shadow(0 0 0.08px rgba(0,0,0,0.8)); }
+  @keyframes c4Strike { to { stroke-dashoffset: 0; } }
+  /* One button per column, over the board and the row above it; only live on your drop */
+  .c4-cols { position: absolute; left: var(--pad); right: var(--pad); top: calc(var(--cs) * -1); bottom: var(--pad); z-index: 4; display: grid; grid-template-columns: repeat(7, 1fr); }
+  .c4-cols button { border: none; padding: 0; border-radius: calc(var(--cs) * 0.18); background: transparent; cursor: pointer; }
+  .c4-cols button.on { background: rgba(255,240,215,0.06); }
+  .c4-cols button:focus-visible { outline: 2px solid var(--sel); outline-offset: -2px; }
+  .c4-stage:not(.your) .c4-cols { pointer-events: none; }
+  /* The coin for the first drop */
+  .c4-flip { position: absolute; inset: 0; z-index: 6; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: rgba(12,9,6,0.74); }
+  .c4-flip.show { display: flex; animation: areaIn 0.3s ease; }
+  .c4-flip .cf-toss { --coin: 150px; --toss: -70px; }
+  .c4-flip .cf-t b { font: 900 calc(var(--coin) * 0.25) var(--display); letter-spacing: 1px; }
+  .c4-flip-say { min-height: 30px; font: 700 24px var(--display); color: var(--gold-2); }
+  @media (max-width: 760px) {
+    .c4-wrap { grid-template-columns: 1fr; height: auto !important; }
+    .c4-stage { order: -1; padding: 14px 0 16px; }
+    .c4-flip .cf-toss { --coin: 120px; --toss: -50px; }
+  }
+
   /* ═══ SPORTSBOOK ═══ This week's games on the left; the matchup, a team, or the broadcast on the right */
   #game-sports.active { max-width: 1880px; padding-top: 12px; padding-bottom: 14px; }
   .sb-wrap { display: grid; grid-template-columns: 350px minmax(0, 1fr); gap: 12px; height: 640px; }
@@ -2365,6 +2455,7 @@
     <button class="game-tab" onclick="switchGame('holdem')" id="tab-holdem"><i class="tab-ico fa-solid fa-diamond"></i> Hold'em</button>
     <button class="game-tab" onclick="switchGame('plinko')" id="tab-plinko"><i class="tab-ico fa-solid fa-circle-dot"></i> Plinko</button>
     <button class="game-tab" onclick="switchGame('coin')" id="tab-coin"><i class="tab-ico fa-solid fa-coins"></i> Coin Flip</button>
+    <button class="game-tab" onclick="switchGame('four')" id="tab-four"><i class="tab-ico fa-solid fa-table-cells-large"></i> Four in a Row</button>
     <button class="game-tab" onclick="switchGame('sports')" id="tab-sports"><i class="tab-ico fa-solid fa-football"></i> Sports</button>
     <button class="game-tab arcade-only" onclick="switchGame('bar')" id="tab-bar"><i class="tab-ico fa-solid fa-martini-glass-citrus"></i> Bar</button>
     <button class="game-tab" onclick="switchGame('shop')" id="tab-shop"><i class="tab-ico fa-solid fa-bag-shopping"></i> Shop</button>
@@ -2744,6 +2835,39 @@
   </div>
 </div>
 
+<!-- ═══ FOUR IN A ROW ═══ You against Peccy: the Coin Flip panel on the left, the board on the right -->
+<div class="game-area" id="game-four">
+  <div class="c4-wrap" id="c4-wrap">
+    <div class="pk-panel">
+      <div class="pk-host">
+        <svg class="peccy-small peccy-dealer c4-peccy" data-outfit="blackjack" viewBox="0 0 204 240" xmlns="http://www.w3.org/2000/svg"></svg>
+        <div class="peccy-speech" id="c4-peccy-speech">Four in a row wins. The quicker you do it, the more I pay! 🔵</div>
+      </div>
+      <label class="pk-label" for="c4-bet">Bet amount</label>
+      <div class="pk-amount"><input id="c4-bet" type="number" min="1" step="1" value="10" inputmode="numeric" oninput="c4UI()"><button onclick="c4BetScale(0.5)">½</button><button onclick="c4BetScale(2)">2×</button></div>
+      <label class="pk-label">A win pays your bet back, plus</label>
+      <div class="c4-ladder" id="c4-ladder"></div>
+      <div class="c4-form" id="c4-form"></div>
+      <button class="pk-play" id="c4-start" onclick="c4Start()">Start a game</button>
+      <button class="cf-double c4-quit" id="c4-quit" onclick="c4GiveUp()" style="display:none">Give up</button>
+      <button class="rl-small-btn rules-btn pk-rules" onclick="rulesOpen('four')"><i class="fa-solid fa-book-open"></i> Rules</button>
+      <div class="pk-stats"><div><small>Won</small><span id="c4-won">0</span></div><div><small>Lost</small><span id="c4-lost">0</span></div><div><small>Fastest win</small><span id="c4-best">–</span></div></div>
+    </div>
+    <div class="c4-stage" id="c4-stage">
+      <div class="c4-status" id="c4-status">Set your bet, then start a game</div>
+      <div class="c4-board" id="c4-board">
+        <div class="c4-back"></div>
+        <div class="c4-discs" id="c4-discs"></div>
+        <div class="c4-front" id="c4-front"></div>
+        <div class="c4-over" id="c4-over"></div>
+        <div class="c4-cols" id="c4-cols"></div>
+      </div>
+      <div class="c4-result" id="c4-result"></div>
+      <div class="c4-flip" id="c4-flip"></div>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ SPORTSBOOK ═══ Football to start: this week's games and odds on the left; the matchup, a team or the broadcast on the right -->
 <div class="game-area" id="game-sports">
   <div class="sb-wrap" id="sb-wrap">
@@ -2950,6 +3074,7 @@ function switchGame(g) {
   if(g==='shop'){shopRender();shopLayout();}
   if(g==='plinko')pkLayout();
   if(g==='coin'){cfUI();cfLayout();}
+  if(g==='four'){c4Build();c4DrawDiscs();c4UI();c4Layout();}
   if(g==='sports')sbOpen();
   if(g==='holdem')heOpen();
   if(g==='bar'){barRender();barLayout();if(mx.on)mxRender();}
@@ -3212,7 +3337,7 @@ function shopOwns(cat,id){var it=shopItem(cat,id);return !!it&&((it.price===0&&!
 var SAVE_KEY='peccys-casino-v2',BACKUP_KEY='peccys-casino-v2-backup',BAD_KEY='peccys-casino-v2-unreadable',OLD_SAVE_KEY='peccys-casino-v1',SAVE_VERSION=3;
 var MODE_START={classic:100,arcade:500};
 var gameMode='classic',modeSaves={classic:null,arcade:null},saveLoaded=false,saveBackedUp=0;
-function modeSnapshot(){var s={balance:balance,houseHigh:houseHigh,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap(),ach:achSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
+function modeSnapshot(){var s={balance:balance,houseHigh:houseHigh,owned:shopState.owned,eq:shopState.eq,sb:sb,he:heSnap(),c4:c4Snap(),c4a:c4AdaptSnap(),ach:achSnap()};if(gameMode==='arcade'){s.buzz=bar.buzz;s.drinks=bar.drinks;s.barStats=bar.stats;}return s;}
 function saveGame(){
   if(!saveLoaded)return;
   modeSaves[gameMode]=modeSnapshot();
@@ -3249,6 +3374,8 @@ function modeRestore(m){
   sb=sbFromSave(s.sb);sbAway+=sbResume();
   // Hold'em: a hand in progress (either game) picks up where it was
   heRestore(s.he);
+  // Four in a Row: a game in progress too
+  c4AdaptRestore(s.c4a);c4Restore(s.c4);
 }
 function loadGame(){
   var s=readSave(SAVE_KEY);
@@ -4303,11 +4430,11 @@ function heRestore(s){
 // its own, like its chips, and pays in its own chips: a trophy or challenge pays when you claim it in the trophy room.
 // The ids below are what a save remembers, so don't rename them.
 var ACH_TIER={1:{name:'Bronze',chips:25},2:{name:'Silver',chips:100},3:{name:'Gold',chips:400}};
-var ACH_GAMES={all:'Anywhere',bj:'Blackjack',slots:'Slots',rl:'Roulette',holdem:"Hold'em",pk:'Plinko',coin:'Coin Flip',sports:'Sports',bar:"Peccy's Bar"};
-var ACH_FLOOR=['bj','slots','rl','holdem','pk','coin','sports'];  // the games every floor has, for the grand tour
+var ACH_GAMES={all:'Anywhere',bj:'Blackjack',slots:'Slots',rl:'Roulette',holdem:"Hold'em",pk:'Plinko',coin:'Coin Flip',four:'Four in a Row',sports:'Sports',bar:"Peccy's Bar"};
+var ACH_FLOOR=['bj','slots','rl','holdem','pk','coin','four','sports'];  // the games every floor has, for the grand tour
 var ACH=[
   {id:'first_win',g:'all',name:"Beginner's luck",desc:'Win your first bet or hand',tier:1,stat:'win_any',goal:1},
-  {id:'tourist',g:'all',name:'Grand tour',desc:'Play every game on the floor',tier:2,stat:'played',goal:7},
+  {id:'tourist',g:'all',name:'Grand tour',desc:'Play every game on the floor',tier:2,stat:'played',goal:8},
   {id:'big_100',g:'all',name:'Nice one',desc:'Come out 100 chips ahead on one bet or hand',tier:1,stat:'best_win',goal:100},
   {id:'big_1000',g:'all',name:'Big score',desc:'Come out 1,000 chips ahead on one bet or hand',tier:2,stat:'best_win',goal:1000},
   {id:'big_10000',g:'all',name:'Life-changing',desc:'Come out 10,000 chips ahead on one bet or hand',tier:3,stat:'best_win',goal:10000},
@@ -4344,6 +4471,10 @@ var ACH=[
   {id:'pk_1000',g:'pk',name:'Thousand balls',desc:'Drop 1,000 balls',tier:2,stat:'pk_ball',goal:1000},
   {id:'cf_5',g:'coin',name:'Hot hand',desc:'Win five flips in a row',tier:2,stat:'cf_streak5',goal:1},
   {id:'cf_double',g:'coin',name:'Double or nothing',desc:'Win a Double it flip',tier:1,stat:'cf_double_win',goal:1},
+  {id:'c4_win',g:'four',name:'Connected',desc:'Win a game of Four in a Row',tier:1,stat:'c4_won',goal:1},
+  {id:'c4_fast',g:'four',name:'Quick four',desc:'Win Four in a Row in 7 drops or fewer',tier:2,stat:'c4_fast',goal:1},
+  {id:'c4_second',g:'four',name:'From behind',desc:'Win a game of Four in a Row that Peccy started',tier:2,stat:'c4_win2',goal:1},
+  {id:'c4_25',g:'four',name:'Four-midable',desc:'Win 25 games of Four in a Row',tier:3,stat:'c4_won',goal:25},
   {id:'sb_win',g:'sports',name:'Called it',desc:'Win a sports bet',tier:1,stat:'sb_won',goal:1},
   {id:'sb_parlay3',g:'sports',name:'Parlay king',desc:'Win a parlay of three legs or more',tier:2,stat:'sb_parlay3',goal:1},
   {id:'sb_long',g:'sports',name:'Long shot',desc:'Win a bet paying ×10 or more',tier:2,stat:'sb_long',goal:1},
@@ -4366,6 +4497,8 @@ var DAILY=[
   {id:'pk_5x',g:'pk',text:'Land a Plinko ball on 5× or more',stat:'pk_5x',goal:1},
   {id:'cf_streak',g:'coin',text:'Win 3 coin flips in a row',stat:'cf_streak3',goal:1},
   {id:'cf_flip',g:'coin',text:'Flip the coin 15 times',stat:'cf_flip',goal:15},
+  {id:'c4_win',g:'four',text:'Win a game of Four in a Row',stat:'c4_won',goal:1},
+  {id:'c4_game',g:'four',text:'Play 3 games of Four in a Row',stat:'c4_game',goal:3},
   {id:'uth_win',g:'holdem',text:"Win 2 hands of Ultimate Texas Hold'em",stat:'uth_win',goal:2},
   {id:'pt_pot',g:'holdem',text:'Win 3 pots at the poker table',stat:'pt_pot',goal:3},
   {id:'pt_hand',g:'holdem',text:'Play 15 hands at the poker table',stat:'pt_hand',goal:15},
@@ -4560,7 +4693,7 @@ function achRestore(s){
 // digits in the bet), so low rollers level up too. Plinko balls and slot spins come fast, so they earn less a
 // round. Each level pays 10x its number in chips, and VIP tiers along the way multiply the daily spin and hand
 // you an outfit. Like trophies, each floor has its own level, kept in ach.xp.
-var LV_XPW={bj:1,slots:0.5,rl:1,pk:0.2,coin:0.6,sports:1.5,holdem:1,bar:1};
+var LV_XPW={bj:1,slots:0.5,rl:1,pk:0.2,coin:0.6,four:1,sports:1.5,holdem:1,bar:1};
 var ACH_XP={1:50,2:150,3:400},DAILY_XP=60,BONUS_XP=120;
 var VIP=[
   {lv:1,name:'Member',mult:1},
@@ -4723,7 +4856,7 @@ var MODE_SPEECH={blackjack:'bj-peccy-speech',slots:'slots-peccy-speech',roulette
 function modeSay(t){var a=document.querySelector('.game-area.active'),id=a&&MODE_SPEECH[a.id.replace('game-','')];if(id)setPeccySpeech(id,t);}
 function setMode(m){
   if(m===gameMode||!MODE_START[m])return;
-  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||cf.busy||uthBusy()||ptBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
+  if(bjGameActive||slState.playing||rouletteSpinning||pkBusy()||cf.busy||c4Busy()||uthBusy()||ptBusy()){modeSay("Finish this round before you switch floors! 🎲");return;}
   if(sbBusy()){modeSay('Finish watching (or skip to the end) before you switch floors! 📺');return;}
   if(mx.on){mxSay(mx.cust?'Finish the shift (or clock out) before you switch floors! 🍸':'Finish your drink (or cancel it) before you switch floors! 🍸');return;}
   // Chips on a table go back to the stack they came from before the floors swap
@@ -7857,6 +7990,8 @@ function bugInfo(){
   var where=g;
   if(g==='slots')where+=document.getElementById('game-slots').classList.contains('show-hub')?' (machine picker)':' ('+slM().name+', bet '+slState.bet+')';
   if(g==='plinko')where+=' ('+{L:'Low',M:'Medium',H:'High'}[pk.risk]+' risk, '+pk.rows+' rows)';
+  if(g==='four')where+=c4.on?' (game on: '+c4.mine+' of your drops, '+c4.his+' of Peccy\'s, '+(c4.first===1?'you':'Peccy')+' started, bet '+c4.bet+')':' (no game on)';
+  if(g==='four')where+=' · Peccy strength '+c4Strength().toFixed(2)+' ('+c4Form()+'), ahead of target by '+c4a.d.toFixed(1)+' bets, usual bet '+Math.round(c4a.ref);
   if(g==='sports'&&sb)where+=' (season '+sb.season+', week '+sb.week+', '+(sbView.main==='cast'?'watching game '+(sbView.gi+1):'on the '+sbView.main+' screen')+')';
   if(g==='bar')where+=mx.on?' (mixing a '+DRINKS[mx.id].name+', at '+mx.step+(mx.cust?', on a shift':'')+')':' (menu)';
   lines.push('Game: '+where);
@@ -7965,7 +8100,7 @@ function saveLoad(){
 // bet or feature opens just its section, and the footer link opens the game you're on. The text is built from
 // the numbers the games themselves use, and follows the floor you're on and this week's event.
 var rulesTopic='start';
-var RULES_GAME={blackjack:'blackjack',roulette:'roulette',uth:'holdem',poker:'holdem',slots:'slots',plinko:'plinko',coin:'coin',football:'sports',racing:'sports',slip:'sports',bar:'bar',shop:'shop'};
+var RULES_GAME={blackjack:'blackjack',roulette:'roulette',uth:'holdem',poker:'holdem',slots:'slots',plinko:'plinko',coin:'coin',four:'four',football:'sports',racing:'sports',slip:'sports',bar:'bar',shop:'shop'};
 function rulesArc(){return gameMode==='arcade';}
 function rulesSec(id,title,body){return '<h4 id="rs-'+id+'">'+title+'</h4>'+body;}
 function rulesList(items){return '<ul>'+items.map(function(t){return '<li>'+t+'</li>';}).join('')+'</ul>';}
@@ -8121,6 +8256,18 @@ var RULES=[
       rulesSec('pays','What it pays',rulesTable(['Floor','Pays'],[['Classic','×'+CF_PAY.classic.toFixed(2)+' (a 2% house edge)'],['Arcade','×'+CF_PAY.arcade.toFixed(2)]])+'<p>The coin is fair: heads and tails are always 50/50, whatever came up before.</p>')+
       rulesSec('double','Double it and streaks','<p>After a win, <b>Double it</b> bets everything you just won on the next flip. Your streak counts wins in a row, and your best streak is kept.</p>');
   }},
+  {id:'four',group:'Quick games',name:'Four in a Row',html:function(){
+    var lo=4;
+    return '<h3>Four in a Row</h3><p>You against Peccy on a board 7 columns wide and 6 rows tall. Take turns dropping a disc into a column, where it falls to the lowest empty spot. The first to line up four of their own discs, across, up and down, or diagonally, wins.</p>'+
+      rulesSec('start','Starting a game','<p>Set your bet and press <b>Start a game</b>. The bet comes off your chips, and a coin flip decides who drops first. Going first is a real advantage in this game, so a game Peccy starts is harder to win.</p>'+
+        '<p>Tap a column to drop your disc. On a keyboard, ← and → pick a column and Enter drops, or press 1 to 7.</p>')+
+      rulesSec('pays','What it pays',rulesTable(['You make four on your…','You get back'],C4_TIERS.map(function(t){var r=['drop '+lo+' to '+t.to,'Your bet, plus '+t.x+'× your bet'];lo=t.to+1;return r;}).concat([
+        ['The board fills with no four','Your bet'],['Peccy makes four first','Nothing']]))+
+        '<p>Only your own drops count, the winning one included. Each side has 21 discs, so the fewer you need, the more it pays: a 10-chip bet won in 6 drops pays back 40.</p>')+
+      rulesSec('peccy','How Peccy plays','<p>Peccy never misses a four of its own or a chance to block yours. Beyond that, <b>Peccy adapts to you</b>: while you\'re coming out ahead of what this floor pays back over time (about '+Math.round(C4_TARGET.classic*100)+'% of what\'s bet on Classic, '+Math.round(C4_TARGET.arcade*100)+'% on Arcade, like the other games), it plays sharper; while you\'re behind, it eases off and plays looser discs. <b>Peccy\'s form</b>, under the payouts, shows how hard it\'s playing you, from Easy-going to Ruthless.</p>'+
+        '<p>So over many games every player gets back about the same, however good they are, and a new player isn\'t outclassed. What counts is how much you\'ve won or lost against Peccy in chips, so changing your bet size doesn\'t fool it. Each floor keeps its own.</p><p>Spotting Peccy\'s loose discs still wins games, and a quick four still pays the most.</p>')+
+      rulesSec('leave','Leaving a game','<p>A game waits for you if you switch games or close the page, and picks up where it was. <b>Give up</b> ends it and loses the bet. You can\'t switch floors in the middle of a game.</p>');
+  }},
   {id:'football',group:'Sportsbook',name:'Football',html:function(){
     return '<h3>Football</h3><p>A league of '+SB_TEAMS.length+' made-up teams playing a '+SB_WEEKS+'-week season, '+(SB_TEAMS.length/2)+' games a week. Bet on this week\'s games, then watch them or sim them.</p>'+rulesEvNote(['race_week'])+
       rulesSec('markets','The bets',rulesTable(['Bet','Wins when'],[
@@ -8222,7 +8369,7 @@ function rulesRender(){
   var go=RULES_GO[rulesTopic]&&!here&&!(g==='bar'&&!rulesArc())?'<div class="rules-go"><button type="button" class="btn btn-primary" onclick="rulesGo(\''+rulesTopic+'\')">'+RULES_GO[rulesTopic]+'</button></div>':'';
   document.getElementById('rules-text').innerHTML=t.html()+go;
 }
-var RULES_GO={blackjack:'Play blackjack',roulette:'Play roulette',uth:'Play Ultimate Texas Hold\'em',poker:'Go to the poker table',plinko:'Play Plinko',coin:'Flip a coin',
+var RULES_GO={blackjack:'Play blackjack',roulette:'Play roulette',uth:'Play Ultimate Texas Hold\'em',poker:'Go to the poker table',plinko:'Play Plinko',coin:'Flip a coin',four:'Play Four in a Row',
   football:'Go to the football',racing:'Go to the races',slip:'Go to the sportsbook',bar:'Go to the bar',shop:'Go to the shop'};
 // Close the rules and go to a topic's game
 function rulesGo(topic){
@@ -8249,7 +8396,7 @@ var HOUSE_AT=1000,HOUSE_SAY=[
 function houseNote(){var w=balance+heHeld();if(w>houseHigh)houseHigh=w;}
 // Anything still riding: a hand, spin, ball, flip or open sports bet, chips on a table, or a drink being mixed
 function houseAtStake(){
-  return bjGameActive||rouletteSpinning||rlTotal()>0||heHeld()>0||slState.playing||pk.running||pk.balls.length>0||cf.busy||mx.on||
+  return bjGameActive||rouletteSpinning||rlTotal()>0||heHeld()>0||slState.playing||pk.running||pk.balls.length>0||cf.busy||c4.on||mx.on||
     !!(sb&&sb.bets&&sb.bets.some(function(b){return b.st==='open';}));
 }
 function houseIsOpen(){return document.getElementById('house-over').classList.contains('show');}
@@ -8525,6 +8672,404 @@ function cfLayout(){
   else w.style.removeProperty('--coin');
 }
 window.addEventListener('resize',function(){if(document.getElementById('game-coin').classList.contains('active'))cfLayout();});
+
+// ═══ FOUR IN A ROW ═══
+// You against Peccy on a board 7 columns wide and 6 tall: take turns dropping discs, and four in a line (across, up,
+// or diagonally) wins. A coin flip decides who drops first. The bet comes off when the game starts. A win pays the bet
+// back plus a multiple of it that depends on how quickly you won, counted in your own drops (C4_TIERS: a coworker's
+// design, "less moves = more coins"); a full board with no four hands the bet back. Peccy plays with c4Think, an
+// alpha-beta search a few drops deep that now and then plays a loose disc instead (c4Opts has how it's tuned).
+// Cells are numbered up each column from the bottom: cell = column*6 + row.
+var C4_TIERS=[{to:7,x:3},{to:14,x:1.5},{to:21,x:1}];
+var c4={on:false,busy:false,b:[],turn:0,first:1,bet:0,mine:0,his:0,hover:3,win:null,res:null,change:0,flipAngle:0};
+function c4Empty(){var b=[];for(var i=0;i<42;i++)b.push(0);return b;}
+c4.b=c4Empty();
+function c4Say(t){setPeccySpeech('c4-peccy-speech',t);}
+function c4Bet(){return Math.max(1,Math.floor(+document.getElementById('c4-bet').value||1));}
+function c4BetScale(f){if(c4.on)return;var el=document.getElementById('c4-bet');el.value=Math.max(1,Math.min(Math.max(1,Math.floor(balance)),Math.floor(c4Bet()*f)));c4UI();}
+// Which tier a win on your `n`th drop lands in
+function c4Tier(n){for(var i=0;i<C4_TIERS.length;i++)if(n<=C4_TIERS[i].to)return i;return C4_TIERS.length-1;}
+function c4Height(col){var r=0;while(r<6&&c4.b[col*6+r])r++;return r;}
+// The four through cell x that `p` has completed, or null
+function c4Line(x,p){
+  var L=C4_CELL_LINES[x];
+  for(var i=0;i<L.length;i++){var q=C4_LINES[L[i]];if(c4.b[q[0]]===p&&c4.b[q[1]]===p&&c4.b[q[2]]===p&&c4.b[q[3]]===p)return q.slice();}
+  return null;
+}
+// The columns where `p` would make four with the next disc
+function c4WinCols(p){
+  var out=[];
+  for(var c=0;c<7;c++){var r=c4Height(c);if(r>5)continue;var x=c*6+r;c4.b[x]=p;if(c4Line(x,p))out.push(c);c4.b[x]=0;}
+  return out;
+}
+function c4Busy(){return c4.on;}
+
+// ── Peccy's engine ──
+// Every cell knows the 69 possible fours through it, and each four keeps a count of each side's discs in it, so a
+// disc only touches the fours it's part of. The search is negamax with alpha-beta, a transposition table (Zobrist
+// keys), and the centre columns tried first. Its guess at a position counts open fours (one side's discs only),
+// and weighs a three whose empty spot is on the row that suits its owner (odd rows for whoever went first, even for
+// the other) far above one that isn't, since that's what decides most endgames.
+var C4_LINES=[],C4_CELL_LINES=[],C4_ORDER=[3,2,4,1,5,0,6],C4_WIN=100000,C4_TT=1<<19,C4_LW=[0,1,4,0];
+(function(){
+  function add(c,r,dc,dr){var L=[];for(var i=0;i<4;i++)L.push((c+dc*i)*6+(r+dr*i));C4_LINES.push(L);}
+  for(var c=0;c<7;c++)for(var r=0;r<6;r++){
+    if(c<4)add(c,r,1,0);
+    if(r<3)add(c,r,0,1);
+    if(c<4&&r<3)add(c,r,1,1);
+    if(c<4&&r>2)add(c,r,1,-1);
+  }
+  for(var i=0;i<42;i++)C4_CELL_LINES.push([]);
+  C4_LINES.forEach(function(L,k){L.forEach(function(x){C4_CELL_LINES[x].push(k);});});
+})();
+var c4e={cell:new Int8Array(42),h:new Int8Array(7),cnt:[null,new Int8Array(69),new Int8Array(69)],n:0,z1:0,z2:0,first:1,nodes:0,limit:0,stop:false,
+  tk:new Int32Array(C4_TT),tv:new Int32Array(C4_TT),td:new Int8Array(C4_TT),tf:new Int8Array(C4_TT),tm:new Int8Array(C4_TT),
+  z:(function(){var z=new Int32Array(168);for(var i=0;i<168;i++)z[i]=(Math.random()*4294967296)|0;return z;})()};
+function c4ePlay(col,p){
+  var x=col*6+c4e.h[col]++,L=C4_CELL_LINES[x],A=c4e.cnt[p],k=(x*2+p-1)*2;
+  c4e.cell[x]=p;c4e.n++;for(var i=0;i<L.length;i++)A[L[i]]++;
+  c4e.z1^=c4e.z[k];c4e.z2^=c4e.z[k+1];
+}
+function c4eUndo(col,p){
+  var x=col*6+(--c4e.h[col]),L=C4_CELL_LINES[x],A=c4e.cnt[p],k=(x*2+p-1)*2;
+  c4e.cell[x]=0;c4e.n--;for(var i=0;i<L.length;i++)A[L[i]]--;
+  c4e.z1^=c4e.z[k];c4e.z2^=c4e.z[k+1];
+}
+// Would `p` make four by dropping in `col`? (the column has room)
+function c4eWinsAt(col,p){
+  var L=C4_CELL_LINES[col*6+c4e.h[col]],A=c4e.cnt[p],B=c4e.cnt[3-p];
+  for(var i=0;i<L.length;i++)if(A[L[i]]===3&&B[L[i]]===0)return true;
+  return false;
+}
+// Would a disc in `col` let the other side make four on top of it?
+function c4eGivesAbove(col,p){
+  if(c4e.h[col]>4)return false;
+  var L=C4_CELL_LINES[col*6+c4e.h[col]+1],A=c4e.cnt[3-p],B=c4e.cnt[p];
+  for(var i=0;i<L.length;i++)if(A[L[i]]===3&&B[L[i]]===0)return true;
+  return false;
+}
+function c4eSet(board,first){
+  c4e.cell.fill(0);c4e.h.fill(0);c4e.cnt[1].fill(0);c4e.cnt[2].fill(0);c4e.n=0;c4e.z1=c4e.z2=0;c4e.first=first;
+  for(var c=0;c<7;c++)for(var r=0;r<6&&board[c*6+r];r++)c4ePlay(c,board[c*6+r]);
+}
+function c4eClear(){c4e.td.fill(0);}
+function c4eEval(p){
+  var s=0,A=c4e.cnt[p],B=c4e.cnt[3-p],cell=c4e.cell;
+  for(var k=0;k<69;k++){
+    var a=A[k],b=B[k];
+    if(a&&b)continue;
+    if(a===3||b===3){
+      var L=C4_LINES[k],x=L[0];for(var j=0;j<4;j++)if(!cell[L[j]]){x=L[j];break;}
+      var own=a===3?p:3-p,v=(own===c4e.first)===(x%6%2===0)?48:16;
+      s+=a===3?v:-v;
+    }else if(a)s+=C4_LW[a];else if(b)s-=C4_LW[b];
+  }
+  return s;
+}
+function c4eMoves(p,tm){
+  var good=[],bad=[],h=c4e.h;
+  if(tm>=0&&h[tm]<6)(c4eGivesAbove(tm,p)?bad:good).push(tm);
+  for(var i=0;i<7;i++){var c=C4_ORDER[i];if(c!==tm&&h[c]<6)(c4eGivesAbove(c,p)?bad:good).push(c);}
+  return good.concat(bad);
+}
+function c4eNeg(p,depth,alpha,beta){
+  if((++c4e.nodes&1023)===0&&c4e.nodes>c4e.limit)c4e.stop=true;
+  if(c4e.stop)return 0;
+  var q=3-p,h=c4e.h,i,c,v;
+  for(i=0;i<7;i++){c=C4_ORDER[i];if(h[c]<6&&c4eWinsAt(c,p))return C4_WIN-c4e.n;}
+  if(c4e.n>=41)return 0;
+  var forced=-1;
+  for(i=0;i<7;i++){c=C4_ORDER[i];if(h[c]<6&&c4eWinsAt(c,q)){if(forced>=0)return -(C4_WIN-c4e.n-1);forced=c;}}
+  if(depth<=0)return c4eEval(p);
+  var ti=c4e.z1&(C4_TT-1),tm=-1,a0=alpha;
+  if(c4e.td[ti]&&c4e.tk[ti]===c4e.z2){
+    tm=c4e.tm[ti];
+    if(c4e.td[ti]-1>=depth){
+      v=c4e.tv[ti];var f=c4e.tf[ti];
+      if(f===1)return v;
+      if(f===2&&v>alpha)alpha=v;else if(f===3&&v<beta)beta=v;
+      if(alpha>=beta)return v;
+    }
+  }
+  var best=-2*C4_WIN,bm=-1,moves=forced>=0?[forced]:c4eMoves(p,tm);
+  for(i=0;i<moves.length;i++){
+    c=moves[i];c4ePlay(c,p);v=-c4eNeg(q,depth-1,-beta,-alpha);c4eUndo(c,p);
+    if(c4e.stop)return 0;
+    if(v>best){best=v;bm=c;}
+    if(v>alpha)alpha=v;
+    if(alpha>=beta)break;
+  }
+  c4e.tk[ti]=c4e.z2;c4e.tv[ti]=best;c4e.td[ti]=Math.min(127,depth+1);c4e.tm[ti]=bm;c4e.tf[ti]=best<=a0?3:best>=beta?2:1;
+  return best;
+}
+// Peccy's pick for side `p`: o.depth (how far ahead), o.nodes (how many positions it may look at), o.slip (the chance
+// of a loose disc instead: any that doesn't hand you a four on top of it). A four is always taken, and a lone threat
+// always blocked. Among equally good drops, one at random, so games don't repeat.
+function c4Think(board,p,first,o){
+  c4eSet(board,first);
+  var q=3-p,legal=[],i,c;
+  for(i=0;i<7;i++){c=C4_ORDER[i];if(c4e.h[c]<6)legal.push(c);}
+  for(i=0;i<legal.length;i++)if(c4eWinsAt(legal[i],p))return legal[i];
+  var blocks=legal.filter(function(c){return c4eWinsAt(c,q);});
+  if(blocks.length)return blocks[0];
+  if(o.slip&&Math.random()<o.slip){
+    var safe=legal.filter(function(c){return !c4eGivesAbove(c,p);});
+    if(safe.length)return safe[Math.floor(Math.random()*safe.length)];
+  }
+  if(o.fresh)c4eClear();
+  c4e.nodes=0;c4e.limit=o.nodes;c4e.stop=false;
+  var order=legal.slice(),scores=null;
+  for(var d=1;d<=o.depth&&d<=42-c4e.n;d++){
+    var res=[],alpha=-2*C4_WIN;
+    for(i=0;i<order.length;i++){
+      c=order[i];c4ePlay(c,p);var v=-c4eNeg(q,d-1,-2*C4_WIN,-(alpha-1));c4eUndo(c,p);
+      if(c4e.stop)break;
+      res.push({c:c,v:v});if(v>alpha)alpha=v;
+    }
+    if(c4e.stop)break;
+    res.sort(function(a,b){return b.v-a.v;});scores=res;order=res.map(function(r){return r.c;});
+    if(Math.abs(res[0].v)>=C4_WIN-42)break;  // a forced win or loss is in sight: looking further won't change it
+  }
+  if(!scores)return order[0];
+  var top=scores.filter(function(r){return r.v===scores[0].v;});
+  return top[Math.floor(Math.random()*top.length)].c;
+}
+// How strong Peccy plays: it adapts to you, so every player ends up near the floor's payback (C4_TARGET), however
+// good they are. Played at one fixed strength, a sloppy player got back about 60%, a middling one 95% and a sharp one
+// 180%, so a good player could farm chips. Now c4a.d is how far ahead of the target you've come out, in bets: each
+// game adds what it paid back per chip less the target, times its bet over your usual bet (c4a.ref, a slow average).
+// Kept in chips like that, it can't be gamed with bet sizes: losing on purpose to soften Peccy costs as many chips as
+// you can then win back from it. Peccy's strength (0 to 1) follows c4a.d from where each floor starts (C4_X0, the
+// strength that gave a middling player the target at a fixed strength). Up to 0.8 it looks 6 drops ahead and plays a
+// loose disc less and less often (half its drops at 0, none at 0.8); past that it plays no loose discs and thinks
+// longer, up to ~14 drops ahead at 1, which held even a strong bot to under 20%.
+var C4_TARGET={classic:0.95,arcade:1.03},C4_X0={classic:0.472,arcade:0.432},C4_BAND=20,C4_SLIP_MAX=0.5;
+var c4a={d:0,ref:0};
+function c4Strength(){return Math.max(0,Math.min(1,C4_X0[gameMode]+c4a.d/C4_BAND));}
+function c4Opts(){
+  var x=c4Strength();
+  if(x<=0.8)return {depth:6,nodes:250000,slip:C4_SLIP_MAX*(0.8-x)/0.8};
+  return {depth:42,nodes:Math.round(3000*Math.pow(250000/3000,(x-0.8)/0.2)),slip:0};
+}
+// After each game: `ret` is what it paid back per chip bet (0 lost, 1 a full board, 2 to 4 a win)
+function c4Adapt(bet,ret){
+  var w=c4a.ref>0?bet/c4a.ref:1;
+  c4a.d+=(ret-C4_TARGET[gameMode])*w;
+  c4a.d=Math.max(c4a.d,-C4_X0[gameMode]*C4_BAND-2);  // losses past Peccy's gentlest aren't banked as a handicap
+  c4a.ref=c4a.ref>0?c4a.ref+0.05*(bet-c4a.ref):bet;
+}
+var C4_FORMS=['Easy-going','Relaxed','Steady','Sharp','Ruthless'];
+function c4Form(){return C4_FORMS[Math.min(4,Math.floor(c4Strength()*5))];}
+// When a game moves Peccy into a new form, Peccy says so once the result has sunk in
+function c4FormSay(was,name){
+  if(c4Form()===name)return;
+  var up=c4Strength()>was,t=up?slRand(["Okay, you're good. I'm getting serious now. 😤","You've had your fun. Gloves off! 🥊","Right, no more easy games. 😠"]):
+    slRand(["Alright, I'll go a little easier on you. 😌","Tough run? I'll loosen up a bit. 🙂","Let's make the next few friendlier. 🤝"]);
+  setTimeout(function(){if(!c4.on)c4Say(t);},2600);
+}
+function c4AdaptSnap(){return {d:Math.round(c4a.d*1000)/1000,ref:Math.round(c4a.ref*100)/100};}
+function c4AdaptRestore(s){c4a.d=s&&isFinite(+s.d)?+s.d:0;c4a.ref=s&&+s.ref>0?+s.ref:0;}
+
+// ── The game ──
+function c4Start(){
+  if(c4.on||c4.busy)return;
+  var bet=c4Bet();
+  if(bet>balance){c4Say(balance<1?"You're out of chips! Hit Reset"+(gameMode==='arcade'?', or work a shift at the bar. 🍸':'. 🔄'):"Not enough chips for that bet! 😬");return;}
+  balance-=bet;barRound();
+  c4.on=true;c4.busy=true;c4.bet=bet;c4.b=c4Empty();c4.mine=c4.his=0;c4.win=null;c4.res=null;
+  c4.first=Math.random()<0.5?1:2;c4.turn=c4.first;c4eClear();
+  updateBalance();  // saves the game too, already decided who goes first
+  c4DrawDiscs();c4UI();c4Say('Coin flip for the first drop! 🪙');
+  c4Flip(function(){
+    c4.busy=false;c4UI();
+    if(c4.turn===2){c4Say(slRand(["I'll go first, then. 😏","Peccy's on the board first! 🟠","My drop first. Watch closely! 👀"]));c4PeccyTurn();}
+    else c4Say(slRand(["You're up first. Make it count! 🔵","Your drop first. Pick a column! 🔵","The first drop is yours. Go! 🔵"]));
+  });
+}
+// The coin for the first drop: Peccy's face means Peccy starts
+function c4Flip(done){
+  var ov=document.getElementById('c4-flip');
+  ov.innerHTML='<div class="cf-toss go"><div class="cf-coin">'+
+    '<div class="cf-face cf-h"><svg viewBox="0 0 204 240" aria-hidden="true"><use href="#peccy-art"></use></svg><span>PECCY</span></div>'+
+    '<div class="cf-face cf-t"><b>YOU</b><span>FIRST</span></div></div></div><div class="c4-flip-say">Who drops first?</div>';
+  ov.classList.add('show');
+  var coin=ov.querySelector('.cf-coin');void coin.offsetWidth;
+  coin.style.transform='rotateY('+(1440+(c4.first===1?180:0))+'deg)';
+  setTimeout(function(){ov.querySelector('.c4-flip-say').textContent=c4.first===1?'You go first!':'Peccy goes first!';},1650);
+  setTimeout(function(){ov.classList.remove('show');ov.innerHTML='';done();},2500);
+}
+// Your drop (a column button, a tap, or the keyboard)
+function c4Drop(col){
+  if(!c4.on||c4.busy||c4.turn!==1||c4Height(col)>5)return;
+  c4.hover=col;c4Move(col,1);
+}
+function c4Move(col,p){
+  var r=c4Height(col),x=col*6+r;
+  c4.b[x]=p;if(p===1)c4.mine++;else c4.his++;
+  var line=c4Line(x,p),full=c4.mine+c4.his>=42,ms=c4FallMs(r);
+  c4.turn=line||full?0:3-p;c4.busy=true;
+  saveGame();  // a game that ends here and is closed before it settles gets settled when the page opens again
+  c4DropDisc(col,r,p,ms);c4UI();
+  setTimeout(function(){
+    c4.busy=false;
+    if(line||full){c4Settle(line?(p===1?'win':'lose'):'draw',line);return;}
+    c4UI();
+    if(c4.turn===2)c4PeccyTurn();
+    // Peccy now has a four waiting: say so, without saying where
+    else if(c4WinCols(2).length)c4Say(slRand(['Your move... better look closely. 😏','Careful now! 👀','Something on the board you should see? 🤔']));
+  },ms);
+}
+function c4FallMs(r){return Math.round((240+70*(6-r))*(slState.fast?0.6:1));}
+function c4PeccyTurn(){
+  if(!c4.on||c4.turn!==2||c4.busy)return;
+  c4.busy=true;c4UI();
+  var t0=Date.now(),threat=c4WinCols(1);
+  // A moment for "Peccy is thinking" to show before the search takes the thread
+  setTimeout(function(){
+    if(!c4.on||c4.turn!==2)return;
+    var col=c4Think(c4.b,2,c4.first,c4Opts());
+    setTimeout(function(){
+      if(!c4.on||c4.turn!==2)return;
+      c4.busy=false;
+      if(threat.indexOf(col)>=0)c4Say(slRand(['Not so fast! 🛑','Saw that one coming. 👀','Nice try! Blocked. 🧱']));
+      c4Move(col,2);
+    },Math.max(0,650-(Date.now()-t0)));
+  },60);
+}
+function c4Settle(res,line){
+  var bet=c4.bet,paid=0,x=0,n=c4.mine;
+  if(res==='win'){x=C4_TIERS[c4Tier(n)].x;c4.change+=bet*(1+x);paid=Math.floor(c4.change+1e-9);c4.change-=paid;}
+  else if(res==='draw')paid=bet;
+  c4.on=false;c4.turn=0;c4.win=line;c4.res={r:res,paid:paid,bet:bet,n:n};
+  var f0=c4Strength(),fn=c4Form();c4Adapt(bet,res==='win'?1+x:res==='draw'?1:0);c4FormSay(f0,fn);
+  balance+=paid;
+  achPlay('four');achBump('c4_game');lvXP('four',bet);
+  if(res==='win'){
+    achBump('c4_won');achWin(paid-bet);if(n<=7)achBump('c4_fast');if(c4.first===2)achBump('c4_win2');
+    if(!(ach.stats.c4_best<=n))ach.stats.c4_best=n;
+    showConfetti();peccyHop('.c4-peccy');
+    c4Say(n<=7?'In just '+n+' drops?! I did not see that coming! 🤯':n<=14?'Well played! Four in a row. 👏':'You got there in the end! Four in a row. 🎉');
+  }else if(res==='lose'){achBump('c4_lost');c4Say(slRand(['Four in a row! The house wins this one. 😎','Got you! Four in a row. 🟠','Peccy connects! Rematch? 😏']));}
+  else{achBump('c4_drawn');c4Say('A full board and no winner. Call it a tie! 🤝');}
+  updateBalance();c4DrawDiscs();c4UI();
+}
+// Two taps: the first asks, the second ends the game and loses the bet
+function c4GiveUp(){
+  var b=document.getElementById('c4-quit');
+  if(!c4.on||c4.busy||c4.turn!==1)return;
+  if(!b.classList.contains('sure')){b.classList.add('sure');b.textContent='Sure? Tap again to lose your '+fmtChips(c4.bet);setTimeout(function(){b.classList.remove('sure');c4UI();},3000);return;}
+  b.classList.remove('sure');
+  c4.on=false;c4.turn=0;c4.win=null;c4.res={r:'quit',paid:0,bet:c4.bet,n:c4.mine};
+  var f0=c4Strength(),fn=c4Form();c4Adapt(c4.bet,0);c4FormSay(f0,fn);
+  achPlay('four');achBump('c4_game');achBump('c4_lost');lvXP('four',c4.bet);
+  c4Say('Peccy takes the pot. Rematch? 🔁');saveGame();c4DrawDiscs();c4UI();
+}
+
+// ── Drawing ──
+var C4_FACE='<svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="13.5" cy="16" r="5.6" fill="#fff"/><circle cx="26.5" cy="16" r="5.6" fill="#fff"/><circle cx="14.5" cy="14.6" r="2.5" fill="#1b1b1b"/><circle cx="27.5" cy="14.6" r="2.5" fill="#1b1b1b"/><path d="M10.5 25.5 Q20 33 29.5 25.5" stroke="#1b1b1b" stroke-width="2.8" fill="none" stroke-linecap="round"/><path d="M27 23.6 l3.4 1.6 -2.4 2.8" stroke="#1b1b1b" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+function c4DiscHTML(c,r,p,cls,extra){return '<div class="c4-disc p'+p+(cls?' '+cls:'')+'" style="--c:'+c+';--r:'+r+(extra||'')+'"><b>'+(p===2?C4_FACE:'')+'</b></div>';}
+// The board's frame and the column buttons, once
+function c4Build(){
+  var f=document.getElementById('c4-front');if(!f||f.children.length)return;
+  var h='';for(var i=0;i<42;i++)h+='<i></i>';f.innerHTML=h;
+  h='';for(var c=0;c<7;c++)h+='<button type="button" aria-label="Drop a disc in column '+(c+1)+'" onclick="c4Drop('+c+')" onmouseenter="c4Hover('+c+')"></button>';
+  document.getElementById('c4-cols').innerHTML=h;
+}
+function c4Hover(c){if(c4.hover===c)return;c4.hover=c;c4Ghost();}
+function c4Ghost(){
+  var g=document.getElementById('c4-ghost'),on=c4.on&&!c4.busy&&c4.turn===1;
+  if(g){g.style.display=on?'':'none';g.style.setProperty('--c',c4.hover);}
+  document.querySelectorAll('#c4-cols button').forEach(function(b,i){b.classList.toggle('on',on&&i===c4.hover);});
+}
+function c4DrawDiscs(){
+  var h='',c,r,p;
+  for(c=0;c<7;c++)for(r=0;r<6;r++)if((p=c4.b[c*6+r]))h+=c4DiscHTML(c,r,p,c4.win?(c4.win.indexOf(c*6+r)>=0?'win':'dim'):'');
+  h+='<div class="c4-disc p1 ghost" id="c4-ghost" style="--c:'+c4.hover+';--r:6;display:none"><b></b></div>';
+  var o='';
+  if(c4.win){
+    var a=c4.win[0],z=c4.win[3],X=function(x){return Math.floor(x/6)+0.5;},Y=function(x){return 5-x%6+0.5;};
+    o='<svg class="c4-line" viewBox="0 0 7 6" preserveAspectRatio="none" aria-hidden="true"><line x1="'+X(a)+'" y1="'+Y(a)+'" x2="'+X(z)+'" y2="'+Y(z)+'" pathLength="1"/></svg>';
+  }
+  document.getElementById('c4-discs').innerHTML=h;document.getElementById('c4-over').innerHTML=o;c4Ghost();
+}
+function c4DropDisc(c,r,p,ms){
+  var g=document.getElementById('c4-ghost'),t=document.createElement('div');
+  t.innerHTML=c4DiscHTML(c,r,p,'drop',';--d:'+(6-r)+';--t:'+ms+'ms');
+  document.getElementById('c4-discs').insertBefore(t.firstChild,g);
+}
+function c4UI(){
+  var st=document.getElementById('c4-status');if(!st)return;
+  var your=c4.on&&!c4.busy&&c4.turn===1,bet=c4.on?c4.bet:c4Bet(),next=c4.mine+1,tier=c4.on?c4Tier(next):-1,res=c4.res;
+  document.getElementById('c4-stage').classList.toggle('your',your);
+  // Whose drop it is, and how many drops you've made
+  if(c4.on&&c4.busy&&!c4.mine&&!c4.his)st.innerHTML='Coin flip for the first drop…';
+  else if(c4.on&&c4.turn===1)st.innerHTML='<span class="c4-dot p1"></span>Your drop · '+next+' of 21';
+  else if(c4.on&&c4.turn===2)st.innerHTML='<span class="c4-dot p2"></span>Peccy is thinking…';
+  else if(res)st.innerHTML=res.r==='win'?'<span class="c4-dot p1"></span>Four in a row in '+res.n+' drops':res.r==='draw'?'Full board':res.r==='quit'?'You gave up':'<span class="c4-dot p2"></span>Peccy made four in a row';
+  else st.innerHTML='Set your bet, then start a game';
+  var out=document.getElementById('c4-result');
+  if(c4.on)out.innerHTML=tier>=0?'Win on this drop: <b class="w">+'+fmtChips(Math.floor(bet*C4_TIERS[tier].x))+'</b>':'';
+  else if(res)out.innerHTML=res.r==='win'?'<b class="w">You win '+fmtChips(res.paid)+' (+'+fmtChips(res.paid-res.bet)+')</b>':res.r==='draw'?'<b>Your '+fmtChips(res.bet)+' is back</b>':'<b class="l">You lose '+fmtChips(res.bet)+'</b>';
+  else out.innerHTML='';
+  // The ladder: what a win pays at this bet, lit for a win on your next drop
+  var lo=4,lad='';
+  C4_TIERS.forEach(function(t,i){
+    lad+='<div class="'+(i===tier?'on':c4.on&&next>t.to?'gone':'')+'"><span>Win in '+lo+'–'+t.to+' drops</span><b>+'+t.x+'×</b><em>+'+fmtChips(Math.floor(bet*t.x))+'</em></div>';lo=t.to+1;
+  });
+  document.getElementById('c4-ladder').innerHTML=lad+'<p>A full board with no four: your bet back.</p>';
+  // How sharp Peccy is playing you right now (it adapts: see c4Opts)
+  var fx=c4Strength();
+  document.getElementById('c4-form').innerHTML='<span>Peccy\'s form '+rulesI('four','peccy','Peccy\'s form')+'</span><i><b style="width:'+Math.max(4,Math.round(fx*100))+'%"></b></i><em>'+c4Form()+'</em>';
+  var start=document.getElementById('c4-start'),quit=document.getElementById('c4-quit');
+  start.style.display=c4.on?'none':'';start.textContent=res?'New game':'Start a game';
+  quit.style.display=c4.on?'':'none';quit.disabled=!your;
+  if(!quit.classList.contains('sure'))quit.textContent='Give up';
+  document.getElementById('c4-bet').disabled=c4.on;
+  var s=ach.stats;
+  document.getElementById('c4-won').textContent=fmtChips(+s.c4_won||0);
+  document.getElementById('c4-lost').textContent=fmtChips(+s.c4_lost||0);
+  document.getElementById('c4-best').textContent=s.c4_best?s.c4_best+' drops':'–';
+  c4Ghost();
+}
+function c4Layout(){
+  var w=document.getElementById('c4-wrap');if(!w||!w.offsetParent)return;
+  var wide=innerWidth>760,st=document.getElementById('c4-stage');
+  w.style.height=wide?Math.max(420,roomBelow(w))+'px':'';
+  // The board is 7.36 cells wide, and 7.36 tall with the row above it where your disc waits
+  var cs=Math.max(34,Math.min(104,(st.clientWidth-32)/7.36,wide?(st.clientHeight-104)/7.36:1e9));
+  // The frame is a whole number of pixels: a border is drawn rounded down, which would leave a gap inside it
+  var bd=document.getElementById('c4-board');cs=Math.floor(cs);bd.style.setProperty('--cs',cs+'px');bd.style.setProperty('--pad',Math.round(cs*0.18)+'px');
+}
+window.addEventListener('resize',function(){if(document.getElementById('game-four').classList.contains('active'))c4Layout();});
+// The keyboard: ← → pick a column, Enter, Space or ↓ drops, or 1 to 7 drops straight into that column
+document.addEventListener('keydown',function(e){
+  if(!document.getElementById('game-four').classList.contains('active')||!c4.on||c4.busy||c4.turn!==1)return;
+  if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)||rulesIsOpen()||houseIsOpen())return;
+  if(e.key==='ArrowLeft'||e.key==='ArrowRight'){c4.hover=Math.max(0,Math.min(6,c4.hover+(e.key==='ArrowLeft'?-1:1)));c4Ghost();e.preventDefault();}
+  else if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){c4Drop(c4.hover);e.preventDefault();}
+  else if(/^[1-7]$/.test(e.key)){c4Drop(+e.key-1);e.preventDefault();}
+});
+// The save: the board and the bet while a game is on (whose drop it is follows from the discs)
+function c4Snap(){return c4.on?{b:c4.b.join(''),bet:c4.bet,first:c4.first}:null;}
+function c4Restore(s){
+  c4.on=false;c4.busy=false;c4.turn=0;c4.win=null;c4.res=null;c4.b=c4Empty();c4.mine=c4.his=0;
+  var ok=s&&typeof s.b==='string'&&/^[012]{42}$/.test(s.b)&&s.bet>=1;
+  if(ok){
+    var b=s.b.split('').map(Number),first=s.first===2?2:1,mine=0,his=0;
+    b.forEach(function(v){if(v===1)mine++;else if(v===2)his++;});
+    ok=first===1?(mine===his||mine===his+1):(his===mine||his===mine+1);
+    if(ok){c4.b=b;c4.first=first;c4.bet=Math.floor(s.bet);c4.mine=mine;c4.his=his;c4.on=true;c4.turn=(mine+his)%2===0?first:3-first;}
+  }
+  if(document.getElementById('c4-discs')){c4DrawDiscs();c4UI();}
+  if(!c4.on)return;
+  // A game whose last disc landed as the page closed is settled now; otherwise it picks up where it was
+  setTimeout(function(){
+    if(!c4.on)return;
+    for(var x=0;x<42;x++)if(c4.b[x]){var w=c4Line(x,c4.b[x]);if(w){c4Settle(c4.b[x]===1?'win':'lose',w);return;}}
+    if(c4.mine+c4.his>=42){c4Settle('draw',null);return;}
+    if(c4.turn===2)c4PeccyTurn();
+  },0);
+}
 
 // ═══ SPORTSBOOK: FOOTBALL ═══
 // A league of 16 made-up teams playing a 12-week season, 8 games a week. Every market on a game (the winner, the
